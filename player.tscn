@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://s5hr7fjvebjl"]
+
+[ext_resource type="Texture2D" uid="uid://b8ajht7gn015s" path="res://icon.svg" id="1_4flbx"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_d1kxo"]
+
+[node name="Player" type="CharacterBody2D" unique_id=1197660823]
+
+[node name="HitBox" type="CollisionShape2D" parent="." unique_id=1766560818]
+shape = SubResource("RectangleShape2D_d1kxo")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1690453589]
+position = Vector2(-9.536743e-07, 0)
+scale = Vector2(0.15624999, 0.15624999)
+texture = ExtResource("1_4flbx")
