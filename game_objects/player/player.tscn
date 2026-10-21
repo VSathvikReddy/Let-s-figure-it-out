@@ -10,10 +10,18 @@ size = Vector2(63, 62)
 script = ExtResource("1_jcgnw")
 
 [node name="HitBox" type="CollisionShape2D" parent="." unique_id=1766560818]
-position = Vector2(21.5, 21)
 shape = SubResource("RectangleShape2D_d1kxo")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1690453589]
-position = Vector2(21.5, 21.500002)
 scale = Vector2(0.4921875, 0.4921875)
 texture = ExtResource("2_gnf7o")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=862006972]
+position = Vector2(0, -50)
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.1
+drag_top_margin = 0.1
+drag_right_margin = 0.1
+drag_bottom_margin = 0.1

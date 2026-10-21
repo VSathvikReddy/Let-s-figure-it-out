@@ -7,7 +7,7 @@ enum PlayerState { IDLE, MOVING, DASH }
 enum PlayerDirection { RIGHT, LEFT }
 
 @export var SPEED := 300.0
-@export var JUMP_VELOCITY := -600.0
+@export var JUMP_VELOCITY := -530.0
 @export var TERMINAL_FALL_VELOCITY := 1000.0
 
 ## Gravity multiplier when jump is released while still rising (short hop)
