@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Godot Project"
+run/main_scene="uid://dy2al0hakdvae"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -18,6 +19,10 @@ config/icon="res://icon.svg"
 
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
+
+[global_group]
+
+player="The main Player"
 
 [input]
 
@@ -50,4 +55,7 @@ dash={
 
 [rendering]
 
+textures/canvas_textures/default_texture_filter=0
 rendering_device/driver.windows="d3d12"
+textures/decals/filter=0
+textures/light_projectors/filter=0
