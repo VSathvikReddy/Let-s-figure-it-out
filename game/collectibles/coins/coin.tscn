@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://2o47um1rry5t"]
 
-[ext_resource type="Script" uid="uid://m0d4tcir5ddq" path="res://game_objects/collactables/coins/coin.gd" id="1_5opqx"]
-[ext_resource type="Texture2D" uid="uid://bukyncnc6adtc" path="res://game_objects/collactables/coins/coin.png" id="1_8y3dj"]
+[ext_resource type="Texture2D" uid="uid://bukyncnc6adtc" path="res://game/collectibles/coins/coin.png" id="1_8y3dj"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d1kxo"]
 radius = 24.186773
@@ -11,7 +10,6 @@ atlas = ExtResource("1_8y3dj")
 region = Rect2(0, 0, 16, 16)
 
 [node name="Coin" type="Area2D" unique_id=913190511]
-script = ExtResource("1_5opqx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1485317994]
 shape = SubResource("CircleShape2D_d1kxo")

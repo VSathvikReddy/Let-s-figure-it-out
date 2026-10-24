@@ -1,9 +1,10 @@
 [gd_scene format=4 uid="uid://dy2al0hakdvae"]
 
-[ext_resource type="PackedScene" uid="uid://s5hr7fjvebjl" path="res://game_objects/player/player.tscn" id="2_6k384"]
-[ext_resource type="PackedScene" uid="uid://cg3yx7drwa8cs" path="res://game_objects/platform/floor.tscn" id="2_k2qie"]
-[ext_resource type="PackedScene" uid="uid://b3hg6rs26i6oc" path="res://game_objects/platform/tile.tscn" id="3_n8xwa"]
-[ext_resource type="PackedScene" uid="uid://2o47um1rry5t" path="res://game_objects/collactables/coins/coin.tscn" id="4_k2qie"]
+[ext_resource type="PackedScene" uid="uid://s5hr7fjvebjl" path="res://game/player/player.tscn" id="2_6k384"]
+[ext_resource type="PackedScene" uid="uid://cg3yx7drwa8cs" path="res://game/platform/floor.tscn" id="2_k2qie"]
+[ext_resource type="PackedScene" uid="uid://b3hg6rs26i6oc" path="res://game/platform/tile.tscn" id="3_n8xwa"]
+[ext_resource type="PackedScene" uid="uid://2o47um1rry5t" path="res://game/collectibles/coins/coin.tscn" id="4_k2qie"]
+[ext_resource type="Script" uid="uid://b7l8ungbpw324" path="res://game/collectibles/coins/coin_manager.gd" id="4_n8xwa"]
 
 [sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_6k384"]
 scenes/1/scene = ExtResource("2_k2qie")
@@ -23,6 +24,11 @@ APEX_GRAVITY_MULT = 0.9
 tile_map_data = PackedByteArray("AAAAAAQAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAFAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAHAAMAAAAAAAAAAQAAAAUAAAAAAAAAAgABAAUAAAAAAAAAAgACAAUAAAAAAAAAAgADAAUAAAAAAAAAAgAFAAQAAAAAAAAAAgAGAAQAAAAAAAAAAgAHAAQAAAAAAAAAAgA=")
 tile_set = SubResource("TileSet_d1kxo")
 
-[node name="Coin" parent="." unique_id=913190511 instance=ExtResource("4_k2qie")]
+[node name="Node2D" type="Node2D" parent="." unique_id=652726581]
+script = ExtResource("4_n8xwa")
+
+[node name="Coin" parent="Node2D" unique_id=913190511 instance=ExtResource("4_k2qie")]
 position = Vector2(387, 157)
-script = null
+
+[node name="Coin2" parent="Node2D" unique_id=1561155129 instance=ExtResource("4_k2qie")]
+position = Vector2(32, 217)
