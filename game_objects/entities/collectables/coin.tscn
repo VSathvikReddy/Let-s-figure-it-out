@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://dxqkkq6o5xrxi"]
+
+[ext_resource type="Texture2D" uid="uid://blwlu5ij55po0" path="res://game_objects/entities/collectables/coin.png" id="1_lpbgg"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4uyoc"]
+radius = 25.019993
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4uyoc"]
+atlas = ExtResource("1_lpbgg")
+region = Rect2(0, 0, 16, 16)
+
+[node name="Coin" type="Area2D" unique_id=160344614]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1320849053]
+shape = SubResource("CircleShape2D_4uyoc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1985396728]
+scale = Vector2(4, 4)
+texture = SubResource("AtlasTexture_4uyoc")

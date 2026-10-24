@@ -1,18 +1,23 @@
-[gd_scene format=3 uid="uid://dy2al0hakdvae"]
+[gd_scene format=4 uid="uid://dy2al0hakdvae"]
 
-[ext_resource type="PackedScene" uid="uid://nne7qo4klnfv" path="res://game_objects/platform.tscn" id="1_mdd7a"]
 [ext_resource type="PackedScene" uid="uid://s5hr7fjvebjl" path="res://game_objects/player/player.tscn" id="2_6k384"]
+[ext_resource type="PackedScene" uid="uid://cg3yx7drwa8cs" path="res://game_objects/platform/floor.tscn" id="2_k2qie"]
+[ext_resource type="PackedScene" uid="uid://b3hg6rs26i6oc" path="res://game_objects/platform/tile.tscn" id="3_n8xwa"]
+
+[sub_resource type="TileSetScenesCollectionSource" id="TileSetScenesCollectionSource_l1ryx"]
+scenes/1/scene = ExtResource("2_k2qie")
+scenes/2/scene = ExtResource("3_n8xwa")
+
+[sub_resource type="TileSet" id="TileSet_4uyoc"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetScenesCollectionSource_l1ryx")
 
 [node name="Node2D" type="Node2D" unique_id=69863871]
-
-[node name="Platform2" parent="." unique_id=1217489695 instance=ExtResource("1_mdd7a")]
-position = Vector2(1076, 352)
-scale = Vector2(7.96, 2.96)
-
-[node name="Platform" parent="." unique_id=1670193695 instance=ExtResource("1_mdd7a")]
-position = Vector2(189, 492)
-scale = Vector2(13.52, 4)
 
 [node name="Player" parent="." unique_id=1197660823 instance=ExtResource("2_6k384")]
 position = Vector2(132, 178)
 APEX_GRAVITY_MULT = 0.9
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1629909794]
+tile_map_data = PackedByteArray("AAAAAAYAAAAAAAAAAgABAAYAAAAAAAAAAgD//wUAAAAAAAAAAgAAAAUAAAAAAAAAAgABAAUAAAAAAAAAAgACAAUAAAAAAAAAAgADAAUAAAAAAAAAAgACAAYAAAAAAAAAAgD//wYAAAAAAAAAAgADAAYAAAAAAAAAAgD//wQAAAAAAAAAAQAAAAQAAAAAAAAAAQABAAQAAAAAAAAAAQACAAQAAAAAAAAAAQADAAQAAAAAAAAAAQAHAAQAAAAAAAAAAgAHAAMAAAAAAAAAAQAGAAMAAAAAAAAAAQAGAAQAAAAAAAAAAgAIAAMAAAAAAAAAAQAIAAQAAAAAAAAAAgAGAAUAAAAAAAAAAgAHAAUAAAAAAAAAAgAIAAUAAAAAAAAAAgA=")
+tile_set = SubResource("TileSet_4uyoc")
