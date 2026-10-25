@@ -1,0 +1,11 @@
+[gd_scene format=3 uid="uid://hlgmx2oih8bi"]
+
+[ext_resource type="Script" uid="uid://b1bit7mi02rr0" path="res://sinan/weapons/orb_staff.gd" id="1_orb"]
+
+[node name="OrbStaff" type="Node2D" unique_id=1162666133]
+script = ExtResource("1_orb")
+reload_time = 0.8
+recoil_force = 60.0
+muzzle = Vector2(140, 0)
+impact_radius = 200.0
+paint_arc = 120.0

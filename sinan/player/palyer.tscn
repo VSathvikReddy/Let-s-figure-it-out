@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://biw8d7wx230fi"]
+
+[ext_resource type="Script" uid="uid://nq51m5aq0qve" path="res://sinan/player/palyer.gd" id="1_p8te4"]
+[ext_resource type="Texture2D" uid="uid://b8ajht7gn015s" path="res://icon.svg" id="1_xvfop"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mupt7"]
+size = Vector2(120, 118)
+
+[node name="palyer" type="CharacterBody2D" unique_id=264198471]
+script = ExtResource("1_p8te4")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=94097205]
+texture = ExtResource("1_xvfop")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1772950309]
+position = Vector2(0, 3)
+shape = SubResource("RectangleShape2D_mupt7")

@@ -1,0 +1,163 @@
+[gd_scene format=3 uid="uid://c8q6osp372tph"]
+
+[ext_resource type="Texture2D" uid="uid://caitd76e23mta" path="res://sinan/assets/sky_level50.png" id="1_ptnno"]
+[ext_resource type="Texture2D" uid="uid://bftisvhosjcmm" path="res://sinan/assets/Van Gogh–Inspired Swirling Starry Sky.png" id="2_awe36"]
+[ext_resource type="PackedScene" uid="uid://biw8d7wx230fi" path="res://sinan/player/palyer.tscn" id="2_gnu8p"]
+[ext_resource type="Texture2D" uid="uid://j0fmh4p0533i" path="res://sinan/assets/sky_level100.png" id="2_r0qi8"]
+[ext_resource type="Texture2D" uid="uid://bycdnuqj1bl2j" path="res://sinan/assets/sky_level500.png" id="3_3f5a1"]
+[ext_resource type="Texture2D" uid="uid://bcryfo24ipllx" path="res://sinan/assets/Van Gogh-Inspired Swirling Mountain Ridge.png" id="3_65feh"]
+[ext_resource type="Texture2D" uid="uid://c8jk7elx1lvk6" path="res://sinan/assets/sky_level2500.png" id="4_xgml2"]
+[ext_resource type="Texture2D" uid="uid://cryb7lkf56bsd" path="res://sinan/assets/Seamless Van Gogh-Style Night Village Panorama-Photoroom.png" id="4_ypq72"]
+[ext_resource type="Texture2D" uid="uid://dmit3iea6bvks" path="res://sinan/assets/download (14)-Photoroom.png" id="6_65feh"]
+[ext_resource type="Script" path="res://sinan/scens/distortion_layer.gd" id="7_dist"]
+[ext_resource type="Texture2D" path="res://sinan/assets/hill_level20-Photoroom.png" id="hill_20"]
+[ext_resource type="Texture2D" path="res://sinan/assets/hill_level50-Photoroom.png" id="hill_40"]
+[ext_resource type="Texture2D" path="res://sinan/assets/hill_level500-Photoroom.png" id="hill_60"]
+[ext_resource type="Texture2D" path="res://sinan/assets/hill_level5000-Photoroom.png" id="hill_80"]
+[ext_resource type="Texture2D" path="res://sinan/assets/village_level20-Photoroom.png" id="village_20"]
+[ext_resource type="Texture2D" path="res://sinan/assets/village_level50-Photoroom.png" id="village_40"]
+[ext_resource type="Texture2D" path="res://sinan/assets/village_level500-Photoroom.png" id="village_60"]
+[ext_resource type="Texture2D" path="res://sinan/assets/village_level5000-Photoroom.png" id="village_80"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mupt7"]
+size = Vector2(4164.5, 149.99994)
+
+[node name="level" type="Node2D" unique_id=451072027]
+
+[node name="sky" type="Parallax2D" parent="." unique_id=620903321]
+script = ExtResource("7_dist")
+scroll_scale = Vector2(0, 1)
+scroll_offset = Vector2(632, 30)
+
+[node name="20" type="Sprite2D" parent="sky" unique_id=417484060]
+z_index = -1
+position = Vector2(-27.249939, 31.999992)
+scale = Vector2(1.0318613, 1.0383066)
+texture = ExtResource("1_ptnno")
+
+[node name="40" type="Sprite2D" parent="sky" unique_id=1439878147]
+z_index = -1
+position = Vector2(-27.249939, 31.999992)
+scale = Vector2(1.0318613, 1.0383066)
+texture = ExtResource("2_r0qi8")
+
+[node name="60" type="Sprite2D" parent="sky" unique_id=1216544274]
+z_index = -1
+position = Vector2(-27.249939, 31.999992)
+scale = Vector2(1.0318613, 1.0383066)
+texture = ExtResource("3_3f5a1")
+
+[node name="80" type="Sprite2D" parent="sky" unique_id=1037632678]
+z_index = -1
+position = Vector2(-27.249939, 31.999992)
+scale = Vector2(1.0318613, 1.0383066)
+texture = ExtResource("4_xgml2")
+
+[node name="100" type="Sprite2D" parent="sky" unique_id=565068796]
+z_index = -1
+position = Vector2(-27.249962, 31.999992)
+scale = Vector2(1.0318613, 1.0383066)
+texture = ExtResource("2_awe36")
+
+[node name="hill" type="Parallax2D" parent="." unique_id=1898792429]
+script = ExtResource("7_dist")
+scroll_scale = Vector2(0.05, 1)
+scroll_offset = Vector2(5, 2)
+repeat_size = Vector2(1900, 0)
+repeat_times = 3
+
+[node name="20" type="Sprite2D" parent="hill"]
+position = Vector2(2, 120)
+texture = ExtResource("hill_20")
+
+[node name="40" type="Sprite2D" parent="hill"]
+position = Vector2(2, 120)
+texture = ExtResource("hill_40")
+
+[node name="60" type="Sprite2D" parent="hill"]
+position = Vector2(2, 120)
+texture = ExtResource("hill_60")
+
+[node name="80" type="Sprite2D" parent="hill"]
+position = Vector2(2, 120)
+texture = ExtResource("hill_80")
+
+[node name="100" type="Sprite2D" parent="hill" unique_id=69086650]
+position = Vector2(2, 120)
+texture = ExtResource("3_65feh")
+
+[node name="village" type="Parallax2D" parent="." unique_id=237555272]
+script = ExtResource("7_dist")
+scroll_scale = Vector2(0.1, 1)
+scroll_offset = Vector2(-1443, -33)
+repeat_size = Vector2(2000, 0)
+
+[node name="20" type="Sprite2D" parent="village"]
+position = Vector2(4, 225)
+scale = Vector2(0.92, 0.8)
+texture = ExtResource("village_20")
+
+[node name="40" type="Sprite2D" parent="village"]
+position = Vector2(4, 225)
+scale = Vector2(0.92, 0.8)
+texture = ExtResource("village_40")
+
+[node name="60" type="Sprite2D" parent="village"]
+position = Vector2(4, 225)
+scale = Vector2(0.92, 0.8)
+texture = ExtResource("village_60")
+
+[node name="80" type="Sprite2D" parent="village"]
+position = Vector2(4, 225)
+scale = Vector2(0.92, 0.8)
+texture = ExtResource("village_80")
+
+[node name="100" type="Sprite2D" parent="village" unique_id=579346497]
+position = Vector2(4, 225)
+scale = Vector2(0.92, 0.8)
+texture = ExtResource("4_ypq72")
+
+[node name="palyer" parent="." unique_id=264198471 instance=ExtResource("2_gnu8p")]
+z_index = 2
+position = Vector2(-2, 353)
+scale = Vector2(0.3, 0.3)
+
+[node name="Camera2D" type="Camera2D" parent="palyer" unique_id=401108577]
+position = Vector2(13.333333, -1160)
+zoom = Vector2(0.73, 0.73)
+position_smoothing_enabled = true
+
+[node name="ColorRect" type="ColorRect" parent="palyer/Camera2D" unique_id=702182575]
+visible = false
+offset_left = -3103.3333
+offset_top = -1939.9999
+offset_right = 3323.3333
+offset_bottom = 1790.0001
+color = Color(1, 1, 1, 0.105882354)
+
+[node name="frame" type="Node2D" parent="." unique_id=920655558]
+z_index = 1
+position = Vector2(423, -57)
+rotation = -3.1415927
+
+[node name="NinePatchRect" type="NinePatchRect" parent="frame" unique_id=542244599]
+offset_left = -1864.0
+offset_top = -544.0002
+offset_right = 2266.0
+offset_bottom = 426.15033
+texture = ExtResource("6_65feh")
+patch_margin_left = 200
+patch_margin_top = 200
+patch_margin_right = 200
+patch_margin_bottom = 200
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=174962224]
+color = Color(0.8002996, 0.81344783, 0.9148506, 1)
+
+[node name="frame collision" type="StaticBody2D" parent="." unique_id=596063732]
+position = Vector2(423, -57)
+rotation = 3.1415925
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="frame collision" unique_id=1842080605]
+position = Vector2(215.00005, -561)
+shape = SubResource("RectangleShape2D_mupt7")

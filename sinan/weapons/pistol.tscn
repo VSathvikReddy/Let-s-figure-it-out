@@ -1,0 +1,10 @@
+[gd_scene format=3 uid="uid://b02v125faoh8s"]
+
+[ext_resource type="Script" uid="uid://ccujb1fwfis7p" path="res://sinan/weapons/pistol.gd" id="1_pistol"]
+
+[node name="Pistol" type="Node2D" unique_id=1021491007]
+script = ExtResource("1_pistol")
+reload_time = 0.16
+recoil_force = 110.0
+muzzle = Vector2(130, -2)
+paint_arc = 40.0

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://cm1ppeblmwttu"]
+
+[ext_resource type="Script" uid="uid://xjf7cb28etos" path="res://sinan/weapons/brush_staff.gd" id="1_brush"]
+
+[node name="BrushStaff" type="Node2D" unique_id=1179447686]
+script = ExtResource("1_brush")
+splat_decal_life = 0.1
+fuse_time = 0.5
+orb_radius = 13.0
+painting_size = 1.8
+core_color = Color(1, 1, 1, 1)
+glow_color = Color(1, 0.85, 0.35, 1)
+trail_color = Color(1, 0.9, 0.5, 1)
+blast_color = Color(1, 0.95, 0.75, 1)
+reload_time = 0.8
+recoil_force = 60.0
+muzzle = Vector2(170, 0)
+impact_radius = 200.0
+paint_arc = 120.0
