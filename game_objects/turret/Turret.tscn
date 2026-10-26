@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://cytjvhjptoas"]
+
+[ext_resource type="Script" uid="uid://dakbeov108gdw" path="res://game_objects/turret/turret.gd" id="1_1bk07"]
+[ext_resource type="Texture2D" uid="uid://b8ajht7gn015s" path="res://icon.svg" id="1_mqcwo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sd2ew"]
+size = Vector2(50, 50)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mqcwo"]
+
+[node name="Turret" type="StaticBody2D" unique_id=1728814908 groups=["turret"]]
+script = ExtResource("1_1bk07")
+
+[node name="Base Sprite" type="Sprite2D" parent="." unique_id=280944509]
+modulate = Color(1, 0.26666668, 0.33333334, 1)
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("1_mqcwo")
+
+[node name="Base HitBox" type="CollisionShape2D" parent="." unique_id=505175772]
+shape = SubResource("RectangleShape2D_sd2ew")
+
+[node name="BarrelPivot" type="Node2D" parent="." unique_id=216246985]
+
+[node name="BarrelSprite" type="Sprite2D" parent="BarrelPivot" unique_id=1974339234]
+position = Vector2(20, 0)
+scale = Vector2(0.35, 0.12)
+texture = ExtResource("1_mqcwo")
+
+[node name="Muzzle" type="Marker2D" parent="BarrelPivot" unique_id=59824393]
+position = Vector2(42, 0)
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=1154367857]
+
+[node name="DetectionShape" type="CollisionShape2D" parent="DetectionArea" unique_id=1245729331]
+shape = SubResource("CircleShape2D_mqcwo")
+
+[node name="FireTimer" type="Timer" parent="." unique_id=1662002771]

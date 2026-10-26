@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://nghvd3iyf0il"]
+
+[ext_resource type="Script" uid="uid://cecj04125t3cn" path="res://game_objects/turret/turret_spawner.gd" id="1_ftb5i"]
+
+[node name="TurretSpawner" type="Node2D" unique_id=1509993433]
+script = ExtResource("1_ftb5i")
+
+[node name="SpawnTimer" type="Timer" parent="." unique_id=1865291189]
