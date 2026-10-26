@@ -11,6 +11,8 @@ var wander_direction: Vector2 = Vector2.ZERO
 @onready var contact_zone: Area2D = $ContactZone
 @onready var wander_timer: Timer = $WanderTimer
 
+signal explosion(area: Area2D)
+
 func _ready() -> void:
 	# Wire up all signals via code
 	detection_zone.body_entered.connect(_on_detection_zone_entered)
@@ -57,9 +59,7 @@ func _on_contact_zone_entered(body: Node2D) -> void:
 
 func _explode(player_node: Node2D) -> void:
 	# 1. Apply damage to the player. 
-	# Make sure your player script has a take_damage() function!
-	if player_node.has_method("take_damage"):
-		player_node.take_damage(explosion_damage)
+	explosion.emit(contact_zone)
 		
 	# 2. (Optional) Instantiate an explosion particle effect here
 	# var effect = explosion_scene.instantiate()
