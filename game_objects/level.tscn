@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://nne7qo4klnfv" path="res://game_objects/platform.tscn" id="1_mdd7a"]
 [ext_resource type="PackedScene" uid="uid://s5hr7fjvebjl" path="res://game_objects/player/player.tscn" id="2_6k384"]
+[ext_resource type="PackedScene" uid="uid://bgggmdmw3ihsv" path="res://game_objects/bomber.tscn" id="3_6k384"]
 
 [node name="Node2D" type="Node2D" unique_id=69863871]
 
@@ -13,6 +14,9 @@ scale = Vector2(7.96, 2.96)
 position = Vector2(189, 492)
 scale = Vector2(13.52, 4)
 
-[node name="Player" parent="." unique_id=1197660823 instance=ExtResource("2_6k384")]
+[node name="Player" parent="." unique_id=1197660823 groups=["Player"] instance=ExtResource("2_6k384")]
 position = Vector2(132, 178)
 APEX_GRAVITY_MULT = 0.9
+
+[node name="CharacterBody2D" parent="." unique_id=383231011 instance=ExtResource("3_6k384")]
+position = Vector2(600, 144)

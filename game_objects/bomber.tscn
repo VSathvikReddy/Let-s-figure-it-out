@@ -1,0 +1,66 @@
+[gd_scene format=3 uid="uid://bgggmdmw3ihsv"]
+
+[ext_resource type="Script" uid="uid://dl7so41ed7l3r" path="res://game_objects/suicidebomber/bomber.gd" id="1_kpdca"]
+[ext_resource type="Texture2D" uid="uid://b8ajht7gn015s" path="res://icon.svg" id="2_yvlhf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lisrb"]
+radius = 64.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_p2axc"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_unkvp"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_unkvp"]
+size = Vector2(64, 64)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_imlyv"]
+radius = 192.0
+
+[node name="CharacterBody2D" type="CharacterBody2D" unique_id=383231011]
+script = ExtResource("1_kpdca")
+wander_speed = 80.0
+
+[node name="ContactZone" type="Area2D" parent="." unique_id=1997828865]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ContactZone" unique_id=1214147480]
+shape = SubResource("CircleShape2D_lisrb")
+
+[node name="Sprite2D" type="Sprite2D" parent="ContactZone" unique_id=135409496]
+position = Vector2(-4.7683716e-07, 2.3841858e-07)
+scale = Vector2(0.1875, 0.1875)
+texture = SubResource("NoiseTexture2D_p2axc")
+
+[node name="Sprite2D2" type="Sprite2D" parent="ContactZone" unique_id=2005485021]
+position = Vector2(-8.34465e-06, 1.5258789e-05)
+scale = Vector2(0.21874996, 0.15625)
+texture = SubResource("NoiseTexture2D_unkvp")
+
+[node name="Sprite2D3" type="Sprite2D" parent="ContactZone" unique_id=1020677020]
+position = Vector2(-9.536743e-07, 1.4305115e-06)
+scale = Vector2(0.15624999, 0.21875)
+texture = SubResource("NoiseTexture2D_unkvp")
+
+[node name="Sprite2D4" type="Sprite2D" parent="ContactZone" unique_id=1719015519]
+position = Vector2(0, -7.1525574e-06)
+scale = Vector2(0.12499999, 0.24999999)
+texture = SubResource("NoiseTexture2D_unkvp")
+
+[node name="Sprite2D5" type="Sprite2D" parent="ContactZone" unique_id=628618086]
+position = Vector2(9.536743e-07, 9.536743e-07)
+scale = Vector2(0.24999999, 0.12499999)
+texture = SubResource("NoiseTexture2D_unkvp")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1269660307]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_yvlhf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1265723178]
+shape = SubResource("RectangleShape2D_unkvp")
+
+[node name="DetectionZone" type="Area2D" parent="." unique_id=1879149565]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionZone" unique_id=698208122]
+shape = SubResource("CircleShape2D_imlyv")
+
+[node name="WanderTimer" type="Timer" parent="." unique_id=679996144]
+wait_time = 2.0
