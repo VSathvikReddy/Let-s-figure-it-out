@@ -15,4 +15,3 @@ scale = Vector2(13.52, 4)
 
 [node name="Player" parent="." unique_id=1197660823 instance=ExtResource("2_6k384")]
 position = Vector2(132, 178)
-APEX_GRAVITY_MULT = 0.9
