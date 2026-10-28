@@ -1,0 +1,363 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://sinan/actors/enemies/bat/bat.gd" id="1_bat"]
+[ext_resource type="Texture2D" path="res://sinan/assets/characters/bat/wing_l.png" id="2_wl"]
+[ext_resource type="Texture2D" path="res://sinan/assets/characters/bat/wing_r.png" id="3_wr"]
+[ext_resource type="Texture2D" path="res://sinan/assets/characters/bat/body.png" id="4_body"]
+[ext_resource type="Texture2D" path="res://sinan/assets/characters/bat/head.png" id="5_head"]
+[ext_resource type="Script" path="res://sinan/fx/core/motion_trail.gd" id="7_trail"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 11.0
+
+[sub_resource type="Gradient" id="Gradient_glow"]
+offsets = PackedFloat32Array(0, 0.35, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.45, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+gradient = SubResource("Gradient_glow")
+width = 64
+height = 64
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+
+[sub_resource type="Animation" id="Animation_bat_reset"]
+resource_name = "RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Rig/WingL:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [0.6]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Rig/WingR:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [-0.6]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Rig/WingL:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visual/Rig/WingR:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Visual/Rig/Body:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Visual/Rig/Head:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Visual/Rig:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(0, -0.0)]
+}
+
+[sub_resource type="Animation" id="Animation_bat_flap"]
+resource_name = "flap"
+length = 1.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Rig/WingL:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0, 0.0833, 0.1667, 0.25, 0.3333, 0.4167, 0.5, 0.5833, 0.6667, 0.75, 0.8333, 0.9167, 1.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.6, 0.4737, 0.1661, -0.2162, -0.5665, -0.7781, -0.557, -0.2035, 0.0858, 0.3107, 0.4714, 0.5679, 0.6]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Rig/WingR:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.0833, 0.1667, 0.25, 0.3333, 0.4167, 0.5, 0.5833, 0.6667, 0.75, 0.8333, 0.9167, 1.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [-0.6, -0.4737, -0.1661, 0.2162, 0.5665, 0.7781, 0.557, 0.2035, -0.0858, -0.3107, -0.4714, -0.5679, -0.6]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Rig/WingL:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0, 0.0833, 0.1667, 0.25, 0.3333, 0.4167, 0.5, 0.5833, 0.6667, 0.75, 0.8333, 0.9167, 1.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0), Vector2(0.879, 1.0), Vector2(0.798, 1.0), Vector2(0.783, 1.0), Vector2(0.84, 1.0), Vector2(0.949, 1.0), Vector2(0.972, 1.0), Vector2(0.931, 1.0), Vector2(0.905, 1.0), Vector2(0.901, 1.0), Vector2(0.919, 1.0), Vector2(0.954, 1.0), Vector2(1.0, 1.0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visual/Rig/WingR:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0, 0.0833, 0.1667, 0.25, 0.3333, 0.4167, 0.5, 0.5833, 0.6667, 0.75, 0.8333, 0.9167, 1.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0), Vector2(0.879, 1.0), Vector2(0.798, 1.0), Vector2(0.783, 1.0), Vector2(0.84, 1.0), Vector2(0.949, 1.0), Vector2(0.972, 1.0), Vector2(0.931, 1.0), Vector2(0.905, 1.0), Vector2(0.901, 1.0), Vector2(0.919, 1.0), Vector2(0.954, 1.0), Vector2(1.0, 1.0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Visual/Rig/Body:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.0, 0.0833, 0.1667, 0.25, 0.3333, 0.4167, 0.5, 0.5833, 0.6667, 0.75, 0.8333, 0.9167, 1.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0), Vector2(1.027, 0.967), Vector2(1.046, 0.945), Vector2(1.049, 0.941), Vector2(1.036, 0.956), Vector2(1.012, 0.986), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Visual/Rig/Head:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.0, 0.0833, 0.1667, 0.25, 0.3333, 0.4167, 0.5, 0.5833, 0.6667, 0.75, 0.8333, 0.9167, 1.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0), Vector2(0.978, 1.027), Vector2(0.963, 1.046), Vector2(0.961, 1.049), Vector2(0.971, 1.036), Vector2(0.991, 1.012), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0), Vector2(1.0, 1.0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Visual/Rig:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.0, 0.0833, 0.1667, 0.25, 0.3333, 0.4167, 0.5, 0.5833, 0.6667, 0.75, 0.8333, 0.9167, 1.0),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+"update": 0,
+"values": [Vector2(0, -0.0), Vector2(0, -21.98), Vector2(0, -36.729), Vector2(0, -39.392), Vector2(0, -29.095), Vector2(0, -9.225), Vector2(0, -0.0), Vector2(0, -0.0), Vector2(0, -0.0), Vector2(0, -0.0), Vector2(0, -0.0), Vector2(0, -0.0), Vector2(0, -0.0)]
+}
+
+[sub_resource type="Animation" id="Animation_bat_dive"]
+resource_name = "dive"
+length = 0.12
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Visual/Rig/WingL:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.0, 0.06, 0.12),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 0,
+"values": [0.95, 1.05, 0.95]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Visual/Rig/WingR:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.0, 0.06, 0.12),
+"transitions": PackedFloat32Array(1.0, 1.0, 1.0),
+"update": 0,
+"values": [-0.95, -1.05, -0.95]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Visual/Rig/WingL:scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(0.72, 1.0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Visual/Rig/WingR:scale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(0.72, 1.0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Visual/Rig/Body:scale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(0.92, 1.1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Visual/Rig/Head:scale")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(1.0, 1.0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Visual/Rig:position")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0.0),
+"transitions": PackedFloat32Array(1.0),
+"update": 0,
+"values": [Vector2(0, 0)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bat"]
+_data = {
+&"RESET": SubResource("Animation_bat_reset"),
+&"flap": SubResource("Animation_bat_flap"),
+&"dive": SubResource("Animation_bat_dive")
+}
+
+[node name="Bat" type="CharacterBody2D"]
+collision_layer = 2.0
+collision_mask = 0.0
+motion_mode = 1.0
+script = ExtResource("1_bat")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Visual" type="Node2D" parent="."]
+
+[node name="Rig" type="Node2D" parent="Visual"]
+scale = Vector2(0.055, 0.055)
+
+[node name="WingL" type="Sprite2D" parent="Visual/Rig"]
+position = Vector2(-117, -30)
+texture = ExtResource("2_wl")
+centered = false
+offset = Vector2(-595, -286)
+
+[node name="WingR" type="Sprite2D" parent="Visual/Rig"]
+position = Vector2(118, -30)
+texture = ExtResource("3_wr")
+centered = false
+offset = Vector2(-28, -286)
+
+[node name="Body" type="Sprite2D" parent="Visual/Rig"]
+position = Vector2(0, 0)
+texture = ExtResource("4_body")
+centered = false
+offset = Vector2(-187, -170)
+
+[node name="Head" type="Sprite2D" parent="Visual/Rig"]
+position = Vector2(0, -110)
+texture = ExtResource("5_head")
+centered = false
+offset = Vector2(-175, -330)
+
+[node name="EyeGlow" type="Sprite2D" parent="Visual"]
+modulate = Color(1, 0.2, 0.2, 0)
+material = SubResource("CanvasItemMaterial_add")
+position = Vector2(0, -14)
+scale = Vector2(0.35, 0.35)
+texture = SubResource("GradientTexture2D_glow")
+
+[node name="AttackTrail" type="Line2D" parent="."]
+width = 5.0
+default_color = Color(0.85, 0.45, 0.7, 0.45)
+script = ExtResource("7_trail")
+trail_time = 0.14
+
+[node name="Light" type="PointLight2D" parent="."]
+color = Color(0.75, 0.5, 1.0, 1)
+energy = 0.35
+texture = SubResource("GradientTexture2D_glow")
+texture_scale = 1.2
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+autoplay = &"flap"
+libraries = {
+&"": SubResource("AnimationLibrary_bat")
+}
+

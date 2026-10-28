@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://dfk2exm0s0fs"]
+
+[ext_resource type="Script" uid="uid://jnqh5dtg4yxj" path="res://sinan/weapons/rocket_launcher.gd" id="1_rocket"]
+
+[node name="RocketLauncher" type="Node2D" unique_id=640799882]
+script = ExtResource("1_rocket")
+damage = 6.0
+reload_time = 0.55
+recoil_force = 640.0
+preview = 0
+muzzle = Vector2(168, 0)
+impact_radius = 200.0
+paint_arc = 150.0
