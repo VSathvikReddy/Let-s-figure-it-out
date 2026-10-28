@@ -3,8 +3,8 @@ extends "res://sinan/weapons/orb_staff.gd"
 ## restore), but throws a wobbling blob of paint. Inherits every orb setting;
 ## the Paint group adds the paint colours. Drawn in code; replace with art whenever.
 
-const PaintBlob := preload("res://sinan/fx/paint_blob.gd")
-const PaintStroke := preload("res://sinan/fx/paint_stroke.gd")
+const PaintBlob := preload("res://sinan/weapons/projectiles/paint_blob.gd")
+const PaintStroke := preload("res://sinan/fx/marks/paint_stroke.gd")
 
 const BRUSH_TIP := 165.0  # tip of the drawn bristles
 
@@ -61,12 +61,12 @@ func fire(player, aim: Vector2, painting: bool, pick: Dictionary, target: Vector
 		s.rotation = aim.angle()
 		world.add_child(s)
 	if flick_amount > 0:
-		FxLib.spawn(world, FxLib.emitter({
+		FxLib.burst(world, {
 			"amount": flick_amount, "life": 0.6, "life_rand": 0.4, "v_min": 180.0, "v_max": 460.0,
 			"spread": 28.0, "direction": Vector2.RIGHT, "gravity": Vector2(0, 950),
 			"s_min": 0.06, "s_max": 0.16, "spin_min": 0.0, "spin_max": 0.0,
 			"ramp": FxLib.gradient([[0.0, paint_color.lightened(0.1)], [0.75, paint_color], [1.0, Color(paint_shade, 0.0)]]),
-		}), tip, aim.angle())
+		}, tip, aim.angle())
 
 
 func _draw() -> void:

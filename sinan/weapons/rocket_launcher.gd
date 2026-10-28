@@ -2,8 +2,8 @@ extends "res://sinan/weapons/weapon.gd"
 ## Rocket launcher: big recoil, explosive missile. Drawn in code (player-local
 ## units, scaled with the player); replace with art whenever.
 
-const FxLib := preload("res://sinan/fx/fx_lib.gd")
-const Missile := preload("res://sinan/fx/missile.gd")
+const FxLib := preload("res://sinan/fx/core/fx_lib.gd")
+const Missile := preload("res://sinan/weapons/projectiles/missile.gd")
 
 const ART_MUZZLE := 168.0  # where the drawn tube ends
 
@@ -16,6 +16,7 @@ func fire(player, aim: Vector2, painting: bool, pick: Dictionary, target: Vector
 	var world: Node = player.get_parent()
 	var from := muzzle_global()
 	var m := Missile.new()
+	m.damage = damage
 	if painting:
 		m.launch_into_painting(world, from, pick, target, paint_arc, impact_radius, distortion_strength)
 	else:

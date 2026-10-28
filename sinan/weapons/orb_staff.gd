@@ -4,8 +4,8 @@ extends "res://sinan/weapons/weapon.gd"
 ## impact_radius = restore radius, distortion_strength = detail levels restored
 ## at the centre (1 = one level). Drawn in code; replace with art whenever.
 
-const FxLib := preload("res://sinan/fx/fx_lib.gd")
-const Orb := preload("res://sinan/fx/orb.gd")
+const FxLib := preload("res://sinan/fx/core/fx_lib.gd")
+const Orb := preload("res://sinan/weapons/projectiles/orb.gd")
 
 const ART_TIP := 140.0  # where the drawn crystal sits
 
@@ -44,6 +44,7 @@ func _make_projectile() -> Node2D:
 
 ## Copy this weapon's inspector values onto the projectile.
 func _configure(o) -> void:
+	o.damage = damage
 	o.throw_speed = throw_speed
 	o.gravity = orb_gravity
 	o.bounces = bounces
@@ -75,11 +76,11 @@ func fire(player, aim: Vector2, painting: bool, pick: Dictionary, target: Vector
 		o.launch(world, from, aim, player, player.global_position)
 	world.add_child(o)
 	kick()
-	FxLib.spawn(world, FxLib.emitter({
+	FxLib.burst(world, {
 		"amount": 12, "life": 0.35, "v_min": 80.0, "v_max": 220.0, "spread": 40.0,
 		"direction": Vector2.RIGHT, "texture": FxLib.glow(), "s_min": 0.05, "s_max": 0.12,
 		"ramp": FxLib.fade_ramp(glow_color), "additive": true, "curve": null,
-	}), from, aim.angle())
+	}, from, aim.angle())
 	FxLib.flash_light(world, from, glow_color, 1.5, 1.5, 0.2)
 	player.velocity -= aim * recoil_force * (PAINT_RECOIL_MULT if painting else 1.0)
 	player.squash(Vector2(0.9, 1.1))

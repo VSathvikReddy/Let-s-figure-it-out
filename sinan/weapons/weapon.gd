@@ -10,6 +10,10 @@ enum Preview { ARC, STRAIGHT }
 const PAINT_RECOIL_MULT := 0.35
 
 @export_group("Firing")
+## Damage dealt to enemies (rockets: at the blast centre, falling off outward).
+@export var damage := 1.0
+## Hold the fire button to keep shooting (at the reload rate). Off = one shot per click.
+@export var automatic := true
 @export var reload_time := 0.5
 @export var recoil_force := 300.0
 ## Aim preview in the studio: ARC simulates the rocket, STRAIGHT is a laser line.
@@ -20,7 +24,8 @@ const PAINT_RECOIL_MULT := 0.35
 @export_group("Painting")
 ## Radius of the distortion mask stamp when this weapon hits the painting (layer px).
 @export var impact_radius := 70.0
-## How hard a hit distorts: 1 = peels one detail level at the centre, 0.5 = two hits per level.
+## How much a shot into the painting RESTORES it: 1 = brings back one detail
+## level at the centre, 0.5 = two hits per level.
 @export var distortion_strength := 1.0
 ## Arc height of a shot fired into the painting.
 @export var paint_arc := 100.0

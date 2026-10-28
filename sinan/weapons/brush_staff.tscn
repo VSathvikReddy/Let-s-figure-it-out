@@ -4,6 +4,7 @@
 
 [node name="BrushStaff" type="Node2D" unique_id=1179447686]
 script = ExtResource("1_brush")
+damage = 2.5
 splat_decal_life = 0.1
 fuse_time = 0.5
 orb_radius = 13.0

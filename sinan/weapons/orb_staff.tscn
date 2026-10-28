@@ -4,6 +4,9 @@
 
 [node name="OrbStaff" type="Node2D" unique_id=1162666133]
 script = ExtResource("1_orb")
+damage = 2.5
+glow_color = Color(0.55, 0.85, 1, 1)
+trail_color = Color(0.72, 0.93, 1, 1)
 reload_time = 0.8
 recoil_force = 60.0
 muzzle = Vector2(140, 0)

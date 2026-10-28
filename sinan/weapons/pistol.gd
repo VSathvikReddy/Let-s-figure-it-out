@@ -2,8 +2,8 @@ extends "res://sinan/weapons/weapon.gd"
 ## Luger-style pistol (long thin barrel, toggle lock on top, raked grip): fast,
 ## light recoil, small impacts. Drawn in code; replace with art whenever.
 
-const FxLib := preload("res://sinan/fx/fx_lib.gd")
-const Bullet := preload("res://sinan/fx/bullet.gd")
+const FxLib := preload("res://sinan/fx/core/fx_lib.gd")
+const Bullet := preload("res://sinan/weapons/projectiles/bullet.gd")
 
 const ART_MUZZLE := 130.0  # where the drawn barrel ends
 
@@ -23,6 +23,7 @@ func fire(player, aim: Vector2, painting: bool, pick: Dictionary, target: Vector
 	var world: Node = player.get_parent()
 	var from := muzzle_global()
 	var b := Bullet.new()
+	b.damage = damage
 	if painting:
 		b.launch_into_painting(world, from, pick, target, paint_arc, impact_radius, distortion_strength)
 	else:

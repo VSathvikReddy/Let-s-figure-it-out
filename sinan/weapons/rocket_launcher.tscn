@@ -4,6 +4,7 @@
 
 [node name="RocketLauncher" type="Node2D" unique_id=640799882]
 script = ExtResource("1_rocket")
+damage = 6.0
 reload_time = 0.55
 recoil_force = 640.0
 preview = 0

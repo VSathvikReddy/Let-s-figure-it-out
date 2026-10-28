@@ -1,0 +1,50 @@
+[gd_resource type="Resource" script_class="GameData" format=3 uid="uid://dv6ttijwopa7f"]
+
+[ext_resource type="Script" uid="uid://cuaf482jf66l0" path="res://sinan/systems/data/game_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://71laaj7mjm0t" path="res://sinan/systems/data/drop_entry.gd" id="2_entry"]
+[ext_resource type="Texture2D" uid="uid://duwh06ylfwkyt" path="res://sinan/assets/items/coin.png" id="11_icon_coin"]
+
+[sub_resource type="Resource" id="Resource_bat_coins"]
+script = ExtResource("2_entry")
+max_count = 2
+
+[sub_resource type="Resource" id="Resource_bird_coins"]
+script = ExtResource("2_entry")
+min_count = 5
+max_count = 8
+
+[sub_resource type="Resource" id="Resource_ghost_coins"]
+script = ExtResource("2_entry")
+chance = 0.6
+max_count = 2
+
+[sub_resource type="Resource" id="Resource_goblin_coins"]
+script = ExtResource("2_entry")
+min_count = 3
+max_count = 6
+
+[sub_resource type="Resource" id="Resource_portal_coins"]
+script = ExtResource("2_entry")
+min_count = 4
+max_count = 8
+
+[sub_resource type="Resource" id="Resource_priest_coins"]
+script = ExtResource("2_entry")
+min_count = 12
+max_count = 18
+
+[sub_resource type="Resource" id="Resource_witch_coins"]
+script = ExtResource("2_entry")
+min_count = 10
+max_count = 16
+
+[resource]
+script = ExtResource("1_data")
+coin_icon = ExtResource("11_icon_coin")
+goblin_drops = Array[ExtResource("2_entry")]([SubResource("Resource_goblin_coins")])
+witch_drops = Array[ExtResource("2_entry")]([SubResource("Resource_witch_coins")])
+ghost_drops = Array[ExtResource("2_entry")]([SubResource("Resource_ghost_coins")])
+bird_drops = Array[ExtResource("2_entry")]([SubResource("Resource_bird_coins")])
+bat_drops = Array[ExtResource("2_entry")]([SubResource("Resource_bat_coins")])
+priest_drops = Array[ExtResource("2_entry")]([SubResource("Resource_priest_coins")])
+portal_drops = Array[ExtResource("2_entry")]([SubResource("Resource_portal_coins")])

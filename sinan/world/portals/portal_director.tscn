@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://sinan/world/portals/portal_director.gd" id="1_dir"]
+[ext_resource type="PackedScene" path="res://sinan/actors/enemies/goblin/goblin.tscn" id="2_goblin"]
+[ext_resource type="PackedScene" path="res://sinan/actors/enemies/witch/witch.tscn" id="3_witch"]
+[ext_resource type="PackedScene" path="res://sinan/actors/enemies/bird/bird.tscn" id="4_bird"]
+[ext_resource type="PackedScene" path="res://sinan/actors/enemies/bat/bat_flock.tscn" id="5_bats"]
+[ext_resource type="PackedScene" path="res://sinan/actors/enemies/priest/priest.tscn" id="6_priest"]
+
+[node name="PortalDirector" type="Node2D"]
+script = ExtResource("1_dir")
+enemy_scenes = Array[PackedScene]([ExtResource("2_goblin"), ExtResource("2_goblin"), ExtResource("2_goblin"), ExtResource("3_witch"), ExtResource("4_bird"), ExtResource("5_bats"), ExtResource("6_priest")])
