@@ -41,6 +41,13 @@ func _ready() -> void:
 	z_index = 3
 
 
+## No preview line at all (weapons that show their own, like the brush's arc).
+func hide_preview() -> void:
+	_pts.clear()
+	_hit = false
+	queue_redraw()
+
+
 ## Call from a physics step. arc = rocket (simulates the missile integrator);
 ## otherwise a straight pistol line.
 func update_path(from: Vector2, dir: Vector2, shooter: RID, ready_shot: bool, arc := true) -> void:

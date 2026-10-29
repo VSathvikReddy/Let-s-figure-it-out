@@ -81,7 +81,6 @@ func open_portal(at: Variant = null) -> Node2D:
 	p.glow_color = glow_color
 	p.cut_time = opening_time
 	p.spawn_duration = duration
-	p.enemies_to_spawn = game_data.portal_enemy_count(duration)
 	p.game_data = game_data
 	p.on_closed = _on_portal_closed.bind(p)
 	var world := get_parent()
@@ -89,6 +88,15 @@ func open_portal(at: Variant = null) -> Node2D:
 	world.add_child(p)
 	_portals.append(p)
 	return p
+
+
+## Called through the "portal_director" group when a new run starts.
+func clear_portals() -> void:
+	for p in _portals:
+		if is_instance_valid(p):
+			p.queue_free()
+	_portals.clear()
+	_wait = game_data.first_portal_delay
 
 
 func _on_portal_closed(p: Node2D) -> void:

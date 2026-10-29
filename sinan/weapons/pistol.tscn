@@ -4,6 +4,7 @@
 
 [node name="Pistol" type="Node2D" unique_id=1021491007]
 script = ExtResource("1_pistol")
+upgrade_id = &"pistol"
 reload_time = 0.16
 recoil_force = 110.0
 muzzle = Vector2(130, -2)

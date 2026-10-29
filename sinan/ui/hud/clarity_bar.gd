@@ -1,7 +1,8 @@
 extends Control
 ## Painting clarity bar (top centre): how much of the painting is restored,
 ## averaged over every distortion layer. Added by hud.gd; drawn in code.
-## Polls Paint.clarity() a few times a second and eases toward it.
+## Polls Paint.restored() a few times a second and eases toward it (0% = a
+## fresh painting; the same number the run summary and milestones use).
 
 @export var bar_size := Vector2(360, 10)
 @export var top_margin := 18.0
@@ -28,7 +29,7 @@ func _process(delta: float) -> void:
 	_poll -= delta
 	if _poll <= 0.0:
 		_poll = poll_interval
-		var c := Paint.clarity(self)
+		var c := Paint.restored(self)
 		if _shown >= 0.0 and absf(c - _target) > 0.002:
 			_flash = 1.0
 		_target = c
@@ -49,7 +50,7 @@ func _draw() -> void:
 	draw_rect(fill, col.lightened(0.35 * _flash))
 	# a soft highlight along the top of the fill
 	draw_rect(Rect2(fill.position, Vector2(fill.size.x, 2.0)), Color(1, 1, 1, 0.25 + 0.3 * _flash))
-	var text := "PAINTING  %d%%" % roundi(_shown * 100.0)
+	var text := "RESTORED  %.1f%%" % (_shown * 100.0)
 	var fs := 13
 	var tw := _font.get_string_size(text, HORIZONTAL_ALIGNMENT_LEFT, -1, fs).x
 	var tp := Vector2((w - tw) * 0.5, r.end.y + 16.0)

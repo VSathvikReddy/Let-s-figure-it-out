@@ -42,3 +42,17 @@ func _draw() -> void:
 		var c := Paint.clarity(self)
 		draw_string(_font, tl + Vector2(20, 120), "clarity %.1f%%   enemies %d" % [c * 100.0,
 			get_tree().get_nodes_in_group("enemies").size()], HORIZONTAL_ALIGNMENT_LEFT, -1, 16, Color.YELLOW)
+		var rm := RunManager.current
+		if rm:
+			# where the threat comes from, and what it is doing (edit difficulty.tres)
+			var p := rm.parts
+			var lines := [
+				"THREAT %.2f  =  round clock %.2f + kills %.2f      (round %ds, %d kills)" % [
+					rm.threat, p.get("clock", 0.0), p.get("kills", 0.0), int(rm.run_time), rm.kills],
+				"enemies alive %d / wanted %d / cap %d (painting %.1f%% restored)   entropy this round %d" % [
+					GameData.unit_count(get_tree()), rm.max_enemies(), rm.enemy_cap(), rm.restored * 100.0, rm.entropy_run],
+				"portals %d x%d   spawn every %.2fs   forger away %.1fs   enemy hp x%.2f" % [
+					rm.max_portals(), rm.portals_per_visit(), rm.spawn_interval(), rm.forger_away(), rm.enemy_health()],
+			]
+			for i in lines.size():
+				draw_string(_font, tl + Vector2(20, 145 + i * 20), lines[i], HORIZONTAL_ALIGNMENT_LEFT, -1, 15, Color(1.0, 0.75, 0.4))

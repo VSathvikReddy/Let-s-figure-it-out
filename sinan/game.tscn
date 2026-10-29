@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dxjbwctjk7gg8"]
+
+[ext_resource type="Script" uid="uid://btkwksv1vpuj5" path="res://sinan/game.gd" id="1_game"]
+[ext_resource type="Script" uid="uid://dbwth1l1wytij" path="res://sinan/systems/run/run_manager.gd" id="2_run"]
+[ext_resource type="PackedScene" uid="uid://mk8v71xlmtd3" path="res://sinan/ui/hud/hud.tscn" id="3_hud"]
+[ext_resource type="PackedScene" path="res://sinan/ui/menus/pause_menu.tscn" id="4_pause"]
+[ext_resource type="PackedScene" path="res://sinan/ui/menus/skill_tree.tscn" id="5_tree"]
+[ext_resource type="PackedScene" path="res://sinan/ui/menus/run_summary.tscn" id="6_summary"]
+
+[node name="Game" type="Node2D" unique_id=799297303]
+script = ExtResource("1_game")
+
+[node name="RunManager" type="Node" parent="." unique_id=1115898986]
+script = ExtResource("2_run")
+
+[node name="HUD" parent="." unique_id=1187221403 instance=ExtResource("3_hud")]
+
+[node name="PauseMenu" parent="." unique_id=1288930394 instance=ExtResource("4_pause")]
+
+[node name="SkillTree" parent="." unique_id=2100695276 instance=ExtResource("5_tree")]
+
+[node name="RunSummary" parent="." unique_id=1793109098 instance=ExtResource("6_summary")]

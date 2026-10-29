@@ -15,6 +15,7 @@ extends CanvasLayer
 @onready var root_control: Control = $Root
 @onready var resume_button: Button = %ResumeButton
 @onready var quit_button: Button = %QuitButton
+@onready var end_run_button: Button = %EndRunButton
 
 var _mouse_mode_before := Input.MOUSE_MODE_VISIBLE
 
@@ -24,6 +25,7 @@ func _ready() -> void:
 	root_control.visible = false
 	resume_button.pressed.connect(resume)
 	quit_button.pressed.connect(_on_quit)
+	end_run_button.pressed.connect(_on_end_run)
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -41,6 +43,7 @@ func pause() -> void:
 	# the game hides the OS cursor (custom reticle); show it for the menu
 	_mouse_mode_before = Input.mouse_mode
 	Input.mouse_mode = Input.MOUSE_MODE_VISIBLE
+	end_run_button.visible = RunManager.current != null and RunManager.current.is_running()
 	root_control.visible = true
 	root_control.modulate.a = 0.0
 	create_tween().tween_property(root_control, "modulate:a", 1.0, fade_time)
@@ -51,6 +54,13 @@ func resume() -> void:
 	get_tree().paused = false
 	Input.mouse_mode = _mouse_mode_before
 	root_control.visible = false
+
+
+## Give up this run: straight to the run summary and the skill tree.
+func _on_end_run() -> void:
+	resume()
+	if RunManager.current:
+		RunManager.current.end_run(&"abort")
 
 
 func _on_quit() -> void:

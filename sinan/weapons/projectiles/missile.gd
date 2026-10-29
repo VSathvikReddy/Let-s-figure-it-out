@@ -12,6 +12,7 @@ const ACCEL := 1800.0
 const GRAVITY := 380.0
 const MAX_LIFE := 4.0
 const BLAST_RADIUS := 130.0
+var blast_radius := BLAST_RADIUS  # set by the launcher (upgrades)
 const PAINT_SHAKE := 0.6  # screen shake for a painting hit
 
 ## Collision layers the rocket explodes on: 1 = world, 2 = enemies.
@@ -150,7 +151,7 @@ func explode() -> void:
 	if _flight and is_instance_valid(_flight.layer):
 		fx_parent = _flight.layer
 	var fx := Explosion.new()
-	fx.radius = BLAST_RADIUS
+	fx.radius = blast_radius
 	fx.in_painting = _flight != null
 	fx.position = FxLib.to_parent_space(fx_parent, pos)
 	fx_parent.add_child(fx)
@@ -161,10 +162,10 @@ func explode() -> void:
 		get_tree().call_group("ghosts", "on_painting_shot", _flight.layer, _flight.local, _paint_radius)
 		get_tree().call_group("player", "add_trauma", PAINT_SHAKE, global_position)
 	else:
-		get_tree().call_group("player", "on_explosion", pos, BLAST_RADIUS)
-		get_tree().call_group("enemies", "on_explosion_damage", pos, BLAST_RADIUS, damage)
-		get_tree().call_group("platforms", "on_blast", pos, BLAST_RADIUS)
-		get_tree().call_group("smoke_vents", "on_explosion_damage", pos, BLAST_RADIUS, damage)
+		get_tree().call_group("player", "on_explosion", pos, blast_radius)
+		get_tree().call_group("enemies", "on_explosion_damage", pos, blast_radius, damage)
+		get_tree().call_group("platforms", "on_blast", pos, blast_radius)
+		get_tree().call_group("smoke_vents", "on_explosion_damage", pos, blast_radius, damage)
 
 	# brief hit-stop (real-time, so it always restores)
 	FxLib.hit_stop(get_tree(), 0.07, 0.08)

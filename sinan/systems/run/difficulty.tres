@@ -1,0 +1,6 @@
+[gd_resource type="Resource" script_class="Difficulty" format=3 uid="uid://clfmito0qcrfr"]
+
+[ext_resource type="Script" uid="uid://d3hoooawx7ovu" path="res://sinan/systems/run/difficulty.gd" id="1_diff"]
+
+[resource]
+script = ExtResource("1_diff")

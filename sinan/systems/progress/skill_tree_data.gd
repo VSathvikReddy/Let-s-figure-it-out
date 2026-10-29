@@ -3,8 +3,9 @@ extends Resource
 ## Everything the skill tree and loadout show. Live data:
 ## sinan/progress/skill_tree.tres (select it, edit in the Inspector).
 
-## Column order in the skill tree.
-@export var branches: Array[StringName] = [&"Health", &"Weapons", &"Staff", &"Economy", &"Forger"]
+## The tree's branches. Each grows out of the centre in its own direction:
+## the first straight up, the rest evenly spaced clockwise.
+@export var branches: Array[StringName] = [&"Weapons", &"Health", &"Economy", &"Staff", &"Forger"]
 @export var upgrades: Array[UpgradeDef] = []
 
 @export_group("Loadout")

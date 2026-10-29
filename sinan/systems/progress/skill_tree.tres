@@ -1,281 +1,736 @@
-[gd_resource type="Resource" script_class="SkillTreeData" format=3]
+[gd_resource type="Resource" script_class="SkillTreeData" format=3 uid="uid://bem12vigaix5d"]
 
-[ext_resource type="Script" path="res://sinan/systems/progress/skill_tree_data.gd" id="1_tree"]
-[ext_resource type="Script" path="res://sinan/systems/progress/upgrade_def.gd" id="2_up"]
-[ext_resource type="PackedScene" path="res://sinan/weapons/pistol.tscn" id="3_pistol"]
-[ext_resource type="PackedScene" path="res://sinan/weapons/rocket_launcher.tscn" id="4_rocket"]
-[ext_resource type="PackedScene" path="res://sinan/weapons/orb_staff.tscn" id="5_orb"]
-[ext_resource type="PackedScene" path="res://sinan/weapons/brush_staff.tscn" id="6_brush"]
+[ext_resource type="Script" uid="uid://bm5234c1xwpmq" path="res://sinan/systems/progress/skill_tree_data.gd" id="1_tree"]
+[ext_resource type="Script" uid="uid://ddl4nxu322ar5" path="res://sinan/systems/progress/upgrade_def.gd" id="2_up"]
+[ext_resource type="PackedScene" path="res://sinan/weapons/wand.tscn" id="3_wand"]
+[ext_resource type="PackedScene" uid="uid://b02v125faoh8s" path="res://sinan/weapons/pistol.tscn" id="4_pistol"]
+[ext_resource type="PackedScene" uid="uid://hlgmx2oih8bi" path="res://sinan/weapons/orb_staff.tscn" id="5_orb"]
+[ext_resource type="PackedScene" uid="uid://dfk2exm0s0fs" path="res://sinan/weapons/rocket_launcher.tscn" id="6_rocket"]
+[ext_resource type="PackedScene" path="res://sinan/weapons/cleaning_brush.tscn" id="7_brush"]
 
-[sub_resource type="Resource" id="Resource_vitality"]
-script = ExtResource("2_up")
-id = &"vitality"
-branch = &"Health"
-title = "Vitality"
-description = "+1 max health per level."
-max_level = 10
-base_cost = 25
-cost_growth = 1.45
-stat = &"max_health"
-per_level = 1.0
-requires = &""
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_mending"]
-script = ExtResource("2_up")
-id = &"mending"
-branch = &"Health"
-title = "Mending"
-description = "Slowly regenerate health (+0.1 HP/s per level)."
-max_level = 5
-base_cost = 60
-cost_growth = 1.7
-stat = &"health_regen"
-per_level = 0.1
-requires = &"vitality"
-requires_level = 2
-
-[sub_resource type="Resource" id="Resource_thick_skin"]
-script = ExtResource("2_up")
-id = &"thick_skin"
-branch = &"Health"
-title = "Thick Skin"
-description = "Take 8% less damage per level."
-max_level = 5
-base_cost = 90
-cost_growth = 1.8
-stat = &"damage_reduction"
-per_level = 0.08
-requires = &"mending"
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_unlock_rocket"]
-script = ExtResource("2_up")
-id = &"unlock_rocket"
-branch = &"Weapons"
-title = "Rocket Launcher"
-description = "Unlock the rocket launcher (equip it in Loadout)."
-max_level = 1
-base_cost = 150
-cost_growth = 1.0
-stat = &"unlock_rocket"
-per_level = 1.0
-requires = &""
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_firepower"]
+[sub_resource type="Resource" id="U_firepower"]
 script = ExtResource("2_up")
 id = &"firepower"
-branch = &"Weapons"
+branch = &"Weapon"
 title = "Firepower"
-description = "+15% weapon damage per level."
+icon = &"bolt_burst"
+description = "+12% damage for every weapon."
 max_level = 10
+base_cost = 15
+cost_growth = 1.45
+stat = &"weapon_damage"
+per_level = 0.12
+
+[sub_resource type="Resource" id="U_wand_power"]
+script = ExtResource("2_up")
+id = &"wand_power"
+branch = &"Weapon"
+title = "Wand Power"
+icon = &"wand"
+description = "+20% wand damage per level."
+max_level = 8
+cost_growth = 1.5
+stat = &"wand_damage"
+per_level = 0.2
+requires = &"firepower"
+
+[sub_resource type="Resource" id="U_cast_speed"]
+script = ExtResource("2_up")
+id = &"cast_speed"
+branch = &"Weapon"
+title = "Cast Speed"
+icon = &"clock"
+description = "The wand fires 10% faster per level."
+max_level = 8
 base_cost = 30
 cost_growth = 1.5
-stat = &"weapon_damage"
-per_level = 0.15
-requires = &""
-requires_level = 1
+stat = &"wand_rate"
+per_level = 0.1
+requires = &"wand_power"
 
-[sub_resource type="Resource" id="Resource_trigger_finger"]
+[sub_resource type="Resource" id="U_unlock_pistol"]
 script = ExtResource("2_up")
-id = &"trigger_finger"
-branch = &"Weapons"
-title = "Trigger Finger"
-description = "+8% fire rate per level."
-max_level = 8
-base_cost = 40
+id = &"unlock_pistol"
+branch = &"Weapon"
+title = "Pistol"
+icon = &"pistol"
+description = "Unlock the pistol: strong single shots (equip it in the weapon row)."
+max_level = 1
+currency = 1
+cost_growth = 1.0
+stat = &"unlock_pistol"
+requires = &"cast_speed"
+requires_level = 3
+
+[sub_resource type="Resource" id="U_pistol_power"]
+script = ExtResource("2_up")
+id = &"pistol_power"
+branch = &"Weapon"
+title = "Pistol Power"
+description = "+20% pistol damage per level."
+max_level = 6
+base_cost = 60
+cost_growth = 1.5
+stat = &"pistol_damage"
+per_level = 0.2
+requires = &"unlock_pistol"
+
+[sub_resource type="Resource" id="U_unlock_orb"]
+script = ExtResource("2_up")
+id = &"unlock_orb"
+branch = &"Weapon"
+title = "Entropy Orb Staff"
+icon = &"orb"
+description = "Unlock the orb staff: lobbed orbs that burst in an area."
+max_level = 1
+currency = 1
+base_cost = 42
+cost_growth = 1.0
+stat = &"unlock_orb"
+requires = &"pistol_power"
+requires_level = 3
+
+[sub_resource type="Resource" id="U_orb_size"]
+script = ExtResource("2_up")
+id = &"orb_size"
+branch = &"Weapon"
+title = "Orb Size"
+icon = &"circle_grow"
+description = "Orbs burst 15% wider per level."
+max_level = 6
+base_cost = 90
 cost_growth = 1.55
-stat = &"fire_rate"
-per_level = 0.08
-requires = &"firepower"
+stat = &"orb_radius"
+per_level = 0.15
+requires = &"unlock_orb"
+
+[sub_resource type="Resource" id="U_unlock_rocket"]
+script = ExtResource("2_up")
+id = &"unlock_rocket"
+branch = &"Weapon"
+title = "Rocket Launcher"
+icon = &"rocket"
+description = "Unlock the rocket launcher: slow, huge explosions."
+max_level = 1
+currency = 1
+base_cost = 75
+cost_growth = 1.0
+stat = &"unlock_rocket"
+requires = &"orb_size"
+requires_level = 3
+
+[sub_resource type="Resource" id="U_blast_radius"]
+script = ExtResource("2_up")
+id = &"blast_radius"
+branch = &"Weapon"
+title = "Blast Radius"
+icon = &"circle_grow"
+description = "Rockets explode 15% wider per level."
+max_level = 6
+base_cost = 150
+stat = &"rocket_radius"
+per_level = 0.15
+requires = &"unlock_rocket"
+
+[sub_resource type="Resource" id="U_quick_fuse"]
+script = ExtResource("2_up")
+id = &"quick_fuse"
+branch = &"Weapon"
+title = "Quick Fuse"
+icon = &"drop"
+description = "Orbs burst 12% sooner per level."
+base_cost = 90
+stat = &"orb_fuse"
+per_level = 0.12
+requires = &"unlock_orb"
+
+[sub_resource type="Resource" id="U_rapid_fire"]
+script = ExtResource("2_up")
+id = &"rapid_fire"
+branch = &"Weapon"
+title = "Rapid Fire"
+icon = &"gauge"
+description = "The pistol fires 10% faster per level."
+max_level = 6
+base_cost = 70
+cost_growth = 1.55
+stat = &"pistol_rate"
+per_level = 0.1
+requires = &"unlock_pistol"
+
+[sub_resource type="Resource" id="U_chain_lightning"]
+script = ExtResource("2_up")
+id = &"chain_lightning"
+branch = &"Weapon"
+title = "Chain Lightning"
+icon = &"chain"
+description = "Wand bolts jump to +1 more enemy per level."
+max_level = 4
+currency = 1
+base_cost = 15
+cost_growth = 1.8
+stat = &"wand_chain"
+requires = &"wand_power"
 requires_level = 2
 
-[sub_resource type="Resource" id="Resource_sharp_machete"]
+[sub_resource type="Resource" id="U_twin_bolts"]
 script = ExtResource("2_up")
-id = &"sharp_machete"
-branch = &"Weapons"
-title = "Sharp Machete"
-description = "+25% machete damage per level."
+id = &"twin_bolts"
+branch = &"Weapon"
+title = "Twin Bolts"
+icon = &"twin"
+description = "The wand fires +1 extra bolt per level."
+max_level = 2
+currency = 1
+base_cost = 42
+cost_growth = 2.2
+stat = &"wand_bolts"
+requires = &"chain_lightning"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_spark_cleanse"]
+script = ExtResource("2_up")
+id = &"spark_cleanse"
+branch = &"Weapon"
+title = "Spark Cleanse"
+icon = &"circle_grow"
+description = "Wand shots into the painting restore a 25% bigger area per level."
 max_level = 6
-base_cost = 35
+currency = 1
+base_cost = 7
+cost_growth = 1.5
+stat = &"wand_radius"
+per_level = 0.25
+requires = &"wand_power"
+
+[sub_resource type="Resource" id="U_unlock_brush"]
+script = ExtResource("2_up")
+id = &"unlock_brush"
+branch = &"Weapon"
+title = "Cleaning Brush"
+icon = &"brush"
+description = "Unlock the cleaning brush: hold to charge a sweeping arc that restores a big part of the painting. It cannot hurt enemies."
+max_level = 1
+currency = 1
+base_cost = 25
+cost_growth = 1.0
+stat = &"unlock_brush"
+requires = &"spark_cleanse"
+requires_level = 3
+
+[sub_resource type="Resource" id="U_brush_reach"]
+script = ExtResource("2_up")
+id = &"brush_reach"
+branch = &"Weapon"
+title = "Brush Reach"
+icon = &"circle_grow"
+description = "The brush's arc reaches 15% further per level."
+max_level = 6
+currency = 1
+base_cost = 10
+cost_growth = 1.5
+stat = &"brush_reach"
+per_level = 0.15
+requires = &"unlock_brush"
+
+[sub_resource type="Resource" id="U_deep_clean"]
+script = ExtResource("2_up")
+id = &"deep_clean"
+branch = &"Weapon"
+title = "Deep Clean"
+icon = &"drop"
+description = "Each brush stroke restores +0.5 more detail levels."
+max_level = 3
+currency = 1
+base_cost = 25
+cost_growth = 1.8
+stat = &"brush_clean"
+per_level = 0.5
+requires = &"brush_reach"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_brush_charge"]
+script = ExtResource("2_up")
+id = &"brush_charge"
+branch = &"Weapon"
+title = "Quick Strokes"
+icon = &"clock"
+description = "The brush charges 20% faster per level."
+currency = 1
+base_cost = 10
+cost_growth = 1.5
+stat = &"brush_charge"
+per_level = 0.2
+requires = &"unlock_brush"
+
+[sub_resource type="Resource" id="U_crit_chance"]
+script = ExtResource("2_up")
+id = &"crit_chance"
+branch = &"Weapon"
+title = "Critical Hits"
+icon = &"crit"
+description = "+4% chance per level for a hit to deal 1.5x damage."
+max_level = 8
+base_cost = 50
+cost_growth = 1.55
+stat = &"crit_chance"
+per_level = 0.04
+requires = &"firepower"
+requires_level = 3
+
+[sub_resource type="Resource" id="U_crit_damage"]
+script = ExtResource("2_up")
+id = &"crit_damage"
+branch = &"Weapon"
+title = "Brutal Crits"
+icon = &"crit"
+description = "Critical hits deal +25% more damage per level."
+max_level = 6
+currency = 1
+base_cost = 13
+stat = &"crit_damage"
+per_level = 0.25
+requires = &"crit_chance"
+
+[sub_resource type="Resource" id="U_machete"]
+script = ExtResource("2_up")
+id = &"machete"
+branch = &"Weapon"
+title = "Sharp Machete"
+icon = &"blade"
+description = "+25% machete (V) damage per level."
+max_level = 6
+base_cost = 30
 cost_growth = 1.5
 stat = &"machete_damage"
 per_level = 0.25
-requires = &""
-requires_level = 1
+requires = &"firepower"
+requires_level = 2
 
-[sub_resource type="Resource" id="Resource_unlock_brush"]
+[sub_resource type="Resource" id="U_vitality"]
 script = ExtResource("2_up")
-id = &"unlock_brush"
-branch = &"Staff"
-title = "Paint Brush Staff"
-description = "Unlock the paint-brush staff (equip it in Loadout)."
-max_level = 1
-base_cost = 150
-cost_growth = 1.0
-stat = &"unlock_brush"
-per_level = 1.0
-requires = &""
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_wide_strokes"]
-script = ExtResource("2_up")
-id = &"wide_strokes"
-branch = &"Staff"
-title = "Wide Strokes"
-description = "+15% restore radius per level."
-max_level = 8
-base_cost = 35
-cost_growth = 1.5
-stat = &"staff_radius"
-per_level = 0.15
-requires = &""
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_quick_drying"]
-script = ExtResource("2_up")
-id = &"quick_drying"
-branch = &"Staff"
-title = "Quick Drying"
-description = "Staff orbs burst 12% sooner per level."
-max_level = 5
-base_cost = 45
-cost_growth = 1.6
-stat = &"staff_fuse"
-per_level = 0.12
-requires = &"wide_strokes"
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_steady_hand"]
-script = ExtResource("2_up")
-id = &"steady_hand"
-branch = &"Staff"
-title = "Steady Hand"
-description = "+10% staff casting speed per level."
-max_level = 6
-base_cost = 40
-cost_growth = 1.55
-stat = &"staff_rate"
-per_level = 0.1
-requires = &""
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_lucky_coins"]
-script = ExtResource("2_up")
-id = &"lucky_coins"
-branch = &"Economy"
-title = "Lucky Coins"
-description = "+20% coins from every pickup."
+id = &"vitality"
+branch = &"Vitality"
+title = "Vitality"
+icon = &"heart_plus"
+description = "+2 max health per level."
 max_level = 10
-base_cost = 40
-cost_growth = 1.6
-stat = &"coin_value"
-per_level = 0.2
-requires = &""
-requires_level = 1
+base_cost = 10
+cost_growth = 1.45
+stat = &"max_health"
+per_level = 2.0
 
-[sub_resource type="Resource" id="Resource_magnetism"]
+[sub_resource type="Resource" id="U_regeneration"]
+script = ExtResource("2_up")
+id = &"regeneration"
+branch = &"Vitality"
+title = "Regeneration"
+icon = &"heart_up"
+description = "Regenerate +0.2 health per second per level."
+base_cost = 40
+stat = &"health_regen"
+per_level = 0.2
+requires = &"vitality"
+
+[sub_resource type="Resource" id="U_lifesteal"]
+script = ExtResource("2_up")
+id = &"lifesteal"
+branch = &"Vitality"
+title = "Lifesteal"
+icon = &"heart"
+description = "Heal +0.25 health for every enemy you kill."
+max_level = 4
+base_cost = 90
+cost_growth = 1.7
+stat = &"lifesteal"
+per_level = 0.25
+requires = &"regeneration"
+
+[sub_resource type="Resource" id="U_second_wind"]
+script = ExtResource("2_up")
+id = &"second_wind"
+branch = &"Vitality"
+title = "Second Wind"
+icon = &"revive"
+description = "Once per run, get back up with 30% health instead of dying."
+max_level = 1
+currency = 1
+base_cost = 50
+cost_growth = 1.0
+stat = &"second_wind"
+requires = &"regeneration"
+requires_level = 3
+
+[sub_resource type="Resource" id="U_armor"]
+script = ExtResource("2_up")
+id = &"armor"
+branch = &"Vitality"
+title = "Armor"
+icon = &"shield"
+description = "Take 6% less damage per level."
+max_level = 6
+base_cost = 35
+stat = &"damage_reduction"
+per_level = 0.06
+requires = &"vitality"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_thorns"]
+script = ExtResource("2_up")
+id = &"thorns"
+branch = &"Vitality"
+title = "Thorns"
+icon = &"thorns"
+description = "Enemies that hit you take 1 damage per level."
+base_cost = 70
+stat = &"thorns"
+requires = &"armor"
+
+[sub_resource type="Resource" id="U_jetpack"]
+script = ExtResource("2_up")
+id = &"jetpack"
+branch = &"Special"
+title = "Jetpack"
+icon = &"jetpack"
+description = "Hold W / Up to fly; A / D steer. Fuel refills on the ground."
+max_level = 1
+currency = 1
+base_cost = 33
+cost_growth = 1.0
+stat = &"unlock_jetpack"
+requires = &"vitality"
+requires_level = 3
+
+[sub_resource type="Resource" id="U_fuel_tank"]
+script = ExtResource("2_up")
+id = &"fuel_tank"
+branch = &"Special"
+title = "Fuel Tank"
+icon = &"fuel"
+description = "+25% jetpack fuel per level."
+max_level = 6
+currency = 1
+base_cost = 8
+cost_growth = 1.5
+stat = &"jet_fuel"
+per_level = 0.25
+requires = &"jetpack"
+
+[sub_resource type="Resource" id="U_quick_refuel"]
+script = ExtResource("2_up")
+id = &"quick_refuel"
+branch = &"Special"
+title = "Quick Refuel"
+icon = &"gauge"
+description = "Fuel refills 30% faster per level."
+currency = 1
+base_cost = 8
+cost_growth = 1.5
+stat = &"jet_refuel"
+per_level = 0.3
+requires = &"fuel_tank"
+
+[sub_resource type="Resource" id="U_hover"]
+script = ExtResource("2_up")
+id = &"hover"
+branch = &"Special"
+title = "Hover"
+icon = &"fuel"
+description = "Hovering (no direction held) uses 20% less fuel per level."
+max_level = 4
+currency = 1
+base_cost = 15
+stat = &"jet_hover"
+per_level = 0.2
+requires = &"fuel_tank"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_thrust"]
+script = ExtResource("2_up")
+id = &"thrust"
+branch = &"Special"
+title = "Thrust"
+icon = &"flame"
+description = "+12% jetpack up-thrust per level."
+max_level = 6
+currency = 1
+base_cost = 10
+cost_growth = 1.5
+stat = &"jet_thrust"
+per_level = 0.12
+requires = &"jetpack"
+
+[sub_resource type="Resource" id="U_afterburner"]
+script = ExtResource("2_up")
+id = &"afterburner"
+branch = &"Special"
+title = "Afterburner"
+description = "Press Shift while flying for a jet boost (+1 boost per refuel per level)."
+max_level = 3
+currency = 1
+base_cost = 33
+cost_growth = 1.8
+stat = &"jet_boost"
+requires = &"thrust"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_stabilizer"]
+script = ExtResource("2_up")
+id = &"stabilizer"
+branch = &"Special"
+title = "Climb Rate"
+icon = &"gyro"
+description = "+25% top climbing speed per level."
+max_level = 6
+currency = 1
+base_cost = 10
+cost_growth = 1.5
+stat = &"jet_stability"
+per_level = 0.25
+requires = &"jetpack"
+
+[sub_resource type="Resource" id="U_air_control"]
+script = ExtResource("2_up")
+id = &"air_control"
+branch = &"Special"
+title = "Air Control"
+icon = &"wind"
+description = "+20% sideways thrust and speed while flying per level."
+currency = 1
+base_cost = 12
+cost_growth = 1.55
+stat = &"jet_control"
+per_level = 0.2
+requires = &"stabilizer"
+
+[sub_resource type="Resource" id="U_coin_value"]
+script = ExtResource("2_up")
+id = &"coin_value"
+branch = &"Coins"
+title = "Coin Value"
+icon = &"coin"
+description = "+10% coins from every pickup."
+max_level = 10
+base_cost = 12
+cost_growth = 1.5
+stat = &"coin_value"
+per_level = 0.1
+
+[sub_resource type="Resource" id="U_magnetism"]
 script = ExtResource("2_up")
 id = &"magnetism"
-branch = &"Economy"
+branch = &"Coins"
 title = "Magnetism"
+icon = &"magnet"
 description = "+30% coin pickup range per level."
 max_level = 6
 base_cost = 25
 cost_growth = 1.5
 stat = &"coin_magnet"
 per_level = 0.3
-requires = &""
-requires_level = 1
+requires = &"coin_value"
 
-[sub_resource type="Resource" id="Resource_bounty"]
+[sub_resource type="Resource" id="U_bounty"]
 script = ExtResource("2_up")
 id = &"bounty"
-branch = &"Economy"
-title = "Bounty Hunter"
-description = "+2 coins from every enemy you kill."
-max_level = 5
-base_cost = 70
-cost_growth = 1.7
+branch = &"Coins"
+title = "Bounty"
+icon = &"target"
+description = "+1 coin from every enemy you kill."
+base_cost = 50
 stat = &"kill_bonus"
-per_level = 2.0
-requires = &"lucky_coins"
+requires = &"coin_value"
 requires_level = 2
 
-[sub_resource type="Resource" id="Resource_short_rifts"]
+[sub_resource type="Resource" id="U_lucky_drop"]
 script = ExtResource("2_up")
-id = &"short_rifts"
-branch = &"Forger"
-title = "Short Rifts"
-description = "Portals stay open 8% shorter per level."
+id = &"lucky_drop"
+branch = &"Coins"
+title = "Lucky Drop"
+icon = &"coin_stack"
+description = "+5% chance per level that a kill drops double coins."
 max_level = 6
-base_cost = 50
-cost_growth = 1.6
-stat = &"portal_duration"
-per_level = 0.08
-requires = &""
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_thin_veil"]
-script = ExtResource("2_up")
-id = &"thin_veil"
-branch = &"Forger"
-title = "Thin Veil"
-description = "Enemies come out of portals 12% slower."
-max_level = 6
-base_cost = 60
-cost_growth = 1.6
-stat = &"portal_spawn_slow"
-per_level = 0.12
-requires = &""
-requires_level = 1
-
-[sub_resource type="Resource" id="Resource_sealed_sky"]
-script = ExtResource("2_up")
-id = &"sealed_sky"
-branch = &"Forger"
-title = "Sealed Sky"
-description = "One fewer portal can be open at once."
-max_level = 2
-base_cost = 200
-cost_growth = 2.5
-stat = &"portal_max_reduce"
-per_level = 1.0
-requires = &"short_rifts"
-requires_level = 3
-
-[sub_resource type="Resource" id="Resource_shadow_ward"]
-script = ExtResource("2_up")
-id = &"shadow_ward"
-branch = &"Forger"
-title = "Shadow Ward"
-description = "The Forger shows up 20% less often."
-max_level = 5
 base_cost = 80
-cost_growth = 1.7
-stat = &"forger_rarity"
-per_level = 0.2
-requires = &""
-requires_level = 1
+stat = &"lucky_drop"
+per_level = 0.05
+requires = &"bounty"
 
-[sub_resource type="Resource" id="Resource_rift_bounty"]
+[sub_resource type="Resource" id="U_restorer_pay"]
+script = ExtResource("2_up")
+id = &"restorer_pay"
+branch = &"Coins"
+title = "Restorer's Pay"
+icon = &"palette"
+description = "At the end of a run, +2 coins for every 1% of the painting you restored in it."
+currency = 1
+base_cost = 12
+stat = &"restore_pay"
+per_level = 2.0
+requires = &"coin_value"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_rift_bounty"]
 script = ExtResource("2_up")
 id = &"rift_bounty"
-branch = &"Forger"
+branch = &"Coins"
 title = "Rift Bounty"
+icon = &"coin_portal"
 description = "Each closing portal drops +5 coins."
-max_level = 5
 base_cost = 60
-cost_growth = 1.6
 stat = &"portal_bounty"
 per_level = 5.0
-requires = &"thin_veil"
-requires_level = 1
+requires = &"restorer_pay"
+
+[sub_resource type="Resource" id="U_open_rift"]
+script = ExtResource("2_up")
+id = &"open_rift"
+branch = &"Enemies"
+title = "Open the Rift"
+icon = &"portal"
+description = "Every enemy drops 15% more coins. More enemies make more money."
+stat = &"rift_drops"
+per_level = 0.15
+
+[sub_resource type="Resource" id="U_unlock_witch"]
+script = ExtResource("2_up")
+id = &"unlock_witch"
+branch = &"Enemies"
+title = "Witches"
+icon = &"witch"
+description = "Witches (and their ghosts) start coming out of portals. Witches drop lots of coins."
+max_level = 1
+currency = 1
+base_cost = 10
+cost_growth = 1.0
+stat = &"unlock_witch"
+requires = &"open_rift"
+
+[sub_resource type="Resource" id="U_witch_bounty"]
+script = ExtResource("2_up")
+id = &"witch_bounty"
+branch = &"Enemies"
+title = "Witch Bounty"
+icon = &"coin"
+description = "+25% coins from witches per level."
+base_cost = 50
+cost_growth = 1.5
+stat = &"witch_bounty"
+per_level = 0.25
+requires = &"unlock_witch"
+
+[sub_resource type="Resource" id="U_unlock_bird"]
+script = ExtResource("2_up")
+id = &"unlock_bird"
+branch = &"Enemies"
+title = "Birds"
+icon = &"bird"
+description = "Birds start coming out of portals. Fast and hard to hit, good drops."
+max_level = 1
+currency = 1
+cost_growth = 1.0
+stat = &"unlock_bird"
+requires = &"witch_bounty"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_bird_bounty"]
+script = ExtResource("2_up")
+id = &"bird_bounty"
+branch = &"Enemies"
+title = "Bird Bounty"
+icon = &"coin"
+description = "+25% coins from birds per level."
+base_cost = 70
+cost_growth = 1.5
+stat = &"bird_bounty"
+per_level = 0.25
+requires = &"unlock_bird"
+
+[sub_resource type="Resource" id="U_unlock_bats"]
+script = ExtResource("2_up")
+id = &"unlock_bats"
+branch = &"Enemies"
+title = "Bat Flocks"
+icon = &"bat"
+description = "Bat flocks start coming out of portals. Many small coins."
+max_level = 1
+currency = 1
+base_cost = 30
+cost_growth = 1.0
+stat = &"unlock_bats"
+requires = &"bird_bounty"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_bat_bounty"]
+script = ExtResource("2_up")
+id = &"bat_bounty"
+branch = &"Enemies"
+title = "Bat Bounty"
+icon = &"coin"
+description = "+25% coins from bats per level."
+base_cost = 70
+cost_growth = 1.5
+stat = &"bat_bounty"
+per_level = 0.25
+requires = &"unlock_bats"
+
+[sub_resource type="Resource" id="U_unlock_priest"]
+script = ExtResource("2_up")
+id = &"unlock_priest"
+branch = &"Enemies"
+title = "Priests"
+icon = &"flame"
+description = "Fire-breathing priests start coming out of portals. The richest enemy."
+max_level = 1
+currency = 1
+base_cost = 67
+cost_growth = 1.0
+stat = &"unlock_priest"
+requires = &"bat_bounty"
+requires_level = 2
+
+[sub_resource type="Resource" id="U_priest_bounty"]
+script = ExtResource("2_up")
+id = &"priest_bounty"
+branch = &"Enemies"
+title = "Priest Bounty"
+icon = &"coin"
+description = "+25% coins from priests per level."
+base_cost = 120
+cost_growth = 1.5
+stat = &"priest_bounty"
+per_level = 0.25
+requires = &"unlock_priest"
+
+[sub_resource type="Resource" id="U_restless_forger"]
+script = ExtResource("2_up")
+id = &"restless_forger"
+branch = &"Enemies"
+title = "Restless Forger"
+icon = &"moon"
+description = "The Forger opens portals 10% more often per level."
+base_cost = 40
+cost_growth = 1.55
+stat = &"rift_pace"
+per_level = 0.1
+requires = &"open_rift"
+
+[sub_resource type="Resource" id="U_horde"]
+script = ExtResource("2_up")
+id = &"horde"
+branch = &"Enemies"
+title = "Horde"
+icon = &"skull"
+description = "+2 enemies may be alive at once per level."
+currency = 1
+base_cost = 10
+stat = &"horde"
+per_level = 2.0
+requires = &"open_rift"
+requires_level = 2
 
 [resource]
 script = ExtResource("1_tree")
-upgrades = Array[ExtResource("2_up")]([SubResource("Resource_vitality"), SubResource("Resource_mending"), SubResource("Resource_thick_skin"), SubResource("Resource_unlock_rocket"), SubResource("Resource_firepower"), SubResource("Resource_trigger_finger"), SubResource("Resource_sharp_machete"), SubResource("Resource_unlock_brush"), SubResource("Resource_wide_strokes"), SubResource("Resource_quick_drying"), SubResource("Resource_steady_hand"), SubResource("Resource_lucky_coins"), SubResource("Resource_magnetism"), SubResource("Resource_bounty"), SubResource("Resource_short_rifts"), SubResource("Resource_thin_veil"), SubResource("Resource_sealed_sky"), SubResource("Resource_shadow_ward"), SubResource("Resource_rift_bounty")])
-weapon_scenes = Array[PackedScene]([ExtResource("3_pistol"), ExtResource("4_rocket"), ExtResource("5_orb"), ExtResource("6_brush")])
-weapon_names = PackedStringArray("Pistol", "Rocket Launcher", "Entropy Orb Staff", "Paint Brush Staff")
-weapon_unlock_stats = Array[StringName]([&"", &"unlock_rocket", &"", &"unlock_brush"])
+branches = Array[StringName]([&"Weapon", &"Coins", &"Enemies", &"Vitality"])
+upgrades = Array[ExtResource("2_up")]([SubResource("U_firepower"), SubResource("U_wand_power"), SubResource("U_cast_speed"), SubResource("U_unlock_pistol"), SubResource("U_pistol_power"), SubResource("U_unlock_orb"), SubResource("U_orb_size"), SubResource("U_unlock_rocket"), SubResource("U_blast_radius"), SubResource("U_quick_fuse"), SubResource("U_rapid_fire"), SubResource("U_chain_lightning"), SubResource("U_twin_bolts"), SubResource("U_spark_cleanse"), SubResource("U_unlock_brush"), SubResource("U_brush_reach"), SubResource("U_deep_clean"), SubResource("U_brush_charge"), SubResource("U_crit_chance"), SubResource("U_crit_damage"), SubResource("U_machete"), SubResource("U_vitality"), SubResource("U_regeneration"), SubResource("U_lifesteal"), SubResource("U_second_wind"), SubResource("U_armor"), SubResource("U_thorns"), SubResource("U_jetpack"), SubResource("U_fuel_tank"), SubResource("U_quick_refuel"), SubResource("U_hover"), SubResource("U_thrust"), SubResource("U_afterburner"), SubResource("U_stabilizer"), SubResource("U_air_control"), SubResource("U_coin_value"), SubResource("U_magnetism"), SubResource("U_bounty"), SubResource("U_lucky_drop"), SubResource("U_restorer_pay"), SubResource("U_rift_bounty"), SubResource("U_open_rift"), SubResource("U_unlock_witch"), SubResource("U_witch_bounty"), SubResource("U_unlock_bird"), SubResource("U_bird_bounty"), SubResource("U_unlock_bats"), SubResource("U_bat_bounty"), SubResource("U_unlock_priest"), SubResource("U_priest_bounty"), SubResource("U_restless_forger"), SubResource("U_horde")])
+weapon_scenes = Array[PackedScene]([ExtResource("3_wand"), ExtResource("4_pistol"), ExtResource("5_orb"), ExtResource("6_rocket"), ExtResource("7_brush")])
+weapon_unlock_stats = Array[StringName]([&"", &"unlock_pistol", &"unlock_orb", &"unlock_rocket", &"unlock_brush"])

@@ -1,80 +1,14 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://sinan/ui/menus/skill_tree.gd" id="1_tree"]
-[ext_resource type="Texture2D" path="res://sinan/assets/items/coin.png" id="2_coin"]
+[ext_resource type="Script" path="res://sinan/ui/menus/skill_graph.gd" id="2_graph"]
+[ext_resource type="Texture2D" path="res://sinan/assets/items/coin.png" id="3_coin"]
+[ext_resource type="Shader" path="res://sinan/shaders/crt_overlay.gdshader" id="4_crt"]
+[ext_resource type="Theme" path="res://sinan/ui/menus/terminal_theme.tres" id="5_theme"]
+[ext_resource type="Script" path="res://sinan/ui/hud/entropy_icon.gd" id="6_entropy"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
-content_margin_left = 20.0
-content_margin_top = 16.0
-content_margin_right = 20.0
-content_margin_bottom = 16.0
-bg_color = Color(0.07, 0.05, 0.1, 0.96)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.85, 0.68, 0.3, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0, 0, 0, 0.5)
-shadow_size = 8
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
-content_margin_left = 10.0
-content_margin_top = 4.0
-content_margin_right = 10.0
-content_margin_bottom = 4.0
-bg_color = Color(0.22, 0.17, 0.28, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.6, 0.5, 0.32, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
-content_margin_left = 10.0
-content_margin_top = 4.0
-content_margin_right = 10.0
-content_margin_bottom = 4.0
-bg_color = Color(0.34, 0.25, 0.4, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(1, 0.82, 0.4, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_disabled"]
-content_margin_left = 10.0
-content_margin_top = 4.0
-content_margin_right = 10.0
-content_margin_bottom = 4.0
-bg_color = Color(0.12, 0.1, 0.14, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-
-[sub_resource type="Theme" id="Theme_skills"]
-Button/colors/font_color = Color(1, 0.92, 0.75, 1)
-Button/colors/font_disabled_color = Color(0.6, 0.55, 0.5, 1)
-Button/font_sizes/font_size = 13
-Button/styles/normal = SubResource("StyleBoxFlat_button")
-Button/styles/hover = SubResource("StyleBoxFlat_button_hover")
-Button/styles/pressed = SubResource("StyleBoxFlat_button_hover")
-Button/styles/focus = SubResource("StyleBoxFlat_button_hover")
-Button/styles/disabled = SubResource("StyleBoxFlat_button_disabled")
-Label/colors/font_color = Color(0.92, 0.88, 0.82, 1)
-OptionButton/font_sizes/font_size = 13
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_crt"]
+shader = ExtResource("4_crt")
 
 [node name="SkillTree" type="CanvasLayer"]
 process_mode = 3
@@ -82,112 +16,153 @@ layer = 55
 script = ExtResource("1_tree")
 
 [node name="Root" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = SubResource("Theme_skills")
+theme = ExtResource("5_theme")
 
-[node name="Dim" type="ColorRect" parent="Root"]
+[node name="Background" type="ColorRect" parent="Root"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0, 0, 0, 0.6)
+mouse_filter = 2
+color = Color(0.075, 0.078, 0.082, 1)
 
-[node name="Margin" type="MarginContainer" parent="Root"]
+[node name="Graph" type="Control" parent="Root"]
+unique_name_in_owner = true
+clip_contents = true
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 24
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 24
+focus_mode = 2
+script = ExtResource("2_graph")
 
-[node name="Panel" type="PanelContainer" parent="Root/Margin"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
+[node name="Title" type="Label" parent="Root"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 10.0
+offset_bottom = 36.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_font_sizes/font_size = 20
+text = "SKILL TREE"
+horizontal_alignment = 1
 
-[node name="Column" type="VBoxContainer" parent="Root/Margin/Panel"]
-layout_mode = 2
-theme_override_constants/separation = 10
+[node name="CoinRow" type="HBoxContainer" parent="Root"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -80.0
+offset_top = 36.0
+offset_right = 80.0
+offset_bottom = 56.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_constants/separation = 6
+alignment = 1
 
-[node name="Header" type="HBoxContainer" parent="Root/Margin/Panel/Column"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Title" type="Label" parent="Root/Margin/Panel/Column/Header"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 26
-text = "SKILLS"
-
-[node name="Spacer" type="Control" parent="Root/Margin/Panel/Column/Header"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="CoinIcon" type="TextureRect" parent="Root/Margin/Panel/Column/Header"]
-custom_minimum_size = Vector2(26, 26)
+[node name="CoinIcon" type="TextureRect" parent="Root/CoinRow"]
+custom_minimum_size = Vector2(16, 16)
 layout_mode = 2
 size_flags_vertical = 4
-texture = ExtResource("2_coin")
+mouse_filter = 2
+texture = ExtResource("3_coin")
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Coins" type="Label" parent="Root/Margin/Panel/Column/Header"]
+[node name="Coins" type="Label" parent="Root/CoinRow"]
 unique_name_in_owner = true
 layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.88, 0.45, 1)
-theme_override_font_sizes/font_size = 20
 text = "0"
 
-[node name="Close" type="Button" parent="Root/Margin/Panel/Column/Header"]
+[node name="Gap" type="Control" parent="Root/CoinRow"]
+custom_minimum_size = Vector2(14, 0)
+layout_mode = 2
+mouse_filter = 2
+
+[node name="EntropyIcon" type="Control" parent="Root/CoinRow"]
+custom_minimum_size = Vector2(16, 16)
+layout_mode = 2
+size_flags_vertical = 4
+mouse_filter = 2
+script = ExtResource("6_entropy")
+
+[node name="Entropy" type="Label" parent="Root/CoinRow"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Close (Tab)"
+theme_override_colors/font_color = Color(0.72, 0.5, 1, 1)
+text = "0"
 
-[node name="Separator" type="HSeparator" parent="Root/Margin/Panel/Column"]
-layout_mode = 2
+[node name="Hint" type="Label" parent="Root"]
+modulate = Color(1, 1, 1, 0.6)
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = -30.0
+offset_right = 700.0
+offset_bottom = -10.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_font_sizes/font_size = 11
+text = "WASD move   Drag view   Wheel zoom   E / Click unlock   Enter start run"
+vertical_alignment = 1
 
-[node name="Scroll" type="ScrollContainer" parent="Root/Margin/Panel/Column"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Branches" type="HBoxContainer" parent="Root/Margin/Panel/Column/Scroll"]
+[node name="Loadout" type="HBoxContainer" parent="Root"]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-theme_override_constants/separation = 12
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -640.0
+offset_top = -40.0
+offset_right = -14.0
+offset_bottom = -10.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_constants/separation = 6
+alignment = 2
 
-[node name="Separator2" type="HSeparator" parent="Root/Margin/Panel/Column"]
+[node name="LoadoutTitle" type="Label" parent="Root/Loadout"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 11
+text = "WEAPON"
 
-[node name="Loadout" type="HBoxContainer" parent="Root/Margin/Panel/Column"]
-layout_mode = 2
-theme_override_constants/separation = 10
-
-[node name="LoadoutTitle" type="Label" parent="Root/Margin/Panel/Column/Loadout"]
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.82, 0.45, 1)
-theme_override_font_sizes/font_size = 16
-text = "LOADOUT"
-
-[node name="WeaponLabel" type="Label" parent="Root/Margin/Panel/Column/Loadout"]
-layout_mode = 2
-text = "Weapon (left click: world, right click: painting):"
-
-[node name="WeaponPick" type="OptionButton" parent="Root/Margin/Panel/Column/Loadout"]
+[node name="StartRun" type="Button" parent="Root"]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(180, 0)
-layout_mode = 2
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -200.0
+offset_top = 12.0
+offset_right = -14.0
+offset_bottom = 44.0
+grow_horizontal = 0
+focus_mode = 0
+theme_override_font_sizes/font_size = 15
+text = "START RUN  [Enter]"
 
+[node name="Scanlines" type="ColorRect" parent="Root"]
+material = SubResource("ShaderMaterial_crt")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

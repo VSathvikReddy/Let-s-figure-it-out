@@ -407,6 +407,19 @@ func _hide() -> void:
 	_wait = game_data.forger_away_time()
 
 
+## Called through the "forger" group when a new run starts: gone, and back
+## after the first-visit delay.
+func reset_visit() -> void:
+	for t in _targets:
+		if is_instance_valid(t.get("marker")):
+			t["marker"].queue_free()
+	_targets.clear()
+	_smoke.emitting = false
+	visible = false
+	_set_state(State.HIDDEN)
+	_wait = game_data.forger_first_visit
+
+
 # ---------------------------------------------------------------- acts
 
 func _director() -> Node:
@@ -446,7 +459,6 @@ func _open_portal_at(at: Vector2) -> bool:
 	p.height = portal_height
 	p.max_width = portal_width
 	p.spawn_duration = game_data.portal_duration()
-	p.enemies_to_spawn = game_data.portal_enemy_count(p.spawn_duration)
 	p.game_data = game_data
 	p.glow_color = magic_color
 	var world := get_parent()

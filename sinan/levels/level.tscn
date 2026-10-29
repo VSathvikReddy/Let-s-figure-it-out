@@ -11,15 +11,11 @@
 [ext_resource type="Texture2D" uid="uid://dmit3iea6bvks" path="res://sinan/assets/painting/painting_frame.png" id="6_65feh"]
 [ext_resource type="Script" uid="uid://va53n8gk28wd" path="res://sinan/painting/distortion_layer.gd" id="7_dist"]
 [ext_resource type="PackedScene" uid="uid://jns875627arj" path="res://sinan/actors/enemies/forger/forger.tscn" id="18_ix7d5"]
-[ext_resource type="PackedScene" uid="uid://bcul8dfbqbo4u" path="res://sinan/actors/enemies/witch/witch.tscn" id="18_khpxf"]
 [ext_resource type="Texture2D" uid="uid://cihh77qv8e5s6" path="res://sinan/assets/painting/hill/hill_level20-Photoroom.png" id="hill_20"]
 [ext_resource type="Texture2D" uid="uid://c5t46spl0lkuj" path="res://sinan/assets/painting/hill/hill_level50-Photoroom.png" id="hill_40"]
 [ext_resource type="Texture2D" uid="uid://coadcjphl2x3b" path="res://sinan/assets/painting/hill/hill_level500-Photoroom.png" id="hill_60"]
 [ext_resource type="Texture2D" uid="uid://bf5ary2y7wl76" path="res://sinan/assets/painting/hill/hill_level5000-Photoroom.png" id="hill_80"]
-[ext_resource type="PackedScene" uid="uid://mk8v71xlmtd3" path="res://sinan/ui/hud/hud.tscn" id="hud_scene"]
-[ext_resource type="PackedScene" path="res://sinan/ui/menus/pause_menu.tscn" id="pause_menu_scene"]
 [ext_resource type="PackedScene" path="res://sinan/world/portals/portal_director.tscn" id="portal_director_scene"]
-[ext_resource type="PackedScene" path="res://sinan/ui/menus/skill_tree.tscn" id="skill_tree_scene"]
 [ext_resource type="Texture2D" uid="uid://dbs1xx4x4pfvo" path="res://sinan/assets/painting/village/village_level20-Photoroom.png" id="village_20"]
 [ext_resource type="Texture2D" uid="uid://bw70crr8duxn2" path="res://sinan/assets/painting/village/village_level50-Photoroom.png" id="village_40"]
 [ext_resource type="Texture2D" uid="uid://dtvfiy63xd652" path="res://sinan/assets/painting/village/village_level500-Photoroom.png" id="village_60"]
@@ -271,13 +267,4 @@ rotation = 3.1415925
 position = Vector2(215.00005, -561)
 shape = SubResource("RectangleShape2D_mupt7")
 
-[node name="HUD" parent="." unique_id=607827944 instance=ExtResource("hud_scene")]
-
-[node name="PauseMenu" parent="." unique_id=1324804133 instance=ExtResource("pause_menu_scene")]
-
 [node name="PortalDirector" parent="." unique_id=259653756 instance=ExtResource("portal_director_scene")]
-
-[node name="SkillTree" parent="." unique_id=1430417312 instance=ExtResource("skill_tree_scene")]
-
-[node name="Witch" parent="." unique_id=1514392289 instance=ExtResource("18_khpxf")]
-position = Vector2(-580, 387)

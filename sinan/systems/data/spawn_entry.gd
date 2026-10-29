@@ -9,3 +9,5 @@ extends Resource
 @export var weight := 1.0
 ## At most this many of this enemy alive at once (0 = no own limit).
 @export var max_alive := 0
+## Skill-tree stat that unlocks this enemy (empty = from the start).
+@export var unlock_stat := &""

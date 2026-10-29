@@ -8,6 +8,7 @@ extends CanvasLayer
 ## Optional: %Value (Label, "3 / 5") and %Heart (any Control that pulses). If
 ## there is no %Heart, the health bar itself pulses at low health.
 ## Coins: %Coins (Label) and %CoinPanel (bumps when coins come in).
+## Entropy: %Entropy (Label, optional).
 
 ## Below this fraction of max health the heartbeat pulse starts.
 @export_range(0.0, 1.0) var low_health_ratio := 0.4
@@ -33,6 +34,7 @@ const DebugOverlay := preload("res://sinan/ui/debug/debug_overlay.gd")
 @onready var heart: Control = get_node_or_null("%Heart")
 @onready var coins_label: Label = get_node_or_null("%Coins")
 @onready var coin_panel: Control = get_node_or_null("%CoinPanel")
+@onready var entropy_label: Label = get_node_or_null("%Entropy")
 
 var _player: Node
 var _trail_tween: Tween
@@ -48,6 +50,11 @@ func _ready() -> void:
 	_update_coins(false)
 	_connect_player.call_deferred()
 	add_child(ClarityBar.new())
+	# FPS meter on its own top layer, so it shows over the skill tree and menus
+	var top := CanvasLayer.new()
+	top.layer = 100
+	top.add_child(preload("res://sinan/ui/hud/fps_meter.gd").new())
+	add_child(top)
 	_add_debug_overlay.call_deferred()
 
 
@@ -165,6 +172,8 @@ func on_progress_changed() -> void:
 func _update_coins(animate: bool) -> void:
 	if coins_label == null:
 		return
+	if entropy_label:
+		entropy_label.text = str(Progress.entropy())
 	var c := Progress.coins()
 	var gained := c > _shown_coins
 	_shown_coins = c

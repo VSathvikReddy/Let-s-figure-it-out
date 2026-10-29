@@ -27,7 +27,9 @@ varying vec4 v_color;
 void vertex() {
 	float id = float(INSTANCE_ID);
 	VERTEX.y += sin(TIME * bob_speed + id * 1.7) * bob_amount * INSTANCE_CUSTOM.x;
-	float a = TIME * spin_speed * 6.2831 + id * 2.3;
+	// flying: full 3D flip; lying on the floor (custom.x = 1): faces you with
+	// just a gentle sway, so every resting coin is clearly visible
+	float a = INSTANCE_CUSTOM.x > 0.5 ? sin(TIME * 1.6 + id * 1.3) * 0.35 : TIME * spin_speed * 6.2831 + id * 2.3;
 	v_c = cos(a);
 	v_s = sin(a);
 	v_k = max(abs(v_c) + thickness * abs(v_s) * 0.5, 0.06);

@@ -15,8 +15,8 @@ var cut_time := 0.7   # the line appears (grows from its centre, flickers) befor
 var open_time := 0.45
 var spawn_duration := 3.0
 var close_time := 0.3
-var enemies_to_spawn := 4
-## Picks the enemies and holds the "how many alive" limit.
+## Picks the enemies, holds the "how many alive" limit and gives the time
+## between enemies (it shrinks as the run's threat rises).
 var game_data: GameData
 var edge_color := Color(1.0, 0.95, 1.0)
 var glow_color := Color(0.7, 0.35, 1.0)
@@ -27,7 +27,7 @@ var on_closed: Callable
 var _phase := Phase.CUT
 var _t := 0.0
 var _age := 0.0
-var _spawned := 0
+var _spawn_wait := 0.0
 var _jag := PackedFloat32Array()   # random edge jitter
 var _light: PointLight2D
 
@@ -61,11 +61,10 @@ func _process(delta: float) -> void:
 			if _t >= open_time:
 				_next(Phase.SPAWN)
 		Phase.SPAWN:
-			var interval := spawn_duration / maxf(enemies_to_spawn, 1)
-			# one per frame at most; while the level is full it waits (and tries
-			# again) instead of using up the spawn
-			if _spawned < enemies_to_spawn and _t >= _spawned * interval:
-				_spawn_enemy()
+			# one at a time; while the level is full it waits (and tries again)
+			_spawn_wait -= delta
+			if _spawn_wait <= 0.0 and _spawn_enemy():
+				_spawn_wait = game_data.spawn_interval() if game_data else 3.0
 			if _t >= spawn_duration:
 				_next(Phase.CLOSE)
 		Phase.CLOSE:
@@ -96,15 +95,20 @@ func _openness() -> float:
 	return 0.0
 
 
-func _spawn_enemy() -> void:
+## Push out one enemy. False if the level is full (or nothing can spawn).
+func _spawn_enemy() -> bool:
 	if game_data == null or not game_data.can_spawn(get_tree()):
-		return
+		return false
 	var scene := game_data.pick_enemy(get_tree())
 	if scene == null:
-		return
-	_spawned += 1
+		return false
 	var e := scene.instantiate() as Node2D
 	e.position = position + Vector2(randf_range(-max_width, max_width) * 0.3, height * 0.15)
+	# tougher as the run's threat rises
+	var hp_mult := game_data.enemy_health()
+	if hp_mult != 1.0 and "max_health" in e:
+		e.set("max_health", e.get("max_health") * hp_mult)
+		e.set("health", e.get("max_health"))
 	get_parent().add_child(e)
 	if e is CharacterBody2D:
 		(e as CharacterBody2D).velocity = Vector2(randf_range(-260.0, 260.0), randf_range(-420.0, -240.0))
@@ -115,6 +119,7 @@ func _spawn_enemy() -> void:
 		"ramp": FxLib.gradient([[0.0, Color(0.1, 0.0, 0.2, 1.0)], [1.0, Color(0.1, 0.0, 0.2, 0.0)]]),
 	}, e.global_position)
 	FxLib.flash_light(get_parent(), e.global_position, glow_color, 1.5, 1.2, 0.2)
+	return true
 
 
 func _snap_shut() -> void:

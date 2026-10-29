@@ -1,0 +1,70 @@
+[gd_resource type="Theme" format=3 uid="uid://bovhghv6bmdyq"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_off"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.07, 0.07, 0.075, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.32, 0.28, 0.21, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_hover"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.16, 0.13, 0.07, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.97, 0.79, 0.33, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button_on"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.97, 0.79, 0.33, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.97, 0.79, 0.33, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_button"]
+content_margin_left = 10.0
+content_margin_top = 4.0
+content_margin_right = 10.0
+content_margin_bottom = 4.0
+bg_color = Color(0.085, 0.085, 0.09, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.62, 0.48, 0.21, 1)
+
+[sub_resource type="SystemFont" id="SystemFont_mono"]
+font_names = PackedStringArray("Consolas", "Lucida Console", "Courier New", "Monospace")
+
+[resource]
+default_font = SubResource("SystemFont_mono")
+Button/colors/font_color = Color(0.97, 0.79, 0.33, 1)
+Button/colors/font_disabled_color = Color(0.36, 0.32, 0.25, 1)
+Button/colors/font_hover_color = Color(1, 0.9, 0.6, 1)
+Button/colors/font_hover_pressed_color = Color(0.11, 0.085, 0.04, 1)
+Button/colors/font_pressed_color = Color(0.11, 0.085, 0.04, 1)
+Button/font_sizes/font_size = 13
+Button/styles/disabled = SubResource("StyleBoxFlat_button_off")
+Button/styles/focus = SubResource("StyleBoxFlat_button_hover")
+Button/styles/hover = SubResource("StyleBoxFlat_button_hover")
+Button/styles/hover_pressed = SubResource("StyleBoxFlat_button_on")
+Button/styles/normal = SubResource("StyleBoxFlat_button")
+Button/styles/pressed = SubResource("StyleBoxFlat_button_on")
+Label/colors/font_color = Color(0.97, 0.79, 0.33, 1)
+Label/font_sizes/font_size = 13
+TooltipLabel/colors/font_color = Color(0.97, 0.79, 0.33, 1)

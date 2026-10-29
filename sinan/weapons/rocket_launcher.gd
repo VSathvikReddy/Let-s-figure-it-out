@@ -7,6 +7,9 @@ const Missile := preload("res://sinan/weapons/projectiles/missile.gd")
 
 const ART_MUZZLE := 168.0  # where the drawn tube ends
 
+## Explosion radius (the Blast Radius upgrade scales it).
+@export var blast_radius := 130.0
+
 
 func _init() -> void:
 	recoil_recover = 4.5
@@ -16,7 +19,8 @@ func fire(player, aim: Vector2, painting: bool, pick: Dictionary, target: Vector
 	var world: Node = player.get_parent()
 	var from := muzzle_global()
 	var m := Missile.new()
-	m.damage = damage
+	m.damage = roll_damage()
+	m.blast_radius = blast_radius
 	if painting:
 		m.launch_into_painting(world, from, pick, target, paint_arc, impact_radius, distortion_strength)
 	else:

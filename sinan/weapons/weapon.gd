@@ -9,6 +9,10 @@ enum Preview { ARC, STRAIGHT }
 ## Recoil is multiplied by this when firing into the painting (feet planted).
 const PAINT_RECOIL_MULT := 0.35
 
+## Skill-tree stats that belong to this weapon: <id>_damage, <id>_rate,
+## <id>_radius (and <id>_fuse) - e.g. "pistol" reads pistol_damage.
+@export var upgrade_id := &""
+
 @export_group("Firing")
 ## Damage dealt to enemies (rockets: at the blast centre, falling off outward).
 @export var damage := 1.0
@@ -35,6 +39,13 @@ var reload := 1.0  # animation: 0 = just fired, 1 = ready
 var spin := 0.0    # animation: swap twirl, tweened by the player
 var recoil_recover := 4.5
 var _t := 0.0
+
+
+## Damage for one hit, with the skill tree's chance of a critical hit.
+func roll_damage() -> float:
+	if randf() < Progress.stat(&"crit_chance"):
+		return damage * (1.5 + Progress.stat(&"crit_damage"))
+	return damage
 
 
 func muzzle_global() -> Vector2:

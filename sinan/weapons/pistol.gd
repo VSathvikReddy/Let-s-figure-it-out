@@ -23,7 +23,7 @@ func fire(player, aim: Vector2, painting: bool, pick: Dictionary, target: Vector
 	var world: Node = player.get_parent()
 	var from := muzzle_global()
 	var b := Bullet.new()
-	b.damage = damage
+	b.damage = roll_damage()
 	if painting:
 		b.launch_into_painting(world, from, pick, target, paint_arc, impact_radius, distortion_strength)
 	else:

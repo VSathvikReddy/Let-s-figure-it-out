@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://cbnay4hrd7mv8" path="res://sinan/ui/hud/hud.gd" id="1_hud"]
 [ext_resource type="Texture2D" path="res://sinan/assets/items/coin.png" id="coin_icon"]
+[ext_resource type="Script" path="res://sinan/ui/hud/entropy_icon.gd" id="entropy_icon"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
 content_margin_left = 10.0
@@ -178,8 +179,19 @@ theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 16
 text = "0"
 
-[node name="Hint" type="Label" parent="CoinMargin/CoinPanel/Row"]
+[node name="EntropyIcon" type="Control" parent="CoinMargin/CoinPanel/Row"]
+custom_minimum_size = Vector2(18, 18)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.75, 0.7, 0.6, 1)
-theme_override_font_sizes/font_size = 11
-text = "TAB  skills"
+size_flags_vertical = 4
+mouse_filter = 2
+script = ExtResource("entropy_icon")
+
+[node name="Entropy" type="Label" parent="CoinMargin/CoinPanel/Row"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.6, 1, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 16
+text = "0"

@@ -11,10 +11,11 @@ const PaintPicker := preload("res://sinan/painting/paint_picker.gd")
 const Reticle := preload("res://sinan/ui/aim/reticle.gd")
 const AimGuide := preload("res://sinan/ui/aim/aim_guide.gd")
 const Weapon := preload("res://sinan/weapons/weapon.gd")
+const Jetpack := preload("res://sinan/actors/player/jetpack.gd")
 
 ## The equipped weapon and staff come from Progress (skill tree Loadout); these
 ## are only used if the skill tree data is missing.
-@export var fallback_weapon: PackedScene = preload("res://sinan/weapons/pistol.tscn")
+@export var fallback_weapon: PackedScene = preload("res://sinan/weapons/wand.tscn")
 ## Where the weapon is held, in player-local units.
 @export var weapon_hold := Vector2(0, 10)  # start position only: guns follow the rig's hand
 ## Melee weapon on its own key (V / middle mouse), usable with any gun out.
@@ -184,6 +185,8 @@ var _shake_t := 0.0
 var _sq := Vector2.ONE
 var _sq_vel := Vector2.ZERO
 var _spawn := Vector2.ZERO
+var _second_wind_left := 0     # Second Wind revives left this run
+var _jet: Jetpack                # skill-tree jetpack (does nothing until bought)
 var _painting := false     # right mouse held
 var _pick := {}            # layer under the reticle (paint_picker.pick)
 
@@ -211,6 +214,9 @@ var _melee  # the melee weapon instance (machete.gd)
 func _ready() -> void:
 	add_to_group("player")
 	add_to_group("progress_listeners")
+	add_to_group("kill_listeners")
+	_jet = Jetpack.new()
+	add_child(_jet)
 	_base_max_health = max_health
 	_apply_upgrades()
 	health = max_health
@@ -250,6 +256,7 @@ func _ensure_inputs() -> void:
 	# project settings can change without breaking the player.
 	_add_action("jump", [_key(KEY_SPACE)])
 	_add_action("dash", [_key(KEY_SHIFT)])
+	_add_action("jet", [_key(KEY_W), _key(KEY_UP)])
 	_add_action("move_left", [_key(KEY_A), _key(KEY_LEFT)])
 	_add_action("move_right", [_key(KEY_D), _key(KEY_RIGHT)])
 	_add_action("fire", [_mouse(MOUSE_BUTTON_LEFT), _key(KEY_F)])
@@ -312,7 +319,11 @@ func _physics_process(delta: float) -> void:
 		_respawn_t -= delta
 		velocity = Vector2.ZERO
 		if _respawn_t <= 0.0:
-			_respawn()
+			# in a run, dying ends it (summary + skill tree); otherwise respawn
+			if RunManager.current and RunManager.current.is_running():
+				RunManager.current.end_run(&"death")
+			else:
+				_respawn()
 		return
 	var dir_x := Input.get_axis("move_left", "move_right")
 	var on_floor := is_on_floor()
@@ -338,7 +349,10 @@ func _physics_process(delta: float) -> void:
 		_on_land(_fall_speed)
 	_was_on_floor = on_floor
 
-	if Input.is_action_just_pressed("dash") and _dashes > 0 and _dash_time <= 0.0:
+	var jetting := _jet.update(delta, on_floor, dir_x)
+	if Input.is_action_just_pressed("dash") and jetting and _jet.try_boost(dir_x):
+		pass  # Afterburner instead of a dash while flying
+	elif Input.is_action_just_pressed("dash") and _dashes > 0 and _dash_time <= 0.0:
 		_start_dash(dir_x)
 
 	if _dash_time > 0.0:
@@ -354,6 +368,9 @@ func _physics_process(delta: float) -> void:
 			velocity.x = _dash_dir * HYPER_SPEED
 		elif _dash_time <= 0.0:
 			velocity.x = _dash_dir * DASH_END_SPEED
+	elif jetting:
+		# jetpack: the team's flight physics move the player (W / Up to thrust)
+		velocity = _jet.fly(velocity, dir_x, delta)
 	else:
 		_run(dir_x, on_floor, delta)
 		if _buffer > 0.0 and on_floor and Input.is_action_pressed("move_down") and NavGraph.drop_through(self):
@@ -531,6 +548,8 @@ func _make_weapon(scene: PackedScene) -> Weapon:
 	w.set_meta("base_radius", w.impact_radius)
 	if "fuse_time" in w:
 		w.set_meta("base_fuse", w.get("fuse_time"))
+	if "blast_radius" in w:
+		w.set_meta("base_blast", w.get("blast_radius"))
 	add_child(w)
 	_weapons.append(w)
 	return w
@@ -548,13 +567,17 @@ func _apply_upgrades() -> void:
 
 func _apply_weapon_upgrades() -> void:
 	if _gun:
-		# Weapons branch: damage + fire rate. Staff branch: painting radius,
-		# cast rate and fuse - they apply to whatever is equipped.
-		_gun.damage = float(_gun.get_meta("base_damage")) * (1.0 + Progress.stat(&"weapon_damage"))
-		_gun.reload_time = float(_gun.get_meta("base_reload")) / (1.0 + Progress.stat(&"fire_rate") + Progress.stat(&"staff_rate"))
-		_gun.impact_radius = float(_gun.get_meta("base_radius")) * (1.0 + Progress.stat(&"staff_radius"))
+		# Weapon branch: Firepower raises every weapon; the rest is per weapon,
+		# read by its upgrade_id (wand_damage, pistol_rate, orb_radius, ...).
+		var id := String(_gun.upgrade_id)
+		var st := func(what: String) -> float: return Progress.stat(StringName(id + "_" + what)) if id != "" else 0.0
+		_gun.damage = float(_gun.get_meta("base_damage")) * (1.0 + Progress.stat(&"weapon_damage") + st.call("damage"))
+		_gun.reload_time = float(_gun.get_meta("base_reload")) / (1.0 + st.call("rate"))
+		_gun.impact_radius = float(_gun.get_meta("base_radius")) * (1.0 + st.call("radius"))
+		if _gun.has_meta("base_blast"):
+			_gun.set("blast_radius", float(_gun.get_meta("base_blast")) * (1.0 + st.call("radius")))
 		if _gun.has_meta("base_fuse"):
-			_gun.set("fuse_time", float(_gun.get_meta("base_fuse")) * maxf(0.2, 1.0 - Progress.stat(&"staff_fuse")))
+			_gun.set("fuse_time", float(_gun.get_meta("base_fuse")) * maxf(0.2, 1.0 - st.call("fuse")))
 	if _melee:
 		if not _melee.has_meta("base_damage"):
 			_melee.set_meta("base_damage", _melee.get("damage"))
@@ -657,6 +680,19 @@ func take_damage(amount: float, from_pos: Vector2, knockback := -1.0, ignore_inv
 		knock_back(Vector2(signf(dir.x) if dir.x != 0.0 else -_facing, -0.5).normalized() * push)
 	_sq = Vector2(1.3, 0.75)
 	_hurt_feedback(dir, amount)
+	# Thorns (vitality branch): whoever hit you gets hurt back
+	var thorns := Progress.stat(&"thorns")
+	if thorns > 0.0 and is_instance_valid(source) and source.has_method("take_hit"):
+		source.take_hit(thorns, global_position, {})
+	if health <= 0.0 and _second_wind_left > 0:
+		# Second Wind: once per run, get back up instead of dying
+		_second_wind_left -= 1
+		health = max_health * 0.3
+		_invuln = respawn_invulnerable
+		health_changed.emit(health, max_health)
+		FxLib.flash_light(get_parent(), global_position, Color(1.0, 0.9, 0.5), 2.5, 2.5, 0.4)
+		FxLib.smoke_burst(get_parent(), global_position, 0.8, Color(1.0, 0.95, 0.8), 12)
+		return
 	if health <= 0.0:
 		_die()
 
@@ -723,6 +759,23 @@ func _respawn() -> void:
 	visible = true
 	health_changed.emit(health, max_health)
 	FxLib.smoke_burst(get_parent(), global_position, 0.7, Color(0.85, 0.85, 0.9), 10)
+
+
+## Called through the "player" group when a run starts: back at the start,
+## full health, Second Wind refilled.
+func reset_for_run() -> void:
+	_respawn_t = 0.0
+	_second_wind_left = int(Progress.stat(&"second_wind"))
+	_jet.refill()
+	_respawn()
+
+
+## Called through the "kill_listeners" group for every enemy killed: Lifesteal.
+func on_enemy_killed(_table: StringName) -> void:
+	var heal := Progress.stat(&"lifesteal")
+	if heal > 0.0 and is_alive() and health < max_health:
+		health = minf(health + heal, max_health)
+		health_changed.emit(health, max_health)
 
 
 ## False while dead / waiting to respawn.
@@ -793,7 +846,11 @@ func _process(delta: float) -> void:
 	_visual.scale = Vector2(_sq.x * flip_y, _sq.y)
 	_visual.position.y = FEET_LOCAL_Y * (1.0 - _sq.y)
 	var lean := clampf(velocity.x / MAX_RUN, -1.5, 1.5) * 0.1
-	_visual.rotation = lerp_angle(_visual.rotation, lean, 1.0 - exp(-20.0 * delta))
+	if _jet.flying:
+		# the team's jetpack tilt: up to 12 degrees toward A / D
+		_visual.rotation = lerp_angle(_visual.rotation, _jet.tilt_target(Input.get_axis("move_left", "move_right")), _jet.tilt_speed * delta)
+	else:
+		_visual.rotation = lerp_angle(_visual.rotation, lean, 1.0 - exp(-20.0 * delta))
 	_update_animation()
 
 	# Hurt: red flash, then blink while invulnerable

@@ -44,7 +44,7 @@ func _make_projectile() -> Node2D:
 
 ## Copy this weapon's inspector values onto the projectile.
 func _configure(o) -> void:
-	o.damage = damage
+	o.damage = roll_damage()
 	o.throw_speed = throw_speed
 	o.gravity = orb_gravity
 	o.bounces = bounces

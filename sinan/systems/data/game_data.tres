@@ -2,8 +2,37 @@
 
 [ext_resource type="Script" uid="uid://cuaf482jf66l0" path="res://sinan/systems/data/game_data.gd" id="1_data"]
 [ext_resource type="Script" uid="uid://71laaj7mjm0t" path="res://sinan/systems/data/drop_entry.gd" id="2_entry"]
+[ext_resource type="Script" uid="uid://340kf5ixtuyp" path="res://sinan/systems/data/spawn_entry.gd" id="3_spawn"]
 [ext_resource type="Texture2D" uid="uid://duwh06ylfwkyt" path="res://sinan/assets/items/coin.png" id="11_icon_coin"]
-[ext_resource type="Script" path="res://sinan/systems/data/spawn_entry.gd" id="3_spawn"]
+
+[sub_resource type="Resource" id="Resource_bat_coins"]
+script = ExtResource("2_entry")
+min_count = 2
+
+[sub_resource type="Resource" id="Resource_bird_coins"]
+script = ExtResource("2_entry")
+min_count = 7
+max_count = 10
+
+[sub_resource type="Resource" id="Resource_ghost_coins"]
+script = ExtResource("2_entry")
+chance = 0.6
+max_count = 2
+
+[sub_resource type="Resource" id="Resource_goblin_coins"]
+script = ExtResource("2_entry")
+min_count = 6
+max_count = 9
+
+[sub_resource type="Resource" id="Resource_portal_coins"]
+script = ExtResource("2_entry")
+min_count = 10
+max_count = 20
+
+[sub_resource type="Resource" id="Resource_priest_coins"]
+script = ExtResource("2_entry")
+min_count = 15
+max_count = 25
 
 [sub_resource type="Resource" id="Spawn_goblin"]
 script = ExtResource("3_spawn")
@@ -13,52 +42,27 @@ weight = 3.0
 [sub_resource type="Resource" id="Spawn_witch"]
 script = ExtResource("3_spawn")
 scene = "res://sinan/actors/enemies/witch/witch.tscn"
+unlock_stat = &"unlock_witch"
 
 [sub_resource type="Resource" id="Spawn_bird"]
 script = ExtResource("3_spawn")
 scene = "res://sinan/actors/enemies/bird/bird.tscn"
+unlock_stat = &"unlock_bird"
 
 [sub_resource type="Resource" id="Spawn_bats"]
 script = ExtResource("3_spawn")
 scene = "res://sinan/actors/enemies/bat/bat_flock.tscn"
+unlock_stat = &"unlock_bats"
 
 [sub_resource type="Resource" id="Spawn_priest"]
 script = ExtResource("3_spawn")
 scene = "res://sinan/actors/enemies/priest/priest.tscn"
-
-[sub_resource type="Resource" id="Resource_bat_coins"]
-script = ExtResource("2_entry")
-max_count = 2
-
-[sub_resource type="Resource" id="Resource_bird_coins"]
-script = ExtResource("2_entry")
-min_count = 5
-max_count = 8
-
-[sub_resource type="Resource" id="Resource_ghost_coins"]
-script = ExtResource("2_entry")
-chance = 0.6
-max_count = 2
-
-[sub_resource type="Resource" id="Resource_goblin_coins"]
-script = ExtResource("2_entry")
-min_count = 3
-max_count = 6
-
-[sub_resource type="Resource" id="Resource_portal_coins"]
-script = ExtResource("2_entry")
-min_count = 4
-max_count = 8
-
-[sub_resource type="Resource" id="Resource_priest_coins"]
-script = ExtResource("2_entry")
-min_count = 12
-max_count = 18
+unlock_stat = &"unlock_priest"
 
 [sub_resource type="Resource" id="Resource_witch_coins"]
 script = ExtResource("2_entry")
-min_count = 10
-max_count = 16
+min_count = 14
+max_count = 20
 
 [resource]
 script = ExtResource("1_data")
@@ -71,3 +75,5 @@ bat_drops = Array[ExtResource("2_entry")]([SubResource("Resource_bat_coins")])
 priest_drops = Array[ExtResource("2_entry")]([SubResource("Resource_priest_coins")])
 portal_drops = Array[ExtResource("2_entry")]([SubResource("Resource_portal_coins")])
 spawn_table = Array[ExtResource("3_spawn")]([SubResource("Spawn_goblin"), SubResource("Spawn_witch"), SubResource("Spawn_bird"), SubResource("Spawn_bats"), SubResource("Spawn_priest")])
+max_enemies_alive = 40
+max_portals = 2

@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://swhf2pj852ot"]
+
+[ext_resource type="Script" uid="uid://rp65slll25aq" path="res://sinan/weapons/wand.gd" id="1_wand"]
+
+[node name="Wand" type="Node2D" unique_id=853094681]
+script = ExtResource("1_wand")
+upgrade_id = &"wand"
+damage = 0.6
+reload_time = 0.14
+recoil_force = 12.0
+muzzle = Vector2(112, 0)
+impact_radius = 40.0
+distortion_strength = 0.45
+paint_arc = 30.0

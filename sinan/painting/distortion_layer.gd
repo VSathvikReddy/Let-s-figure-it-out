@@ -23,16 +23,22 @@ const SHADER := preload("res://sinan/shaders/distortion_layer.gdshader")
 ## the level starts, e.g. "40". Restore shots then bring it back one level at a
 ## time (40 -> 60 -> 80 -> 100). Empty = start with the full painting.
 @export var start_level := "40"
+## Keep the painting between runs and play sessions (saved at the end of every
+## run to user://painting_<level>_<layer>.png, so every level keeps its own).
+@export var persist := true
 @export_group("")
 
 var _sprites: Array[Sprite2D] = []
 var _ref: Sprite2D
 var _mask: Image
+var _data := PackedByteArray()  # the mask's bytes (0..255): hits change these, the
+                                # Image/texture are refreshed from them once a frame
 var _tex: ImageTexture
 var _size := Vector2i.ZERO
 var _amount := 0.25
 var _sum := 0.0       # running total of the mask (0..1 per texel), for mean()
 var _dirty := false   # mask changed this frame; uploaded once in _process
+var _start_mean := 0.0  # how distorted a fresh painting is (before any restoring)
 
 
 func _ready() -> void:
@@ -50,6 +56,7 @@ func _ready() -> void:
 	_size = Vector2i(ceili(ref_px.x / mask_cell), ceili(ref_px.y / mask_cell))
 	_mask = Image.create_empty(_size.x, _size.y, false, Image.FORMAT_R8)
 	_tex = ImageTexture.create_from_image(_mask)
+	_data = _mask.get_data()
 
 	# n removable levels; with amount 1/n per hit, each hit at the centre peels one.
 	var n := _sprites.size() - 1
@@ -66,6 +73,35 @@ func _ready() -> void:
 		mat.set_shader_parameter("edge_noise", edge_noise)
 		_sprites[i].material = mat
 	_apply_start_level(thresholds)
+	_start_mean = mean()
+	if persist:
+		_load_mask()
+
+
+func _save_path() -> String:
+	var level := owner.scene_file_path.get_file().get_basename() if owner else "level"
+	return "user://painting_%s_%s.png" % [level, name]
+
+
+## Called through the "painting" group when a run ends.
+func save_mask() -> void:
+	if persist and _mask:
+		_upload()
+		_mask.save_png(_save_path())
+
+
+## Restore the painting as it was at the end of the last run (if saved).
+func _load_mask() -> void:
+	if not FileAccess.file_exists(_save_path()):
+		return
+	var img := Image.load_from_file(_save_path())
+	if img == null or img.get_size() != _size:
+		return  # the painting changed size: start fresh
+	img.convert(Image.FORMAT_R8)
+	_mask = img
+	_data = _mask.get_data()
+	_tex.set_image(_mask)
+	_recount()
 
 
 ## Fill the whole mask with one value that sits halfway between the start
@@ -85,6 +121,7 @@ func _apply_start_level(thresholds: Array[float]) -> void:
 	var upper := thresholds[idx + 1]
 	var lower := 1.0 if idx == 0 else thresholds[idx]
 	_mask.fill(Color((upper + lower) * 0.5, 0.0, 0.0))
+	_data = _mask.get_data()
 	_tex.update(_mask)
 	_recount()
 
@@ -128,24 +165,38 @@ func stamp(uv: Vector2, radius: float, amount: float) -> void:
 	var texels_per_px := Vector2(_size) / (_ref.get_rect().size * _ref.scale.abs())
 	var rx := maxf(radius * texels_per_px.x, 1.0)
 	var ry := maxf(radius * texels_per_px.y, 1.0)
+	var add := amount * 255.0
+	var changed := 0
+	# writes straight into the byte array (much cheaper than get/set_pixel)
 	for y in range(maxi(0, floori(c.y - ry)), mini(_size.y, ceili(c.y + ry) + 1)):
+		var dy := (y + 0.5 - c.y) / ry
+		var row := y * _size.x
 		for x in range(maxi(0, floori(c.x - rx)), mini(_size.x, ceili(c.x + rx) + 1)):
-			var d := Vector2((x + 0.5 - c.x) / rx, (y + 0.5 - c.y) / ry).length()
-			if d >= 1.0:
+			var dx := (x + 0.5 - c.x) / rx
+			var d2 := dx * dx + dy * dy
+			if d2 >= 1.0:
 				continue
-			var f := 1.0 - smoothstep(hit_core, 1.0, d)
-			var old := _mask.get_pixel(x, y).r
-			var v := clampf(old + amount * f, 0.0, 1.0)
-			_mask.set_pixel(x, y, Color(v, 0.0, 0.0))
-			_sum += v - old
+			var old := _data[row + x]
+			var v := clampi(old + roundi(add * (1.0 - smoothstep(hit_core, 1.0, sqrt(d2)))), 0, 255)
+			_data[row + x] = v
+			changed += v - old
+	_sum += changed / 255.0
+	if changed < 0 and _start_mean > 0.0:  # restored: counts toward Entropy
+		Paint.add_restored(-changed / 255.0 / float(_size.x * _size.y) / _start_mean)
 	# many hits in one frame (a bat flock, a scratch line) upload the mask once
 	_dirty = true
 
 
 func _process(_delta: float) -> void:
 	if _dirty:
-		_dirty = false
-		_tex.update(_mask)
+		_upload()
+
+
+## Push the bytes to the Image and the GPU texture (once per frame at most).
+func _upload() -> void:
+	_dirty = false
+	_mask.set_data(_size.x, _size.y, false, Image.FORMAT_R8, _data)
+	_tex.update(_mask)
 
 
 ## Mask value at a layer-space point (0 = clean, 1 = most distorted). Ghosts use
@@ -157,7 +208,7 @@ func distortion_at(local: Vector2) -> float:
 	if uv == null:
 		return 1.0
 	var p := Vector2i((uv as Vector2) * Vector2(_size)).clamp(Vector2i.ZERO, _size - Vector2i.ONE)
-	return _mask.get_pixelv(p).r
+	return _data[p.y * _size.x + p.x] / 255.0
 
 
 ## 0 = untouched, 1 = fully distorted. (Painting restored % = 1 - mean().)
@@ -167,9 +218,17 @@ func mean() -> float:
 	return clampf(_sum / float(_size.x * _size.y), 0.0, 1.0)
 
 
+## How much of the fresh painting's damage has been restored: 0 = as it
+## started, 1 = the full painting everywhere. (Milestones use this.)
+func restored() -> float:
+	if _start_mean <= 0.0:
+		return 1.0
+	return clampf((_start_mean - mean()) / _start_mean, 0.0, 1.0)
+
+
 func _recount() -> void:
 	var total := 0
-	for b in _mask.get_data():
+	for b in _data:
 		total += b
 	_sum = total / 255.0
 

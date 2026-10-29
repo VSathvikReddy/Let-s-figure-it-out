@@ -12,6 +12,9 @@ extends Node2D
 ##  - Bob and end-of-life blink run in the shader (pickup_piece.gdshader).
 ##
 ## Pieces burst out, spin, bounce like coins, settle, then fly to the player.
+## Every piece is drawn, and each one is worth 1: landed coins take their own
+## spot on the floor (side by side, not stacked) and stop spinning, so 20
+## dropped coins are 20 coins you can see.
 ## Created automatically by GameData.spawn_drops(); add one to a level yourself
 ## to tweak the exports per level.
 
@@ -21,6 +24,8 @@ const GLOW_SHADER := preload("res://sinan/shaders/pickup_glow.gdshader")
 
 enum { WAITING, AIR, MAGNET, LANDED, REST, RIDE }
 const STRIDE := 16  # 2D transform (8) + colour (4) + custom (4) floats per instance
+## Most spots a landing coin is moved sideways to avoid lying on another (2 = about half a body width).
+const MAX_SPOT_SHIFT := 2
 
 @export var game_data: GameData = preload("res://sinan/systems/data/game_data.tres")
 
@@ -52,7 +57,10 @@ const STRIDE := 16  # 2D transform (8) + colour (4) + custom (4) floats per inst
 ## Bounciness on the floor (0 = dead stop, 1 = no energy lost).
 @export_range(0.0, 1.0) var bounce := 0.5
 ## Horizontal speed kept on each bounce.
-@export_range(0.0, 1.0) var bounce_friction := 0.75
+@export_range(0.0, 1.0) var bounce_friction := 0.45
+## Fastest a piece may fly sideways when it pops out, so drops land near where
+## the enemy died (about 2 body widths), not across the room.
+@export var max_side_speed := 150.0
 ## Pieces stop bouncing below this vertical speed.
 @export var settle_speed := 110.0
 
@@ -98,6 +106,7 @@ var _type := PackedInt32Array()
 var _state := PackedInt32Array()
 var _slot := PackedInt32Array()     # slot in its type's resting buffer, -1 if none
 var _n_active := 0
+var _floor_spots := {}  # Vector2i(spot x, floor row) -> true: spots a coin landed on
 
 var _act_mm: Array[MultiMesh] = []
 var _act_glow: Array[MultiMesh] = []
@@ -175,6 +184,7 @@ func _make_layer(tex: Texture2D, glow: bool, t: int, alpha := 1.0) -> MultiMesh:
 ## Add one piece. pos is global; delay staggers the burst.
 func add_piece(pos: Vector2, vel: Vector2, kind: int, delay := 0.0) -> void:
 	_pos.append(to_local(pos))
+	vel.x = clampf(vel.x, -max_side_speed, max_side_speed)
 	_vel.append(vel)
 	_born.append(_clock + delay)
 	_ride.append(null)
@@ -274,6 +284,7 @@ func _step(delta: float) -> void:
 					else:
 						st = LANDED
 						_pending_land += 1
+						p.x = _free_spot(p)
 				else:
 					v = Vector2(v.x * bounce_friction, -v.y * bounce)
 					_spin[i] *= 0.6
@@ -366,6 +377,33 @@ func _step(delta: float) -> void:
 
 
 # ---------------------------------------------------------------- bookkeeping
+
+## The nearest free floor spot to `p` (x), one coin-width apart, so coins lie
+## side by side instead of on top of each other. A coin moves at most
+## MAX_SPOT_SHIFT spots from where it fell; if those are all taken it simply
+## lies where it fell. The spot map is rebuilt from the coins actually lying on
+## the floor whenever it holds spots of coins that were already collected.
+func _free_spot(p: Vector2) -> float:
+	var w := piece_size * 0.9
+	if _floor_spots.size() > _lying_count() + 8:
+		_floor_spots.clear()
+		for j in _pos.size():
+			if j >= _n_active or _state[j] == LANDED:
+				_floor_spots[Vector2i(roundi(_pos[j].x / w), roundi(_pos[j].y / 16.0))] = true
+	var row := roundi(p.y / 16.0)
+	var base := roundi(p.x / w)
+	for k in MAX_SPOT_SHIFT * 2 + 1:
+		var s := base + (k + 1) / 2 * (1 if k % 2 == 1 else -1)
+		if not _floor_spots.has(Vector2i(s, row)):
+			_floor_spots[Vector2i(s, row)] = true
+			return s * w
+	return p.x  # crowded: lie where it fell
+
+
+## Coins lying on the floor (resting + just landed).
+func _lying_count() -> int:
+	return _pos.size() - _n_active + _pending_land
+
 
 func _swap(a: int, b: int) -> void:
 	if a == b:
