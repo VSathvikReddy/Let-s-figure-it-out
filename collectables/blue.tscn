@@ -1,12 +1,12 @@
 [gd_scene format=3 uid="uid://dpfgoftoob6i5"]
 
 [ext_resource type="Script" uid="uid://bvtvi1pn67yti" path="res://collectables/gem.gd" id="1_7aikj"]
-[ext_resource type="Texture2D" uid="uid://mhaypj6vai5d" path="res://collectables/gems/gems/blue-Photoroom.png" id="2_h5e0r"]
+[ext_resource type="Texture2D" uid="uid://mhaypj6vai5d" path="res://collectables/assets/blue.png" id="2_h5e0r"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gxmxl"]
 radius = 26.076809
 
-[node name="Blue" type="Area2D" unique_id=1906171657]
+[node name="BlueGem" type="Area2D" unique_id=1906171657]
 script = ExtResource("1_7aikj")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=806838636]

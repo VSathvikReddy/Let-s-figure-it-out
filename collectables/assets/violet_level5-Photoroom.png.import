@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnmsf1k1mgikw"
-path="res://.godot/imported/green_level10-Photoroom.png-7bdbf7f4db2849f8ca73dabc41d9542c.ctex"
+uid="uid://yxy4wqtwtl8m"
+path="res://.godot/imported/violet_level5-Photoroom.png-c3ea4173379fbf961a29cb12ac5cf3df.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://collectables/gems/gems/green_level10-Photoroom.png"
-dest_files=["res://.godot/imported/green_level10-Photoroom.png-7bdbf7f4db2849f8ca73dabc41d9542c.ctex"]
+source_file="res://collectables/assets/violet_level5-Photoroom.png"
+dest_files=["res://.godot/imported/violet_level5-Photoroom.png-c3ea4173379fbf961a29cb12ac5cf3df.ctex"]
 
 [params]
 
