@@ -1,0 +1,47 @@
+[gd_scene format=3 uid="uid://bgggmdmw3ihsv"]
+
+[ext_resource type="Script" uid="uid://85aj48eo3b5i" path="res://enemies/bomber/bomber.gd" id="1_jb7bb"]
+[ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="2_yvlhf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_lisrb"]
+radius = 73.171036
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_unkvp"]
+size = Vector2(64, 64)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_imlyv"]
+radius = 289.17297
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_unkvp"]
+radius = 142.00352
+
+[node name="HeavyBomber" type="CharacterBody2D" unique_id=383231011 groups=["enemy"]]
+script = ExtResource("1_jb7bb")
+
+[node name="TriggerZone" type="Area2D" parent="." unique_id=1997828865]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TriggerZone" unique_id=1214147480]
+shape = SubResource("CircleShape2D_lisrb")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1269660307]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_yvlhf")
+
+[node name="Hitbox" type="CollisionShape2D" parent="." unique_id=1265723178]
+shape = SubResource("RectangleShape2D_unkvp")
+
+[node name="DetectionZone" type="Area2D" parent="." unique_id=1879149565]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionZone" unique_id=698208122]
+shape = SubResource("CircleShape2D_imlyv")
+
+[node name="ExplosionZone" type="Area2D" parent="." unique_id=1442803265]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExplosionZone" unique_id=121560579]
+shape = SubResource("CircleShape2D_unkvp")
+
+[node name="WanderTimer" type="Timer" parent="." unique_id=679996144]
+wait_time = 2.0
+
+[node name="IgnitionTimer" type="Timer" parent="." unique_id=1835922825]
+one_shot = true

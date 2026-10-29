@@ -3,11 +3,39 @@
 [ext_resource type="Script" uid="uid://nbno5ofad4n3" path="res://player/player.gd" id="1_rkbax"]
 [ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="2_g1dw6"]
 [ext_resource type="PackedScene" uid="uid://b2tif5lnrgau6" path="res://player/brush_attack.tscn" id="2_yw30f"]
+[ext_resource type="Texture2D" uid="uid://wls4mv8mn85k" path="res://player/brush.png" id="3_yw30f"]
+[ext_resource type="Texture2D" uid="uid://djasoe4wbtnu2" path="res://whiteparticle.png" id="5_qjkh3"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4uyoc"]
 size = Vector2(64, 64)
 
-[node name="Player" type="CharacterBody2D" unique_id=1428108754]
+[sub_resource type="Gradient" id="Gradient_qjkh3"]
+offsets = PackedFloat32Array(0, 0.2, 0.6, 0.8, 1)
+colors = PackedColorArray(1, 0.9098039, 0, 1, 1, 0.68235296, 0, 1, 0.6, 0, 0, 1, 0.12005126, 0.12005126, 0.12005126, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_rgyib"]
+gradient = SubResource("Gradient_qjkh3")
+
+[sub_resource type="Curve" id="Curve_g6k8r"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.8101852, 0.6875), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_g6k8r"]
+curve = SubResource("Curve_g6k8r")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_qjkh3"]
+particle_flag_disable_z = true
+direction = Vector3(0, 1, 0)
+spread = 15.565
+initial_velocity_min = 200.0
+initial_velocity_max = 350.0
+gravity = Vector3(0, 98, 0)
+linear_accel_min = -100.0
+linear_accel_max = -100.0
+scale_curve = SubResource("CurveTexture_g6k8r")
+color_ramp = SubResource("GradientTexture1D_rgyib")
+
+[node name="Player" type="CharacterBody2D" unique_id=1428108754 groups=["player"]]
 script = ExtResource("1_rkbax")
 
 [node name="BrushAttack" parent="." unique_id=1935253786 instance=ExtResource("2_yw30f")]
@@ -20,11 +48,42 @@ position = Vector2(0, -9.536743e-07)
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_g1dw6")
 
+[node name="leftthrust" type="Sprite2D" parent="Sprite2D" unique_id=275844742]
+show_behind_parent = true
+position = Vector2(-36, 27.99994)
+rotation = 2.864759
+scale = Vector2(0.316, 0.244)
+texture = ExtResource("3_yw30f")
+
+[node name="rightthrust" type="Sprite2D" parent="Sprite2D" unique_id=1254700183]
+show_behind_parent = true
+position = Vector2(40, 27.999994)
+rotation = 2.87962
+scale = Vector2(0.306, 0.244)
+texture = ExtResource("3_yw30f")
+
+[node name="leftparti" type="GPUParticles2D" parent="Sprite2D" unique_id=804561539]
+position = Vector2(-38, 66)
+emitting = false
+amount = 70
+texture = ExtResource("5_qjkh3")
+lifetime = 0.4
+process_material = SubResource("ParticleProcessMaterial_qjkh3")
+
+[node name="rightparti" type="GPUParticles2D" parent="Sprite2D" unique_id=1492617498]
+position = Vector2(38, 64)
+emitting = false
+amount = 70
+texture = ExtResource("5_qjkh3")
+lifetime = 0.4
+process_material = SubResource("ParticleProcessMaterial_qjkh3")
+
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1484589310]
 position_smoothing_enabled = true
+position_smoothing_speed = 10.0
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
-drag_left_margin = 0.3
-drag_top_margin = 0.3
-drag_right_margin = 0.3
-drag_bottom_margin = 0.3
+drag_left_margin = 0.7
+drag_top_margin = 0.5
+drag_right_margin = 0.7
+drag_bottom_margin = 0.5
