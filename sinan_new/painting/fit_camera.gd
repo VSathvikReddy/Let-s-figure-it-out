@@ -1,5 +1,5 @@
 extends Camera2D
-## Put this on the player's Camera2D (centred on the body, no limits, no smoothing).
+## Put this on the player's Camera2D (a child of the player).
 ##
 ## Keeps the screen filled with painting, whatever shape the window is and wherever
 ## the player walks:
@@ -7,6 +7,8 @@ extends Camera2D
 ##    it is scaled up to cover the whole view, a little over
 ##  - the camera zooms in just enough that the hill and village strips (which slide a
 ##    little as the player walks) are always wider than the view
+##  - the camera follows the player only while the player is inside `camera_area`; past
+##    that it stops, and the player walks on to the edge of the screen (`edges`)
 
 ## The sky layer (a Parallax2D with scroll_scale 0,0 whose last child is the full picture).
 @export var sky: NodePath = ^"../../Painting/sky"
@@ -17,9 +19,13 @@ extends Camera2D
 @export var min_zoom := 0.7
 ## A little extra picture kept on every side so no edge ever shows.
 @export var edge := 24.0
-## Extra width a strip needs for its slide (its scroll_scale x the walk width, about 2000).
+## Extra width a strip needs for its slide (its scroll_scale x the camera_area width).
 @export var strip_slide := 200.0
+## Where the middle of the screen may go (world px).
+@export var camera_area := Rect2(-780, -200, 2000, 800)
 
+## The part of the world the screen can ever show: the player may walk anywhere inside.
+var edges := Rect2()
 var _last_view := Vector2.ZERO
 
 
@@ -45,6 +51,13 @@ func fit() -> void:
 		if width > 0.0:
 			z = maxf(z, view.x / maxf(width - strip_slide - edge, 1.0))
 	zoom = Vector2(z, z)
+
+	# the screen's middle stays inside camera_area, so its edges stay inside `edges`
+	edges = camera_area.grow_individual(view.x / z / 2, view.y / z / 2, view.x / z / 2, view.y / z / 2)
+	limit_left = floori(edges.position.x)
+	limit_top = floori(edges.position.y)
+	limit_right = ceili(edges.end.x)
+	limit_bottom = ceili(edges.end.y)
 
 	# sky: a Parallax2D with scroll_scale 0 sits at (scroll_offset + camera - half the screen, in
 	# screen pixels), so this scroll_offset puts the picture's centre exactly on the camera centre

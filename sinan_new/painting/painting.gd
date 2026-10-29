@@ -9,7 +9,8 @@ extends Node2D
 ##     Painting.paint($MyArea, -1.0)           # repair it
 ##     Painting.paint($MyArea, 1.0, point)     # same, but with the area moved to `point`
 ##
-## amount 1.0 = one detail level. Only the front-most layer at that spot changes.
+## amount 1.0 = one detail level. Every layer under the shape changes.
+## The area's shapes can be CollisionShape2D (circle, rectangle) or CollisionPolygon2D.
 
 static var current: Painting  # the painting in the scene, so anyone can reach it
 
@@ -24,20 +25,9 @@ static func paint(area: Area2D, amount: float, at := Vector2.INF) -> void:
 	var offset := Vector2.ZERO
 	if at != Vector2.INF:
 		offset = at - area.global_position
-	var layer := current.layer_at(area.global_position + offset)
-	for child in area.get_children():
-		if child is CollisionShape2D:
-			layer.stamp(child, offset, amount)
-
-
-## The front-most layer that has paint at this point.
-## Children further down the list are drawn in front, so check them first.
-func layer_at(point: Vector2) -> Parallax2D:
-	var layers: Array[Parallax2D] = []
-	for child in get_children():
-		if child is Parallax2D:
-			layers.append(child)
-	for i in range(layers.size() - 1, 0, -1):
-		if layers[i].has_paint_at(point):
-			return layers[i]
-	return layers[0]  # the back layer (sky) catches everything else
+	for layer in current.get_children():
+		if not layer is Parallax2D:
+			continue
+		for child in area.get_children():
+			if (child is CollisionShape2D or child is CollisionPolygon2D) and not child.disabled:
+				layer.stamp(child, offset, amount)
