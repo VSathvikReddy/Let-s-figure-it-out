@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://bf3g8u8305nc8"]
 
-[ext_resource type="Script" uid="uid://bl8nrjfgit5pe" path="res://canvas/demo.gd" id="1_7058v"]
+[ext_resource type="Script" uid="uid://bl8nrjfgit5pe" path="res://demo.gd" id="1_7058v"]
 [ext_resource type="PackedScene" uid="uid://bnp6j87rr6nc6" path="res://player/player.tscn" id="2_6uxse"]
+[ext_resource type="PackedScene" uid="uid://cytjvhjptoas" path="res://enemies/cannon/cannon.tscn" id="2_884kg"]
 [ext_resource type="Script" uid="uid://dwrl1rhhejxok" path="res://canvas/mask_display.gd" id="2_vcfbe"]
 [ext_resource type="Texture2D" uid="uid://ctaj3ej43ma4l" path="res://canvas/assets/hill_100.png" id="3_6uxse"]
 [ext_resource type="Texture2D" uid="uid://dj3p44iicn75t" path="res://canvas/assets/hill_80.png" id="4_r4ddi"]
@@ -11,6 +12,9 @@
 
 [node name="Demo" type="Node2D" unique_id=1005141647]
 script = ExtResource("1_7058v")
+
+[node name="Cannon" parent="." unique_id=1728814908 instance=ExtResource("2_884kg")]
+position = Vector2(870, 193)
 
 [node name="Canvas" type="Node2D" parent="." unique_id=347827446]
 script = ExtResource("2_vcfbe")

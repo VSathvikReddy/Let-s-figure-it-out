@@ -1,0 +1,78 @@
+[gd_scene format=3 uid="uid://cytjvhjptoas"]
+
+[ext_resource type="Script" uid="uid://dakbeov108gdw" path="res://enemies/cannon/cannon.gd" id="1_55v8w"]
+[ext_resource type="Texture2D" uid="uid://dj80ivon0pfht" path="res://enemies/cannon/Steampunk Turret Firing Animation Sprite Sheet.png" id="2_55v8w"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_sd2ew"]
+size = Vector2(50, 50)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1dw4j"]
+atlas = ExtResource("2_55v8w")
+region = Rect2(0, 1140, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qb3gc"]
+atlas = ExtResource("2_55v8w")
+region = Rect2(0, 855, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n6eff"]
+atlas = ExtResource("2_55v8w")
+region = Rect2(0, 570, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6wotn"]
+atlas = ExtResource("2_55v8w")
+region = Rect2(0, 285, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_42bbv"]
+atlas = ExtResource("2_55v8w")
+region = Rect2(0, 0, 1024, 285)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_al2x6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1dw4j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qb3gc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n6eff")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6wotn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_42bbv")
+}],
+"loop": 0,
+"name": &"Cannon_fire",
+"speed": 20.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mqcwo"]
+radius = 293.3394
+
+[node name="Cannon" type="StaticBody2D" unique_id=1728814908 groups=["enemy"]]
+script = ExtResource("1_55v8w")
+
+[node name="HitBox" type="CollisionShape2D" parent="." unique_id=505175772]
+shape = SubResource("RectangleShape2D_sd2ew")
+
+[node name="BarrelPivot" type="Node2D" parent="." unique_id=216246985]
+
+[node name="Muzzle" type="Marker2D" parent="BarrelPivot" unique_id=59824393]
+position = Vector2(67, 0)
+
+[node name="BarrelSprite" type="AnimatedSprite2D" parent="BarrelPivot" unique_id=1729227123]
+position = Vector2(37, 1.5133992e-09)
+rotation = 1.5717645
+scale = Vector2(0.48997733, 0.48997733)
+sprite_frames = SubResource("SpriteFrames_al2x6")
+animation = &"Cannon_fire"
+
+[node name="DetectionArea" type="Area2D" parent="." unique_id=1154367857]
+
+[node name="DetectionShape" type="CollisionShape2D" parent="DetectionArea" unique_id=1245729331]
+shape = SubResource("CircleShape2D_mqcwo")
+
+[node name="FireTimer" type="Timer" parent="." unique_id=1662002771]
