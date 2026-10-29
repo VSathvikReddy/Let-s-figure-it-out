@@ -18,8 +18,10 @@ extends CharacterBody2D
 
 ## --- Node References ---
 @onready var sprite: Sprite2D = $Sprite2D
-@onready var left_jetpack: Sprite2D = $leftthrust
-@onready var right_jetpack: Sprite2D = $rightthrust
+@onready var left_jetpack: Sprite2D = $Sprite2D/leftthrust
+@onready var right_jetpack: Sprite2D = $Sprite2D/rightthrust
+@onready var left_particle: GPUParticles2D = $Sprite2D/leftparti
+@onready var right_particle: GPUParticles2D = $Sprite2D/rightparti
 
 func _ready() -> void:
 	_set_jetpacks_visible(false)
@@ -52,6 +54,9 @@ func _physics_process(delta: float) -> void:
 	# 5. Visual Updates
 	_update_sprite_tilt(input_vector.x, delta)
 	_set_jetpacks_visible(is_thrusting_up)
+	if is_thrusting_up == false:
+		left_particle.emitting = false
+		right_particle.emitting = false
 
 	# 6. Execute Physics Movement
 	move_and_slide()
@@ -68,5 +73,7 @@ func _update_sprite_tilt(input_x: float, delta: float) -> void:
 func _set_jetpacks_visible(active: bool) -> void:
 	if left_jetpack:
 		left_jetpack.visible = active
+		left_particle.emitting = true
 	if right_jetpack:
 		right_jetpack.visible = active
+		right_particle.emitting = true
