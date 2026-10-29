@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://b2tif5lnrgau6"]
+
+[ext_resource type="Texture2D" uid="uid://wls4mv8mn85k" path="res://player/brush.png" id="1_d8qsr"]
+[ext_resource type="Script" uid="uid://b7ta3e5unsbi4" path="res://player/brush_attack.gd" id="1_ibium"]
+
+[sub_resource type="Gradient" id="Gradient_ibium"]
+
+[node name="BrushAttack" type="Node2D" unique_id=1935253786]
+script = ExtResource("1_ibium")
+brush_distance = 0.0
+color_gradient = SubResource("Gradient_ibium")
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=1978473562]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HurtBox" unique_id=2138860303]
+
+[node name="Brush" type="Node2D" parent="." unique_id=381972020]
+
+[node name="Sprite2D" type="Sprite2D" parent="Brush" unique_id=801470218]
+rotation = 1.3491396
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("1_d8qsr")
+offset = Vector2(65, -300)
