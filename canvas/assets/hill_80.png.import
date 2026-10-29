@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4ywrondyu4m5"
-path="res://.godot/imported/world_tileset.png-65f1d93393bf2dc246284923c90aefe8.ctex"
+uid="uid://dj3p44iicn75t"
+path="res://.godot/imported/hill_80.png-c26f0a93fe7c26a5d936e4a42ece8452.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://game_objects/platform/world_tileset.png"
-dest_files=["res://.godot/imported/world_tileset.png-65f1d93393bf2dc246284923c90aefe8.ctex"]
+source_file="res://canvas/assets/hill_80.png"
+dest_files=["res://.godot/imported/hill_80.png-c26f0a93fe7c26a5d936e4a42ece8452.ctex"]
 
 [params]
 

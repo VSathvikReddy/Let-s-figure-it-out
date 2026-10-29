@@ -1,0 +1,40 @@
+[gd_scene format=3 uid="uid://bf3g8u8305nc8"]
+
+[ext_resource type="Script" uid="uid://dwrl1rhhejxok" path="res://canvas/mask_display.gd" id="1_kou7g"]
+[ext_resource type="Script" uid="uid://bl8nrjfgit5pe" path="res://canvas/demo.gd" id="3_f7bp0"]
+[ext_resource type="Texture2D" uid="uid://bl3f0j87qi7n8" path="res://canvas/assets/hill_20.png" id="3_haqjg"]
+[ext_resource type="Texture2D" uid="uid://luavej3y17ay" path="res://canvas/assets/hill_40.png" id="4_4mm7x"]
+[ext_resource type="Texture2D" uid="uid://c4ppxj01obqtd" path="res://canvas/assets/hill_60.png" id="5_wvuop"]
+[ext_resource type="Texture2D" uid="uid://dj3p44iicn75t" path="res://canvas/assets/hill_80.png" id="6_khn1m"]
+[ext_resource type="Texture2D" uid="uid://ctaj3ej43ma4l" path="res://canvas/assets/hill_100.png" id="7_185lq"]
+
+[node name="sample_canvas" type="Node2D" unique_id=1005141647]
+script = ExtResource("3_f7bp0")
+
+[node name="Canvas" type="Node2D" parent="." unique_id=347827446]
+script = ExtResource("1_kou7g")
+
+[node name="Sprite2D5" type="Sprite2D" parent="Canvas" unique_id=78959564]
+position = Vector2(568.5, 325.99997)
+scale = Vector2(0.53545123, 0.88397783)
+texture = ExtResource("7_185lq")
+
+[node name="Sprite2D4" type="Sprite2D" parent="Canvas" unique_id=57850736]
+position = Vector2(577.5, 325)
+scale = Vector2(1.1142578, 1.8764706)
+texture = ExtResource("6_khn1m")
+
+[node name="Sprite2D3" type="Sprite2D" parent="Canvas" unique_id=301533695]
+position = Vector2(579.5, 325.49997)
+scale = Vector2(1.1103516, 1.897059)
+texture = ExtResource("5_wvuop")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Canvas" unique_id=1397928555]
+position = Vector2(571.5, 327)
+scale = Vector2(1.1220703, 1.9176471)
+texture = ExtResource("4_4mm7x")
+
+[node name="Sprite2D" type="Sprite2D" parent="Canvas" unique_id=1799706105]
+position = Vector2(577, 323)
+scale = Vector2(1.1386719, 1.8647058)
+texture = ExtResource("3_haqjg")
