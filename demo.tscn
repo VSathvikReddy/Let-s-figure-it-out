@@ -49,3 +49,9 @@ position = Vector2(870, 193)
 position = Vector2(-97, 369)
 
 [node name="Player" parent="." unique_id=1428108754 instance=ExtResource("2_6uxse")]
+
+[node name="LevelBounds" type="ReferenceRect" parent="." unique_id=1469522004 groups=["level_bounds"]]
+offset_left = -618.0
+offset_top = -387.0
+offset_right = 1380.0
+offset_bottom = 861.0
