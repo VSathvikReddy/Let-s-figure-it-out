@@ -26,12 +26,11 @@ const RIG_FEET_Y := 62.0  # feet height in rig units (same rig as the player)
 enum State { HIDDEN, APPEARING, GLIMPSE, PORTAL, CASTING, VANISHING }
 enum Act { GLIMPSE, PORTAL, BLACK_HOLE }
 
+## When he visits, how many portals he opens and what comes out of them:
+## the Spawning / Forger Visits sections of game_data.tres.
+@export var game_data: GameData = preload("res://sinan/systems/data/game_data.tres")
+
 @export_group("Timing")
-## Seconds he stays away between appearances (random in this range).
-@export var hidden_time_min := 22.0
-@export var hidden_time_max := 38.0
-## Wait before his very first appearance.
-@export var first_appearance_delay := 4.0
 ## He fades in / out inside a small black hole over these times.
 @export var appear_time := 0.6
 @export var vanish_time := 0.45
@@ -62,20 +61,11 @@ enum Act { GLIMPSE, PORTAL, BLACK_HOLE }
 @export var flee_aim_distance := 60.0
 
 @export_group("Portal")
-@export var enemy_scenes: Array[PackedScene] = []
-@export var enemies_per_portal_min := 2
-@export var enemies_per_portal_max := 4
-## Portal stays open (spawning) this long.
-@export var portal_duration := 16.0
-## Skip spawning if this many enemies are already alive.
-@export var max_enemies_alive := 10
+## Portal size, only used when the level has no PortalDirector.
 @export var portal_height := 130.0
 @export var portal_width := 60.0
 ## Where the portal opens relative to him (x is mirrored toward the player).
 @export var portal_offset := Vector2(70, -85)
-## Portals torn open per visit (random in this range, capped by the director).
-@export var portals_per_visit_min := 1
-@export var portals_per_visit_max := 2
 ## Seconds he lingers after tearing them open before leaving.
 @export var linger_after_portal := 2.5
 
@@ -181,7 +171,7 @@ func _ready() -> void:
 	anim.stop()
 	z_index = 1
 	visible = false
-	_wait = first_appearance_delay
+	_wait = game_data.forger_first_visit
 	# every body part becomes a soft-edged living shadow (eyes stay bright)
 	var mat := ShaderMaterial.new()
 	mat.shader = SILHOUETTE
@@ -221,7 +211,7 @@ func _process(delta: float) -> void:
 	match _state:
 		State.HIDDEN:
 			_wait -= delta
-			if _wait <= 0.0 and is_instance_valid(_player):
+			if _wait <= 0.0 and is_instance_valid(_player) and _player.is_alive():
 				_appear()
 		State.APPEARING:
 			modulate.a = clampf(_t / appear_time, 0.0, 1.0)
@@ -361,8 +351,7 @@ func _start_act() -> void:
 
 
 func _pick_act() -> Act:
-	var enemies := PortalDirector.unit_count(get_tree())
-	var w_portal := portal_weight if enemies < max_enemies_alive and _portal_room() else 0.0
+	var w_portal := portal_weight if game_data.can_spawn(get_tree()) and _portal_room() else 0.0
 	var w_hole := black_hole_weight if _since_black_hole >= black_hole_min_gap else 0.0
 	_since_black_hole += 1
 	var total := glimpse_weight + w_portal + w_hole
@@ -415,7 +404,7 @@ func _entrance_hole() -> void:
 func _hide() -> void:
 	visible = false
 	_set_state(State.HIDDEN)
-	_wait = randf_range(hidden_time_min, hidden_time_max) * (1.0 + Progress.stat(&"forger_rarity"))
+	_wait = game_data.forger_away_time()
 
 
 # ---------------------------------------------------------------- acts
@@ -428,7 +417,7 @@ func _director() -> Node:
 func _portal_room() -> bool:
 	var d := _director()
 	if d == null:
-		return not enemy_scenes.is_empty()
+		return true
 	var open := 0
 	for c in get_parent().get_children():
 		if c.get_script() == Portal:
@@ -438,7 +427,7 @@ func _portal_room() -> bool:
 
 ## Tear open 1-2 portals beside him (the director runs them). Returns how many opened.
 func _open_portals() -> int:
-	var count := randi_range(portals_per_visit_min, maxi(portals_per_visit_min, portals_per_visit_max))
+	var count := game_data.portals_per_visit()
 	var opened := 0
 	for i in count:
 		var side := _face if i == 0 else -_face  # first in front of him, second behind
@@ -456,9 +445,9 @@ func _open_portal_at(at: Vector2) -> bool:
 	var p := Portal.new()
 	p.height = portal_height
 	p.max_width = portal_width
-	p.spawn_duration = portal_duration
-	p.enemy_scenes = enemy_scenes
-	p.enemies_to_spawn = randi_range(enemies_per_portal_min, maxi(enemies_per_portal_min, enemies_per_portal_max))
+	p.spawn_duration = game_data.portal_duration()
+	p.enemies_to_spawn = game_data.portal_enemy_count(p.spawn_duration)
+	p.game_data = game_data
 	p.glow_color = magic_color
 	var world := get_parent()
 	p.position = FxLib.to_parent_space(world, at)

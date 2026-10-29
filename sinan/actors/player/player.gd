@@ -84,9 +84,7 @@ const Weapon := preload("res://sinan/weapons/weapon.gd")
 
 @export_group("Health")
 @export var max_health := 5.0
-## Seconds of invulnerability after taking a hit (0 = none: every hit counts).
-## The skill tree's invulnerability upgrade adds to this.
-@export var invulnerable_time := 0.0
+## Every hit counts (no invulnerability window); only respawning protects you.
 ## Protection right after respawning, so you are not hit the moment you appear.
 @export var respawn_invulnerable := 1.0
 ## Default push when hurt (attacks can pass their own).
@@ -176,7 +174,6 @@ var _weapons: Array[Weapon] = []   # [gun, staff] (either may be missing)
 var _gun: Weapon
 var _loadout := Vector2i(-1, -1)   # equipped (weapon, staff) indices
 var _base_max_health := 5.0
-var _base_invuln := 0.0
 var _hurt_flash := 0.0      # red flash after a hit (visual only)
 var _regen_acc := 0.0
 var _aim := Vector2.RIGHT
@@ -215,7 +212,6 @@ func _ready() -> void:
 	add_to_group("player")
 	add_to_group("progress_listeners")
 	_base_max_health = max_health
-	_base_invuln = invulnerable_time
 	_apply_upgrades()
 	health = max_health
 	_shake_noise.frequency = 0.08
@@ -240,7 +236,7 @@ func _ready() -> void:
 		_apply_weapon_upgrades()
 
 	_reticle = Reticle.new()
-	add_child(_reticle)																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																					
+	add_child(_reticle)
 	var lamp := PointLight2D.new()
 	lamp.texture = FxLib.glow()
 	lamp.color = Color(1.0, 0.9, 0.75)
@@ -250,7 +246,12 @@ func _ready() -> void:
 
 
 func _ensure_inputs() -> void:
-	# project.godot already has jump/move_left/move_right/dash; add the rest at runtime.
+	# Added at runtime (skipped if project.godot already has them), so the shared
+	# project settings can change without breaking the player.
+	_add_action("jump", [_key(KEY_SPACE)])
+	_add_action("dash", [_key(KEY_SHIFT)])
+	_add_action("move_left", [_key(KEY_A), _key(KEY_LEFT)])
+	_add_action("move_right", [_key(KEY_D), _key(KEY_RIGHT)])
 	_add_action("fire", [_mouse(MOUSE_BUTTON_LEFT), _key(KEY_F)])
 	_add_action("move_down", [_key(KEY_S), _key(KEY_DOWN)])
 	_add_action("fire_paint", [_mouse(MOUSE_BUTTON_RIGHT)])
@@ -539,7 +540,6 @@ func _make_weapon(scene: PackedScene) -> Weapon:
 func _apply_upgrades() -> void:
 	var old_max := max_health
 	max_health = _base_max_health + Progress.stat(&"max_health")
-	invulnerable_time = _base_invuln + Progress.stat(&"invuln_time")
 	if is_inside_tree() and max_health != old_max:
 		health = minf(health + (max_health - old_max), max_health)
 		health_changed.emit(health, max_health)
@@ -637,9 +637,8 @@ func on_explosion(pos: Vector2, radius: float) -> void:
 	_sq = Vector2(1.0 + 0.5 * fall, 1.0 - 0.4 * fall)
 
 
-## Called by enemy attacks. knockback < 0 uses hurt_knockback.
 ## Called by enemy attacks. knockback < 0 uses hurt_knockback, 0 = no push.
-## ignore_invulnerability: for constant attacks like clinging goblin claws.
+## ignore_invulnerability: also hits through the respawn protection.
 ## source: the enemy that dealt it (orbs pass whoever fired them); leave out for a
 ## hazard with no owner - the death camera then looks at from_pos instead.
 func take_damage(amount: float, from_pos: Vector2, knockback := -1.0, ignore_invulnerability := false, source = null) -> void:
@@ -650,7 +649,6 @@ func take_damage(amount: float, from_pos: Vector2, knockback := -1.0, ignore_inv
 	_hit_source = source if is_instance_valid(source) else null
 	_hit_pos = from_pos
 	health -= amount * (1.0 - clampf(Progress.stat(&"damage_reduction"), 0.0, 0.8))
-	_invuln = maxf(_invuln, invulnerable_time)
 	_hurt_flash = 0.18
 	health_changed.emit(health, max_health)
 	var push := hurt_knockback if knockback < 0.0 else knockback
@@ -721,7 +719,7 @@ func _respawn() -> void:
 	global_position = _spawn
 	velocity = Vector2.ZERO
 	health = max_health
-	_invuln = maxf(invulnerable_time, respawn_invulnerable)
+	_invuln = respawn_invulnerable
 	visible = true
 	health_changed.emit(health, max_health)
 	FxLib.smoke_burst(get_parent(), global_position, 0.7, Color(0.85, 0.85, 0.9), 10)
@@ -803,7 +801,7 @@ func _process(delta: float) -> void:
 	_hurt_flash = maxf(_hurt_flash - delta, 0.0)
 	var red := clampf(_hurt_flash / 0.18, 0.0, 1.0)
 	if _invuln > 0.0:
-		# blink while protected (respawn, or the skill-tree upgrade)
+		# blink while protected (just respawned)
 		_visual.modulate = Color(1.0, 1.0 - red * 0.7, 1.0 - red * 0.7, 0.35 if int(_invuln * 16.0) % 2 == 0 else 1.0)
 	elif red > 0.0:
 		_visual.modulate = Color(1.0, 1.0 - red * 0.7, 1.0 - red * 0.7, 1.0)

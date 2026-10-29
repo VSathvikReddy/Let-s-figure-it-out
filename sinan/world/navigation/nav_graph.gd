@@ -1,6 +1,6 @@
 class_name NavGraph
 extends Node2D
-## Platform navigation for grounded enemies (goblins) and air / perch points
+## Platform navigation for grounded enemies (goblins) and air points
 ## for flyers (bird, bats). Put one in the level; it finds every HangingBoard
 ## (group "platforms") plus the floor bodies listed below, and works out which
 ## surfaces connect:
@@ -251,17 +251,6 @@ func find_path(a: int, b: int, penalties := {}) -> Array:
 		path.push_front(l)
 		cur = l["from"]
 	return path
-
-
-## Spots on the boards where a flyer can land: [{id, u, pos}] (u = 0..1 along
-## the board, so a perched flyer can ride a swinging board with point_on()).
-func perch_spots() -> Array[Dictionary]:
-	var out: Array[Dictionary] = []
-	for s in surfaces:
-		if s["one_way"]:
-			var u := randf_range(0.25, 0.75)
-			out.append({"id": s["id"], "u": u, "pos": point_on(s["id"], u)})
-	return out
 
 
 ## A point u (0..1) along a surface, where it is right now.

@@ -229,7 +229,7 @@ func _puff(amount: int) -> void:
 
 
 func _process(_delta: float) -> void:
-	queue_redraw()
+	View.redraw(self, 2)  # the wobble updates at 30 fps; movement stays smooth
 
 
 func _draw() -> void:

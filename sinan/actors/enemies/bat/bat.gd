@@ -65,7 +65,7 @@ func _physics_process(delta: float) -> void:
 	if _dead:
 		return
 	# the flap clip is the wing clock (it plays at flap_rate beats per second)
-	if _anim_name == &"flap" and anim.is_playing() and anim.current_animation_length > 0.0:
+	if _anim_name == &"flap" and anim.active and anim.is_playing() and anim.current_animation_length > 0.0:
 		_phase = anim.current_animation_position / anim.current_animation_length
 	else:
 		_phase = fposmod(_phase + flap_rate * delta, 1.0)
@@ -88,7 +88,8 @@ func _physics_process(delta: float) -> void:
 		# springy steering toward the spot the flock wants (k_p / k_d)
 		var to := desired - global_position
 		velocity += (to * 9.0 - velocity * 3.2) * delta
-		velocity += _separation() * delta
+		if View.sees(self, global_position, 120.0):
+			velocity += _separation() * delta  # spacing only matters where you can see it
 	velocity = velocity.limit_length(1000.0 if tight_follow else 720.0)
 	global_position += velocity * delta
 	# never below the ground: skim along it and bounce back up
@@ -131,8 +132,8 @@ func _check_contact() -> void:
 # ---------------------------------------------------------------- animation
 
 func _process(delta: float) -> void:
-	if visual == null or _dead:
-		return
+	if visual == null or _dead or not View.cull(self, anim, 120.0):
+		return  # off screen: no animation (the wing clock runs in physics)
 	var want := &"dive" if attacking else &"flap"
 	if want != _anim_name and anim.has_animation(want):
 		_anim_name = want

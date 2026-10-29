@@ -153,7 +153,10 @@ func _physics_process(delta: float) -> void:
 				_set_state(State.REGROUP)
 			elif _t >= _gather_for:
 				if not (randf() < paint_attack_chance and _start_paint_tell()):
-					_start_player_tell()
+					if is_instance_valid(_player) and _player.is_alive():
+						_start_player_tell()
+					else:
+						_to_gather()  # player respawning: circle a little longer
 		State.REGROUP:
 			_move_lead(_centroid(), cruise_speed * 0.4, delta)
 			_tight = lerpf(_tight, 0.6, 1.0 - exp(-3.0 * delta))
@@ -231,7 +234,8 @@ func _move_lead(target: Vector2, speed: float, delta: float) -> void:
 func _record_trail() -> void:
 	_trail.append(_lead)
 	_trail_in.append(1 if _in_canvas else 0)
-	if _trail.size() > TRAIL_MAX:
+	# trimmed in batches (a slice every frame would copy the whole trail each time)
+	if _trail.size() > TRAIL_MAX * 2:
 		_trail = _trail.slice(_trail.size() - TRAIL_MAX)
 		_trail_in = _trail_in.slice(_trail_in.size() - TRAIL_MAX)
 
@@ -256,7 +260,7 @@ func _steer_bats(delta: float) -> void:
 			b.desired = _trail[k] + Vector2(sin(_t * 9.0 + i) * 5.0, cos(_t * 7.0 + i) * 5.0)
 			var in_canvas := _trail_in[k] == 1
 			b.depth = move_toward(b.depth, paint_depth if in_canvas else 1.0, delta * 3.5)
-			b.collision_layer = 0 if b.depth < 0.95 else 2
+			_set_layer(b, 0 if b.depth < 0.95 else 2)
 			if in_canvas and _state == State.PAINT_RUN:
 				_rake(b)
 			continue
@@ -265,7 +269,13 @@ func _steer_bats(delta: float) -> void:
 		var wobble := Vector2(sin(_t * 3.0 + i), cos(_t * 2.3 + i * 1.7)) * 10.0
 		b.desired = _lead + o * _tight + wobble
 		b.depth = move_toward(b.depth, 1.0, delta * 3.5)
-		b.collision_layer = 2
+		_set_layer(b, 2)
+
+
+## Only when it changes: every set is a call into the physics server.
+func _set_layer(b: CollisionObject2D, layer: int) -> void:
+	if b.collision_layer != layer:
+		b.collision_layer = layer
 
 
 func _begin_stream(at_player: bool) -> void:

@@ -62,6 +62,7 @@ var _end := Vector2(0, 120)
 var _last_start := Vector2.INF
 var _last_end := Vector2.INF
 var _front: Node2D
+var _still := 0   # frames at rest; a settled chain sleeps until an end moves
 
 
 func _ready() -> void:
@@ -77,6 +78,7 @@ func _ready() -> void:
 
 ## Knock the chain: adds velocity to the links near a local point.
 func poke(local_point: Vector2, impulse: Vector2, radius := 40.0) -> void:
+	_still = 0  # wake up
 	var dt := 1.0 / 60.0
 	for i in _pts.size():
 		var f := 1.0 - clampf(_pts[i].distance_to(local_point) / radius, 0.0, 1.0)
@@ -134,6 +136,7 @@ func _rebuild() -> void:
 		_prev[i] = p
 	_last_start = _start
 	_last_end = _end
+	_still = 0
 	_redraw()
 
 
@@ -141,13 +144,19 @@ func _physics_process(delta: float) -> void:
 	_read_ends()
 	if _pts.size() < 2:
 		return
+	var moved := _start.distance_squared_to(_last_start) + _end.distance_squared_to(_last_end) > 0.0001
+	if not moved and _still > 20 and not Engine.is_editor_hint():
+		return  # settled and nothing pulled it: no simulation, no redraw
 	# in the editor the ends are being dragged around: re-lay the chain
 	if Engine.is_editor_hint() and (_start.distance_to(_last_start) > 0.5 or _end.distance_to(_last_end) > 0.5):
 		_rebuild()
 	_last_start = _start
 	_last_end = _end
-	_simulate(delta)
-	_redraw()
+	var motion := _simulate(delta)
+	_still = 0 if moved or motion > 0.0025 else _still + 1
+	# off screen it keeps simulating (so it is right when you get there) but skips drawing
+	if Engine.is_editor_hint() or View.sees(self, to_global((_start + _end) * 0.5), 300.0 + _seg * _pts.size()):
+		_redraw()
 
 
 func _redraw() -> void:
@@ -157,13 +166,25 @@ func _redraw() -> void:
 		_front.queue_redraw()
 
 
-func _simulate(delta: float) -> void:
+## One Verlet step. Returns the largest squared link speed (px/frame), so the
+## caller can tell when the chain has come to rest.
+func _simulate(delta: float) -> float:
 	var n := _pts.size()
+	# fully taut (it holds a board): a real chain is then a straight line, so
+	# skip the solver and put the links on it (the common case for every board)
+	if pin_end and _start.distance_to(_end) >= _seg * (n - 1):
+		for i in n:
+			var on_line := _start.lerp(_end, float(i) / (n - 1))
+			_prev[i] = on_line
+			_pts[i] = on_line
+		return 0.0
 	var keep := exp(-drag * delta)
 	var acc := Vector2(0, gravity) * delta * delta
+	var motion := 0.0
 	for i in n:
 		var p := _pts[i]
 		var v := (p - _prev[i]) * keep
+		motion = maxf(motion, v.length_squared())
 		_prev[i] = p
 		_pts[i] = p + v + acc
 	for _k in iterations:
@@ -201,6 +222,7 @@ func _simulate(delta: float) -> void:
 				var on_line := _start.lerp(_end, float(i) / (n - 1))
 				_pts[i] = _pts[i].lerp(on_line, taut)
 				_prev[i] = _prev[i].lerp(on_line, taut * 0.8)
+	return motion
 
 
 func _draw() -> void:

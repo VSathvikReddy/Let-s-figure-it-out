@@ -1,7 +1,9 @@
 class_name GameData
 extends Resource
-## All drop numbers in one place. The live values are in
-## sinan/data/game_data.tres - select it and edit in the Inspector.
+## All drop AND spawning numbers in one place. The live values are in
+## sinan/systems/data/game_data.tres - select it and edit in the Inspector.
+## Spawning: which enemies come out of portals and how often, how many may be
+## alive, how long portals stay open, and when the Forger visits.
 ## Enemies look up their drop table by name (their `drop_table` export).
 ## Every drop is a coin: it bursts out, then flies to the player (PickupField)
 ## and goes to Progress.
@@ -24,6 +26,36 @@ enum Pickup { COIN }
 @export var priest_drops: Array[DropEntry] = []
 ## Coins that pop out when a portal closes (plus the Rift Bounty upgrade).
 @export var portal_drops: Array[DropEntry] = []
+
+@export_group("Spawning")
+## Which enemies portals push out, and how often each is picked (weight).
+@export var spawn_table: Array[SpawnEntry] = []
+## Portals stop pushing out enemies while this many are alive (a whole bat
+## flock counts as one). The Forger also stops opening portals.
+@export var max_enemies_alive := 12
+## Maximum portals open at the same time (the Sealed Sky upgrade lowers it).
+@export var max_portals := 3
+## Seconds between enemies coming out of one portal.
+@export var portal_spawn_interval := 3.2
+## How long each portal stays open (random in this range).
+@export var portal_duration_min := 30.0
+@export var portal_duration_max := 40.0
+## Off (default): only the Forger opens portals. On: they also open by
+## themselves, first after first_portal_delay, then every interval.
+@export var auto_open_portals := false
+@export var first_portal_delay := 3.0
+@export var portal_interval_min := 10.0
+@export var portal_interval_max := 18.0
+
+@export_group("Forger Visits")
+## Seconds before the Forger's first visit, then seconds he stays away between
+## visits (random in this range; the Thin Veil upgrade makes it longer).
+@export var forger_first_visit := 4.0
+@export var forger_away_min := 22.0
+@export var forger_away_max := 38.0
+## Portals he tears open per visit (random in this range, capped by max_portals).
+@export var portals_per_visit_min := 1
+@export var portals_per_visit_max := 2
 
 @export_group("Drop Spread")
 ## Every coin bursts out on its own. Burst speed range...
@@ -79,6 +111,73 @@ func spawn_drops(world: Node, pos: Vector2, table_name: StringName) -> void:
 		var vel := Vector2.UP.rotated(randf_range(-spread, spread)) * randf_range(drop_speed_min, drop_speed_max)
 		field.add_piece(pos, vel, Pickup.COIN, i * drop_stagger)
 
+
+# ---------------------------------------------------------------- spawning
+
+## Enemies alive for spawn limits: a whole bat flock counts as ONE enemy
+## (single bats are in the "swarm" group), so a flock cannot block every portal.
+static func unit_count(tree: SceneTree) -> int:
+	return tree.get_nodes_in_group("enemies").size() - tree.get_nodes_in_group("swarm").size() \
+		+ tree.get_nodes_in_group("bat_flocks").size()
+
+
+## May another enemy come out right now?
+func can_spawn(tree: SceneTree) -> bool:
+	return max_enemies_alive <= 0 or unit_count(tree) < max_enemies_alive
+
+
+## A random enemy from the spawn table (by weight), skipping any at its own
+## max_alive. Null if nothing can spawn.
+func pick_enemy(tree: SceneTree) -> PackedScene:
+	var ok: Array[SpawnEntry] = []
+	var total := 0.0
+	for e in spawn_table:
+		if e and e.scene != "" and e.weight > 0.0 and (e.max_alive <= 0 or _alive_of(tree, e.scene) < e.max_alive):
+			ok.append(e)
+			total += e.weight
+	var roll := randf() * total
+	for e in ok:
+		roll -= e.weight
+		if roll <= 0.0:
+			return load(e.scene)
+	return null if ok.is_empty() else load(ok[-1].scene)
+
+
+func _alive_of(tree: SceneTree, scene: String) -> int:
+	var n := 0
+	for g in [&"enemies", &"bat_flocks"]:
+		for e in tree.get_nodes_in_group(g):
+			if e.scene_file_path == scene:
+				n += 1
+	return n
+
+
+## How many portals may be open at once (the Sealed Sky upgrade lowers it).
+func portal_limit() -> int:
+	return maxi(1, max_portals - int(Progress.stat(&"portal_max_reduce")))
+
+
+## Seconds a new portal stays open (the Short Rifts upgrade shortens it).
+func portal_duration() -> float:
+	return randf_range(portal_duration_min, portal_duration_max) * maxf(0.2, 1.0 - Progress.stat(&"portal_duration"))
+
+
+## Enemies a portal open for `duration` seconds pushes out.
+func portal_enemy_count(duration: float) -> int:
+	var interval := portal_spawn_interval * (1.0 + Progress.stat(&"portal_spawn_slow"))
+	return maxi(1, int(duration / maxf(interval, 0.1)))
+
+
+## Seconds the Forger stays away before his next visit.
+func forger_away_time() -> float:
+	return randf_range(forger_away_min, forger_away_max) * (1.0 + Progress.stat(&"forger_rarity"))
+
+
+func portals_per_visit() -> int:
+	return randi_range(portals_per_visit_min, maxi(portals_per_visit_min, portals_per_visit_max))
+
+
+# ---------------------------------------------------------------- pickups
 
 ## The level's PickupField (created on first use).
 func get_pickup_field(world: Node) -> Node:

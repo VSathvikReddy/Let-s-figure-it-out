@@ -158,6 +158,10 @@ var _hit_t := 0.0
 var _hit_done := false
 var _hit_damage := 0.0
 var _hit_knock := 0.0
+var _hit_reach := 0.0       # how far in front the open swing reaches
+var _ground_cache := {}     # ledge checks: 8 px spot -> floor below (cleared often)
+var _ground_cache_t := 0.0
+var _think_dt := 0.0        # time since its AI last ran (it thinks less often far off screen)
 var _step_t := 0.0
 var _settle_for := 0.3
 var _wander_dir := 0.0
@@ -256,11 +260,25 @@ func debug_state() -> String:
 func _physics_process(delta: float) -> void:
 	if _state == State.DEAD:
 		return
+	# far off screen the AI runs every few frames; it still falls and moves every frame
+	var step := delta
+	_think_dt += delta
+	if not View.think(self):
+		if not is_on_floor():
+			velocity.y = minf(velocity.y + gravity * step, 1500.0)
+		move_and_slide()
+		return
+	delta = _think_dt  # timers catch up on the frames it skipped
+	_think_dt = 0.0
 	_state_t += delta
 	_charge_cd -= delta
 	_leap_cd -= delta
 	_gap -= delta
 	_repath_t -= delta
+	_ground_cache_t -= delta
+	if _ground_cache_t <= 0.0:
+		_ground_cache_t = 0.15  # boards swing: forget old answers quickly
+		_ground_cache.clear()
 	# a turn that is not used is given back, so it cannot block the pack
 	if _token and _state in [State.CHASE, State.SETTLE, State.PATROL, State.NAV_WALK, State.IDLE]:
 		_token_idle += delta
@@ -268,7 +286,7 @@ func _physics_process(delta: float) -> void:
 			_release_token()
 	else:
 		_token_idle = 0.0
-	for k in _penalties.keys():
+	for k in (_penalties.keys() if not _penalties.is_empty() else []):
 		_penalties[k] -= delta * 0.5
 		if _penalties[k] <= 0.0:
 			_penalties.erase(k)
@@ -278,11 +296,11 @@ func _physics_process(delta: float) -> void:
 		_nav = get_tree().get_first_node_in_group("nav_graph")
 	var on_floor := is_on_floor()
 	if not on_floor:
-		velocity.y = minf(velocity.y + gravity * delta, 1500.0)
+		velocity.y = minf(velocity.y + gravity * step, 1500.0)
 
 	var to := Vector2.ZERO
 	var dist := INF
-	if is_instance_valid(_player):
+	if is_instance_valid(_player) and _player.is_alive():  # a dead player is not hunted
 		to = _player.global_position - global_position
 		dist = to.length()
 	if on_floor and _nav:
@@ -361,7 +379,8 @@ func _physics_process(delta: float) -> void:
 	if now_floor and not _was_floor and _fall_speed > 250.0:
 		_kick(Vector2(1.0 + 0.25 * clampf(_fall_speed / 900.0, 0.0, 1.0), 1.0 - 0.28 * clampf(_fall_speed / 900.0, 0.0, 1.0)))
 	_was_floor = now_floor
-	_animate_body(delta)
+	if View.cull(self, anim):  # off screen: no animation or squash (nobody sees it)
+		_animate_body(delta)
 
 
 func _set_state(s: State) -> void:
@@ -634,7 +653,7 @@ func _heavy_slash() -> void:
 	_play(&"heavy", true)
 	velocity.x = _face * 160.0
 	_kick(Vector2(1.3, 0.78))
-	_open_hit(heavy_damage, heavy_knockback)
+	_open_hit(heavy_damage, heavy_knockback, heavy_slash_radius)
 	_spawn_slash(heavy_slash_radius, 18.0, heavy_slash_glow, -125.0, 70.0, 0.32)
 	_dust(12, 1.4)
 	get_tree().call_group("player", "add_trauma", 0.14, global_position)
@@ -688,7 +707,7 @@ func _update_combo(delta: float) -> void:
 
 func _quick_slash(damage: float, knockback: float) -> void:
 	_play(&"slash_a" if _swing_down else &"slash_b", true)
-	_open_hit(damage, knockback)
+	_open_hit(damage, knockback, slash_radius)
 	_kick(Vector2(1.12, 0.9) if _swing_down else Vector2(0.92, 1.1))
 	if _swing_down:
 		_spawn_slash(slash_radius, 11.0, slash_glow, -110.0, 55.0, 0.2)
@@ -700,7 +719,8 @@ func _quick_slash(damage: float, knockback: float) -> void:
 
 # ---------------------------------------------------------------- hitting
 
-func _open_hit(damage: float, knockback: float) -> void:
+func _open_hit(damage: float, knockback: float, reach: float) -> void:
+	_hit_reach = reach
 	_hit_t = hit_window
 	_hit_done = false
 	_hit_damage = damage
@@ -719,7 +739,7 @@ func _update_hit(delta: float) -> void:
 	var hit: bool = _player in attack_hitbox.get_overlapping_bodies()
 	if not hit:
 		var d: Vector2 = _player.global_position - global_position
-		hit = d.x * _face > -10.0 and d.x * _face < heavy_slash_radius + 20.0 and absf(d.y) < 55.0
+		hit = d.x * _face > -10.0 and d.x * _face < _hit_reach + 20.0 and absf(d.y) < 55.0
 	if hit and _player.has_method("take_damage"):
 		_hit_done = true
 		_player.take_damage(_hit_damage, global_position, _hit_knock, false, self)
@@ -740,11 +760,18 @@ func _ground_ahead(dir: float) -> bool:
 	return _ground_ahead_at(global_position.x + dir * ledge_check_distance)
 
 
+## Floor within 60 px below x? Answers are cached for a moment per 8 px spot:
+## most frames ask the same question again (ledge checks, lane checks).
 func _ground_ahead_at(x: float) -> bool:
+	var key := Vector2i(floori(x / 8.0), floori(global_position.y / 4.0))
+	if _ground_cache.has(key):
+		return _ground_cache[key]
 	var from := Vector2(x, global_position.y)
 	var ex: Array[RID] = [get_rid()]
 	var q := PhysicsRayQueryParameters2D.create(from, from + Vector2(0, 60), 1, ex)
-	return not get_world_2d().direct_space_state.intersect_ray(q).is_empty()
+	var hit := not get_world_2d().direct_space_state.intersect_ray(q).is_empty()
+	_ground_cache[key] = hit
+	return hit
 
 
 # ---------------------------------------------------------------- procedural animation

@@ -15,13 +15,12 @@ var cut_time := 0.7   # the line appears (grows from its centre, flickers) befor
 var open_time := 0.45
 var spawn_duration := 3.0
 var close_time := 0.3
-var enemy_scenes: Array[PackedScene] = []
 var enemies_to_spawn := 4
+## Picks the enemies and holds the "how many alive" limit.
+var game_data: GameData
 var edge_color := Color(1.0, 0.95, 1.0)
 var glow_color := Color(0.7, 0.35, 1.0)
 var void_color := Color(0.03, 0.0, 0.06)
-## Skip spawning while this many enemies are alive (0 = no limit).
-var max_enemies_alive := 0
 ## Called when the portal snaps shut.
 var on_closed: Callable
 
@@ -63,7 +62,9 @@ func _process(delta: float) -> void:
 				_next(Phase.SPAWN)
 		Phase.SPAWN:
 			var interval := spawn_duration / maxf(enemies_to_spawn, 1)
-			while _spawned < enemies_to_spawn and _t >= _spawned * interval:
+			# one per frame at most; while the level is full it waits (and tries
+			# again) instead of using up the spawn
+			if _spawned < enemies_to_spawn and _t >= _spawned * interval:
 				_spawn_enemy()
 			if _t >= spawn_duration:
 				_next(Phase.CLOSE)
@@ -96,14 +97,12 @@ func _openness() -> float:
 
 
 func _spawn_enemy() -> void:
-	_spawned += 1
-	if enemy_scenes.is_empty():
+	if game_data == null or not game_data.can_spawn(get_tree()):
 		return
-	if max_enemies_alive > 0 and PortalDirector.unit_count(get_tree()) >= max_enemies_alive:
-		return
-	var scene: PackedScene = enemy_scenes.pick_random()
+	var scene := game_data.pick_enemy(get_tree())
 	if scene == null:
 		return
+	_spawned += 1
 	var e := scene.instantiate() as Node2D
 	e.position = position + Vector2(randf_range(-max_width, max_width) * 0.3, height * 0.15)
 	get_parent().add_child(e)

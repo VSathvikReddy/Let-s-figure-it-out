@@ -25,6 +25,7 @@ var _age := PackedFloat32Array()
 var _life := PackedFloat32Array()
 var _size := PackedFloat32Array()
 var _tex: Texture2D
+var _drawn := false   # something is on screen from the last draw
 
 
 func _ready() -> void:
@@ -65,6 +66,12 @@ func count() -> int:
 
 
 func _process(delta: float) -> void:
+	if _pos.is_empty():
+		if _drawn:
+			_drawn = false
+			queue_redraw()  # clear the last frame once, then sleep
+		return
+	_drawn = true
 	global_position = Vector2.ZERO
 	var keep := 1.0 - exp(-drag * delta)
 	var i := 0

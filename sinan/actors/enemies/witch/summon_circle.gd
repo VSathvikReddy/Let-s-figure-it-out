@@ -19,7 +19,7 @@ func _process(delta: float) -> void:
 	if not visible:
 		return
 	_t += delta
-	queue_redraw()
+	View.redraw(self)
 
 
 func _draw() -> void:

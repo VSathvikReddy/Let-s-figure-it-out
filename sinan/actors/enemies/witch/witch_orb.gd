@@ -137,7 +137,7 @@ func _hex_blast(r: float) -> void:
 func _process(_delta: float) -> void:
 	var charging := _state == State.CHARGE
 	_light.energy = (0.6 if charging else 1.2) * scale.x + 0.3 * sin(_age * 20.0)
-	queue_redraw()
+	View.redraw(self, 2)  # the flicker updates at 30 fps; movement stays smooth
 
 
 func _draw() -> void:

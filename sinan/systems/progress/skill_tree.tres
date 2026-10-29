@@ -35,20 +35,6 @@ per_level = 0.1
 requires = &"vitality"
 requires_level = 2
 
-[sub_resource type="Resource" id="Resource_resilience"]
-script = ExtResource("2_up")
-id = &"resilience"
-branch = &"Health"
-title = "Resilience"
-description = "+0.15 s of invulnerability after a hit."
-max_level = 4
-base_cost = 50
-cost_growth = 1.6
-stat = &"invuln_time"
-per_level = 0.15
-requires = &"vitality"
-requires_level = 1
-
 [sub_resource type="Resource" id="Resource_thick_skin"]
 script = ExtResource("2_up")
 id = &"thick_skin"
@@ -289,7 +275,7 @@ requires_level = 1
 
 [resource]
 script = ExtResource("1_tree")
-upgrades = Array[ExtResource("2_up")]([SubResource("Resource_vitality"), SubResource("Resource_mending"), SubResource("Resource_resilience"), SubResource("Resource_thick_skin"), SubResource("Resource_unlock_rocket"), SubResource("Resource_firepower"), SubResource("Resource_trigger_finger"), SubResource("Resource_sharp_machete"), SubResource("Resource_unlock_brush"), SubResource("Resource_wide_strokes"), SubResource("Resource_quick_drying"), SubResource("Resource_steady_hand"), SubResource("Resource_lucky_coins"), SubResource("Resource_magnetism"), SubResource("Resource_bounty"), SubResource("Resource_short_rifts"), SubResource("Resource_thin_veil"), SubResource("Resource_sealed_sky"), SubResource("Resource_shadow_ward"), SubResource("Resource_rift_bounty")])
+upgrades = Array[ExtResource("2_up")]([SubResource("Resource_vitality"), SubResource("Resource_mending"), SubResource("Resource_thick_skin"), SubResource("Resource_unlock_rocket"), SubResource("Resource_firepower"), SubResource("Resource_trigger_finger"), SubResource("Resource_sharp_machete"), SubResource("Resource_unlock_brush"), SubResource("Resource_wide_strokes"), SubResource("Resource_quick_drying"), SubResource("Resource_steady_hand"), SubResource("Resource_lucky_coins"), SubResource("Resource_magnetism"), SubResource("Resource_bounty"), SubResource("Resource_short_rifts"), SubResource("Resource_thin_veil"), SubResource("Resource_sealed_sky"), SubResource("Resource_shadow_ward"), SubResource("Resource_rift_bounty")])
 weapon_scenes = Array[PackedScene]([ExtResource("3_pistol"), ExtResource("4_rocket"), ExtResource("5_orb"), ExtResource("6_brush")])
 weapon_names = PackedStringArray("Pistol", "Rocket Launcher", "Entropy Orb Staff", "Paint Brush Staff")
 weapon_unlock_stats = Array[StringName]([&"", &"unlock_rocket", &"", &"unlock_brush"])

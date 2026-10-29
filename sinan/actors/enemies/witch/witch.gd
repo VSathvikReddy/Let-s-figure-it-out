@@ -198,6 +198,10 @@ var _recent_surfaces: Array[int] = []
 var _ghost_actions := 0      # actions taken while her ghosts are out (max 1)
 var _vis_scale := Vector2.ONE
 var _tp_scale := Vector2.ONE # squash used by the teleport collapse / burst
+var _tp_tw: Tween            # the teleport tell squash
+var _ground_cache := {}      # ledge checks: 8 px spot -> floor ahead
+var _ground_cache_t := 0.0
+var _think_dt := 0.0         # time since her AI last ran (less often far off screen)
 var _nav: NavGraph
 var _feet := 35.0          # bottom of the collision shape (from the scene)
 var _summon_cd := 3.0       # first summon a few seconds in
@@ -265,6 +269,16 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	if _state == State.DEAD:
 		return
+	# far off screen the AI runs every few frames; she still falls and moves every frame
+	var step := delta
+	_think_dt += delta
+	if not View.think(self):
+		if not is_on_floor():
+			velocity.y = minf(velocity.y + gravity * step, 1400.0)
+		move_and_slide()
+		return
+	delta = _think_dt  # timers catch up on the frames she skipped
+	_think_dt = 0.0
 	_t += delta
 	_state_t += delta
 	_melee_cd -= delta
@@ -281,7 +295,7 @@ func _physics_process(delta: float) -> void:
 		_ghost_actions = 0
 
 	if not is_on_floor():
-		velocity.y = minf(velocity.y + gravity * delta, 1400.0)
+		velocity.y = minf(velocity.y + gravity * step, 1400.0)
 
 	match _state:
 		State.MOVE:
@@ -345,6 +359,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _set_state(s: State) -> void:
+	if _state == State.TELEPORT_TELL and s != State.TELEPORT_TELL and _tp_tw:
+		_tp_tw.kill()  # interrupted (or done): the squash springs back in _process
 	_state = s
 	_state_t = 0.0
 	if s == State.MOVE:
@@ -354,7 +370,7 @@ func _set_state(s: State) -> void:
 # ---------------------------------------------------------------- decisions
 
 func _decide() -> void:
-	if not is_instance_valid(_player):
+	if not is_instance_valid(_player) or not _player.is_alive():
 		_move_dir = 0.0
 		return
 	var to: Vector2 = _player.global_position - global_position
@@ -442,8 +458,16 @@ func _can_see_player() -> bool:
 
 
 func _ground_ahead(dir: float) -> bool:
-	# short ray: the floor far below a board does not count as ground ahead
-	return _ground_at(global_position.x + dir * ledge_check_distance, _feet + 50.0) != null
+	# short ray: the floor far below a board does not count as ground ahead.
+	# Cached for a moment per 8 px spot (asked every frame while walking).
+	var x := global_position.x + dir * ledge_check_distance
+	var key := Vector2i(floori(x / 8.0), floori(global_position.y / 4.0))
+	if _t - _ground_cache_t > 0.15:
+		_ground_cache_t = _t
+		_ground_cache.clear()
+	if not _ground_cache.has(key):
+		_ground_cache[key] = _ground_at(x, _feet + 50.0) != null
+	return _ground_cache[key]
 
 
 ## Floor point under x (searching `depth` px down), or null.
@@ -653,9 +677,9 @@ func _start_teleport() -> void:
 	# the tell: rune flare, sparks sucked into her, a crouch then a stretch
 	FxLib.flash_light(get_parent(), global_position, magic_color, 2.2, 1.4, teleport_tell)
 	_converge_fx()
-	var tw := create_tween()
-	tw.tween_property(self, "_tp_scale", Vector2(1.12, 0.9), teleport_tell * 0.7).set_trans(Tween.TRANS_SINE)
-	tw.tween_property(self, "_tp_scale", Vector2(0.7, 1.32), teleport_tell * 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	_tp_tw = create_tween()
+	_tp_tw.tween_property(self, "_tp_scale", Vector2(1.12, 0.9), teleport_tell * 0.7).set_trans(Tween.TRANS_SINE)
+	_tp_tw.tween_property(self, "_tp_scale", Vector2(0.7, 1.32), teleport_tell * 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
 
 
 func _teleport() -> void:
@@ -810,6 +834,8 @@ func _die() -> void:
 # ---------------------------------------------------------------- visuals
 
 func _process(delta: float) -> void:
+	if not View.cull(self, anim):
+		return  # off screen: no animation or staff glow (nobody sees it)
 	_appear = move_toward(_appear, 1.0, delta * 4.0)
 	modulate.a = _appear * (1.0 - _dissolve)
 	if _state != State.TELEPORT_TELL:

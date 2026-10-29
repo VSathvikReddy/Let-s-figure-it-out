@@ -4,7 +4,8 @@ extends RefCounted
 ##
 ## Performance: one-shot bursts go through burst(), which REUSES finished
 ## emitters with the same settings instead of creating a new node every hit,
-## and gradient() returns one shared Gradient per colour ramp.
+## and gradient() returns one shared Gradient per colour ramp (both look
+## their cache up by a hash, not a string). Effects off screen are skipped.
 
 static var _glow: GradientTexture2D
 static var _puff: GradientTexture2D
@@ -26,7 +27,7 @@ const POOL_TOTAL := 600
 
 static func gradient(stops: Array) -> Gradient:
 	## stops: [[offset, Color], ...]. Shared: do not edit the returned Gradient.
-	var key := str(stops)
+	var key := stops.hash()
 	var cached: Gradient = _gradients.get(key)
 	if cached:
 		return cached
@@ -239,7 +240,9 @@ static func spawn(parent: Node, p: CPUParticles2D, pos: Vector2, rot := 0.0) -> 
 ## same settings that already finished is reused instead of building a new one.
 ## Same options as emitter(); rot turns the emission direction.
 static func burst(parent: Node, opts: Dictionary, pos: Vector2, rot := 0.0) -> CPUParticles2D:
-	var key := str(opts)
+	if not View.sees(parent, pos, 220.0):
+		return null  # nobody would see it
+	var key := opts.hash()
 	var p: CPUParticles2D = null
 	var idle: Array = _pool.get(key, [])
 	while p == null and not idle.is_empty():
@@ -266,7 +269,7 @@ static func burst(parent: Node, opts: Dictionary, pos: Vector2, rot := 0.0) -> C
 static func _recycle(p: CPUParticles2D) -> void:
 	if not is_instance_valid(p) or not p.is_inside_tree():
 		return
-	var key: String = p.get_meta("fx_key")
+	var key: int = p.get_meta("fx_key")
 	var idle: Array = _pool.get_or_add(key, [])
 	if idle.size() >= POOL_PER_KIND or _pooled >= POOL_TOTAL:
 		p.queue_free()
@@ -307,6 +310,8 @@ static func flash_white(ci: CanvasItem, time := 0.15) -> void:
 
 
 static func flash_light(parent: Node, pos: Vector2, color: Color, energy: float, size: float, time: float) -> PointLight2D:
+	if not View.sees(parent, pos, 64.0 * size):
+		return null
 	var l := PointLight2D.new()
 	l.texture = glow()
 	l.color = color
@@ -326,22 +331,22 @@ static func flash_light(parent: Node, pos: Vector2, color: Color, energy: float,
 
 static func muzzle(parent: Node, pos: Vector2, dir: Vector2) -> void:
 	var rot := dir.angle()
-	spawn(parent, emitter({
+	burst(parent, {
 		"amount": 14, "life": 0.25, "v_min": 300.0, "v_max": 750.0, "spread": 22.0,
 		"direction": Vector2.RIGHT, "texture": streak(), "align": true,
 		"angle_min": 0.0, "angle_max": 0.0, "spin_min": 0.0, "spin_max": 0.0,
 		"s_min": 0.4, "s_max": 0.9, "additive": true, "ramp": spark_ramp(),
 		"damp_min": 200.0, "damp_max": 450.0,
-	}), pos, rot)
-	spawn(parent, emitter({
+	}, pos, rot)
+	burst(parent, {
 		"amount": 8, "life": 0.18, "v_min": 40.0, "v_max": 160.0, "spread": 35.0,
 		"direction": Vector2.RIGHT, "s_min": 0.4, "s_max": 0.9, "additive": true,
-	}), pos, rot)
-	spawn(parent, emitter({
+	}, pos, rot)
+	burst(parent, {
 		"amount": 10, "life": 0.6, "v_min": 60.0, "v_max": 190.0, "spread": 38.0,
 		"direction": Vector2.RIGHT, "ramp": smoke_ramp(), "s_min": 0.25, "s_max": 0.6,
 		"curve": grow(), "gravity": Vector2(0, -30), "damp_min": 40.0, "damp_max": 90.0,
-	}), pos, rot)
+	}, pos, rot)
 	flash_light(parent, pos, Color(1.0, 0.7, 0.3), 2.5, 2.2, 0.18)
 
 
@@ -349,66 +354,66 @@ static func muzzle(parent: Node, pos: Vector2, dir: Vector2) -> void:
 ## s < 1 shrinks the whole effect for hits deep in the painting.
 static func impact_small(parent: Node, pos: Vector2, normal: Vector2, s := 1.0) -> void:
 	var rot := normal.angle()
-	spawn(parent, emitter(scaled({
+	burst(parent, scaled({
 		"amount": 10, "life": 0.25, "v_min": 150.0, "v_max": 520.0, "spread": 60.0,
 		"direction": Vector2.RIGHT, "texture": streak(), "align": true,
 		"angle_min": 0.0, "angle_max": 0.0, "spin_min": 0.0, "spin_max": 0.0,
 		"s_min": 0.25, "s_max": 0.6, "additive": true, "ramp": spark_ramp(),
 		"gravity": Vector2(0, 700),
-	}, s)), pos, rot)
-	spawn(parent, emitter(scaled({
+	}, s), pos, rot)
+	burst(parent, scaled({
 		"amount": 4, "life": 0.4, "v_min": 20.0, "v_max": 70.0, "spread": 50.0,
 		"direction": Vector2.RIGHT, "ramp": smoke_ramp(0.4), "s_min": 0.15, "s_max": 0.35,
 		"curve": grow(),
-	}, s)), pos, rot)
+	}, s), pos, rot)
 	flash_light(parent, pos, Color(1.0, 0.75, 0.4), 1.5, 1.0 * s, 0.1)
 
 
 ## Pistol muzzle: smaller flash, no smoke cloud.
 static func muzzle_small(parent: Node, pos: Vector2, dir: Vector2) -> void:
-	spawn(parent, emitter({
+	burst(parent, {
 		"amount": 6, "life": 0.12, "v_min": 200.0, "v_max": 500.0, "spread": 18.0,
 		"direction": Vector2.RIGHT, "texture": streak(), "align": true,
 		"angle_min": 0.0, "angle_max": 0.0, "spin_min": 0.0, "spin_max": 0.0,
 		"s_min": 0.25, "s_max": 0.5, "additive": true, "ramp": spark_ramp(),
-	}), pos, dir.angle())
+	}, pos, dir.angle())
 	flash_light(parent, pos, Color(1.0, 0.8, 0.45), 1.4, 1.2, 0.08)
 
 
 ## Spent brass flipping out of the ejection port.
 static func casing(parent: Node, pos: Vector2, aim: Vector2) -> void:
 	var back := -signf(aim.x) if aim.x != 0.0 else -1.0
-	spawn(parent, emitter({
+	burst(parent, {
 		"amount": 1, "life": 0.7, "life_rand": 0.0, "texture": null, "curve": null,
 		"direction": Vector2(back * 0.45, -1.0).normalized(), "spread": 15.0,
 		"v_min": 160.0, "v_max": 240.0, "gravity": Vector2(0, 1100),
 		"s_min": 3.0, "s_max": 3.0, "spin_min": 500.0, "spin_max": 900.0,
 		"ramp": gradient([[0.0, Color(1.0, 0.8, 0.35, 1.0)], [0.8, Color(0.85, 0.6, 0.25, 1.0)], [1.0, Color(0.85, 0.6, 0.25, 0.0)]]),
-	}), pos)
+	}, pos)
 
 
 ## Billowing smoke for deaths and big blasts: dark core puffs that swell, rise
 ## and fade, plus a few lighter wisps.
 static func smoke_burst(parent: Node, pos: Vector2, size := 1.0, color := Color(0.25, 0.22, 0.25), amount := 14) -> void:
-	spawn(parent, emitter({
+	burst(parent, {
 		"amount": amount, "life": 1.5, "life_rand": 0.4, "explosiveness": 0.9,
 		"v_min": 30.0 * size, "v_max": 130.0 * size, "damp_min": 60.0, "damp_max": 120.0,
 		"gravity": Vector2(0, -55), "emit_radius": 8.0 * size,
 		"ramp": gradient([[0.0, Color(color, 0.0)], [0.12, Color(color, 0.75)], [1.0, Color(color.darkened(0.3), 0.0)]]),
 		"s_min": 0.6 * size, "s_max": 1.5 * size, "curve": grow(),
-	}), pos)
-	spawn(parent, emitter({
+	}, pos)
+	burst(parent, {
 		"amount": maxi(amount / 2, 3), "life": 1.1, "explosiveness": 0.8,
 		"v_min": 50.0 * size, "v_max": 170.0 * size, "damp_min": 80.0, "damp_max": 140.0,
 		"gravity": Vector2(0, -80),
 		"ramp": gradient([[0.0, Color(color.lightened(0.35), 0.5)], [1.0, Color(color.lightened(0.35), 0.0)]]),
 		"s_min": 0.3 * size, "s_max": 0.7 * size, "curve": grow(),
-	}), pos)
+	}, pos)
 
 
 static func dust(parent: Node, pos: Vector2, amount := 8, strength := 1.0) -> void:
-	spawn(parent, emitter({
+	burst(parent, {
 		"amount": amount, "life": 0.45, "v_min": 30.0 * strength, "v_max": 130.0 * strength,
 		"spread": 75.0, "direction": Vector2.UP, "ramp": dust_ramp(),
 		"s_min": 0.15, "s_max": 0.4, "curve": grow(), "damp_min": 120.0, "damp_max": 240.0,
-	}), pos)
+	}, pos)

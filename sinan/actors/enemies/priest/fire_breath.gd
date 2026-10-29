@@ -5,9 +5,10 @@ extends Node2D
 ## While it burns it hurts the player inside the cone (on a tick), ignites any
 ## smoke it touches, and scorches the painting at the end of the flame.
 ## Rotate the node to aim (0 = +x). Call start() / stop().
+## The flame and soot are engine particle emitters (simulated in C++), so a
+## crowd of priests breathing at once stays cheap.
 
 const FxLib := preload("res://sinan/fx/core/fx_lib.gd")
-const FireParticles := preload("res://sinan/fx/core/fire_particles.gd")
 const SmokeManager := preload("res://sinan/actors/enemies/priest/smoke_manager.gd")
 const PaintPicker := preload("res://sinan/painting/paint_picker.gd")
 
@@ -24,26 +25,43 @@ const PaintPicker := preload("res://sinan/painting/paint_picker.gd")
 
 var active := false
 var _tick := 0.0
-var _spawn := 0.0
-var _fire: Node2D
-var _soot: Node2D
+var _fire: CPUParticles2D
+var _soot: CPUParticles2D
 var _light: PointLight2D
 
 
 func _ready() -> void:
 	z_index = 5
-	_soot = FireParticles.new()
-	_soot.additive = false
-	_soot.buoyancy = 120.0
-	_soot.drag = 1.5
+	var speed := length * 3.0  # with the damping below the jet reaches about `length`
+	# flame: white-hot at the mouth, billows (swells), slows and rises as it cools
+	_fire = FxLib.emitter({
+		"one_shot": false, "amount": maxi(int(flame_rate * 0.55), 8), "life": 0.5, "life_rand": 0.2,
+		"direction": Vector2.RIGHT, "spread": rad_to_deg(half_angle) * 0.75,
+		"v_min": speed * 0.8, "v_max": speed * 1.05, "damp_min": speed * 1.25, "damp_max": speed * 1.25,
+		"gravity": Vector2(0, -180), "texture": FxLib.glow(), "additive": true,
+		"s_min": flame_size.x / 128.0 * 1.3, "s_max": flame_size.y / 128.0 * 1.1, "curve": _billow(),
+		"spin_min": 0.0, "spin_max": 0.0,
+		"ramp": FxLib.gradient([
+			[0.0, Color(1.0, 0.85, 0.55, 0.65)], [0.2, Color(1.0, 0.5, 0.12, 0.75)],
+			[0.5, Color(0.85, 0.22, 0.05, 0.6)], [0.8, Color(0.45, 0.07, 0.03, 0.3)],
+			[1.0, Color(0.15, 0.03, 0.02, 0.0)]]),
+	})
+	_fire.emitting = false
+	# soot rolling off the end of the flame
+	_soot = FxLib.emitter({
+		"one_shot": false, "amount": maxi(int(flame_rate * 0.15), 4), "life": 1.1, "life_rand": 0.3,
+		"direction": Vector2(1.0, -0.6), "spread": 25.0, "v_min": 40.0, "v_max": 80.0,
+		"gravity": Vector2(0, -120), "damp_min": 20.0, "damp_max": 40.0, "texture": FxLib.glow(),
+		"s_min": flame_size.y / 128.0 * 0.9, "s_max": flame_size.y / 128.0 * 1.4, "curve": FxLib.grow(),
+		"ramp": FxLib.gradient([
+			[0.0, Color(0.15, 0.1, 0.1, 0.0)], [0.2, Color(0.14, 0.11, 0.12, 0.45)],
+			[1.0, Color(0.2, 0.18, 0.2, 0.0)]]),
+	})
+	_soot.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
+	_soot.emission_rect_extents = Vector2(length * 0.2, 6.0)
+	_soot.position = Vector2(length * 0.7, 0)
+	_soot.emitting = false
 	add_child(_soot)
-	_fire = FireParticles.new()
-	_fire.ramp = FxLib.gradient([
-		[0.0, Color(1.0, 0.75, 0.35, 0.6)], [0.2, Color(1.0, 0.5, 0.12, 0.75)],
-		[0.5, Color(0.85, 0.22, 0.05, 0.6)], [0.8, Color(0.45, 0.07, 0.03, 0.3)],
-		[1.0, Color(0.15, 0.03, 0.02, 0.0)]])
-	_fire.buoyancy = 180.0
-	_fire.drag = 1.9
 	add_child(_fire)
 	_light = PointLight2D.new()
 	_light.texture = FxLib.glow()
@@ -54,36 +72,31 @@ func _ready() -> void:
 	add_child(_light)
 
 
+## Swell fast, then shrink away as it cools.
+static func _billow() -> Curve:
+	var c := Curve.new()
+	c.add_point(Vector2(0.0, 0.35))
+	c.add_point(Vector2(0.3, 1.0))
+	c.add_point(Vector2(1.0, 0.5))
+	return c
+
+
 func start() -> void:
 	active = true
 	_tick = 0.0
+	_fire.emitting = true
+	_soot.emitting = true
 
 
 func stop() -> void:
 	active = false
+	if _fire:
+		_fire.emitting = false
+		_soot.emitting = false
 
 
 func _process(delta: float) -> void:
 	_light.energy = move_toward(_light.energy, 1.8 if active else 0.0, delta * 8.0)
-	if not active:
-		return
-	# speed and drag tuned so the jet reaches about `length`
-	var speed := length * 3.0
-	var origin := global_position
-	var dir := Vector2.from_angle(global_rotation)
-	_spawn += flame_rate * delta
-	while _spawn >= 1.0:
-		_spawn -= 1.0
-		var a := randf_range(-half_angle, half_angle) * 0.75
-		var v := dir.rotated(a) * speed * randf_range(0.8, 1.05)
-		var life := randf_range(0.4, 0.6)
-		_fire.emit(origin + dir * randf_range(0.0, 8.0), v, randf_range(flame_size.x, flame_size.y), life)
-		if randf() < 0.3:
-			# white-hot core right at the mouth
-			_fire.emit(origin, dir.rotated(a * 0.3) * speed * 0.6, flame_size.x, 0.1)
-		if randf() < 0.12:
-			_soot.emit(origin + dir * length * randf_range(0.5, 0.9), dir * 60.0 + Vector2(0, -40),
-				flame_size.y * randf_range(0.9, 1.4), randf_range(0.8, 1.4))
 
 
 func _physics_process(delta: float) -> void:

@@ -22,7 +22,7 @@ extends CharacterBody2D
 ##   Torso/FrontLeg/Talons - Marker2D at the claw tip: strikes hit from here
 ##   Torso/*Wing       - skinned wings: Skeleton2D with Arm + Hand bones, so the
 ##                       wing bends at the wrist (tip lags, folds on the upstroke)
-##   AnimationPlayer   - flap, tuck, strike, claw_windup, land, perch,
+##   AnimationPlayer   - flap, tuck, strike, claw_windup, land,
 ##                       scratch, hurt. "flap" and "scratch" are 1-cycle loops the
 ##                       script scrubs in step with the physics, so each
 ##                       downstroke you key is the one that lifts the bird.
@@ -143,6 +143,7 @@ var _hit_at := 0.0
 var _flyby := false
 
 var _flight: DepthFlight
+var _canvas_tw: Tween   # the flight back out of the painting
 var _layer: Node2D
 var _scratch_from := Vector2.ZERO
 var _scratch_dir := Vector2.RIGHT
@@ -207,7 +208,7 @@ func _physics_process(delta: float) -> void:
 	# lift is read from where the wings are in the clip, so the two always match
 	if _state in [State.TO_CANVAS, State.SCRATCH, State.FROM_CANVAS]:
 		_rate = flap_rate_max * (1.15 if _state == State.SCRATCH else 0.9)
-	if _anim_name in [&"flap", &"scratch"] and anim.is_playing() and anim.current_animation_length > 0.0:
+	if _anim_name in [&"flap", &"scratch"] and anim.active and anim.is_playing() and anim.current_animation_length > 0.0:
 		_phase = anim.current_animation_position / anim.current_animation_length
 	elif _is_beating():
 		_phase = fposmod(_phase + _rate * delta, 1.0)
@@ -276,7 +277,9 @@ func _physics_process(delta: float) -> void:
 				_set_state(State.FLY)
 				_kick_flap(260.0)
 
-	move_and_slide()
+	# it collides with nothing (mask 0), so a plain move does what move_and_slide
+	# would, without the physics motion test every frame
+	global_position += velocity * get_physics_process_delta_time()
 	_keep_above_floor()
 	if absf(velocity.x) > 30.0 and _state in [State.FLY, State.RECOVER, State.CLAW, State.FEINT]:
 		_face = signf(velocity.x)
@@ -386,7 +389,7 @@ func _update_fly(delta: float) -> void:
 	var wander := Vector2(sin(_t * 0.7 + get_instance_id()) * 60.0, sin(_t * 1.1) * 30.0)
 	_fly_toward(_hover_point() + wander, delta)
 	_think -= delta
-	if _think <= 0.0 and is_instance_valid(_player):
+	if _think <= 0.0 and is_instance_valid(_player) and _player.is_alive():
 		_think = randf_range(think_interval.x, think_interval.y)
 		_choose_action()
 
@@ -594,10 +597,12 @@ func _return_from_canvas() -> void:
 	reparent(world)
 	z_as_relative = true
 	z_index = 3
-	var tw := create_tween().set_parallel(true)
-	tw.tween_property(self, "global_position", _hover_point(), canvas_fly_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tw.tween_property(self, "scale", Vector2.ONE, canvas_fly_time)
-	tw.chain().tween_callback(func():
+	_canvas_tw = create_tween().set_parallel(true)
+	_canvas_tw.tween_property(self, "global_position", _hover_point(), canvas_fly_time).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	_canvas_tw.tween_property(self, "scale", Vector2.ONE, canvas_fly_time)
+	_canvas_tw.chain().tween_callback(func():
+		if _state == State.DEAD:
+			return  # died on the way out: stay without a hitbox
 		collision_layer = _layer_bits
 		if _state == State.FROM_CANVAS:
 			velocity = Vector2(_face * 120.0, -60.0)
@@ -631,8 +636,8 @@ func _wanted_anim() -> StringName:
 
 
 func _process(delta: float) -> void:
-	if visual == null:
-		return
+	if visual == null or not View.cull(self, anim):
+		return  # off screen: no animation (the wing clock runs in physics)
 	rotation = 0.0  # body never rolls over; all tilt is done on the rig (clamped below)
 	if _trail:
 		_trail.emitting = (_state in [State.CLAW, State.DIVE] and not _hit_done) or _state == State.SCRATCH
@@ -734,6 +739,8 @@ func on_explosion_damage(pos: Vector2, radius: float, damage: float) -> void:
 func _die(from_pos: Vector2) -> void:
 	_set_state(State.DEAD)
 	collision_layer = 0
+	if _canvas_tw:
+		_canvas_tw.kill()  # its fall below owns the position now
 	died.emit()
 	var world := get_parent()
 	if world is Parallax2D and is_instance_valid(_home):
@@ -754,6 +761,6 @@ func _die(from_pos: Vector2) -> void:
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(self, "position", position + Vector2(away * 50.0, 120.0), 0.6).set_ease(Tween.EASE_IN)
 	tw.tween_property(visual, "rotation", away * PI * 2.0, 0.6)
+	tw.tween_property(self, "scale", Vector2.ONE, 0.3)  # back to full size if it died in depth
 	tw.tween_property(visual, "modulate:a", 0.0, 0.6).set_delay(0.2)
 	tw.chain().tween_callback(queue_free)
-

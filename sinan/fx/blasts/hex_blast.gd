@@ -70,7 +70,7 @@ func _process(delta: float) -> void:
 	if _bolt_t <= 0.0:
 		_bolt_t = 0.05
 		_make_bolts()  # crackle
-	queue_redraw()
+	View.redraw(self)
 	if _t > 1.6:
 		queue_free()
 

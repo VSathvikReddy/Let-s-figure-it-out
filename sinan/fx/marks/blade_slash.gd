@@ -24,7 +24,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
-	queue_redraw()
+	View.redraw(self)
 	if _t >= life:
 		queue_free()
 

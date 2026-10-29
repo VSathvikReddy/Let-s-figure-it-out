@@ -5,34 +5,17 @@ extends Node2D
 ## each stays open far longer than the Forger's visit, pushing out enemies at a
 ## steady rate, then closes and drops coins. The Forger skill-tree branch
 ## weakens it (shorter portals, slower spawns, fewer at once).
+## All spawning numbers (which enemies, how many, how long) are in
+## game_data.tres; this node only places and draws the portals.
 ## Add one to a level (portal_director.tscn).
 
 const Portal := preload("res://sinan/world/portals/portal.gd")
 const FxLib := preload("res://sinan/fx/core/fx_lib.gd")
 
-@export var enemy_scenes: Array[PackedScene] = []
-
-@export_group("Timing")
-## Off (default): only the Forger opens portals. On: portals also open by themselves.
-@export var auto_open := false
-## Seconds before the first portal.
-@export var first_portal_delay := 3.0
-## Seconds between new portals (random in this range).
-@export var portal_interval_min := 10.0
-@export var portal_interval_max := 18.0
-## How long each portal stays open (random in this range).
-@export var portal_duration_min := 30.0
-@export var portal_duration_max := 40.0
+## Spawning rules and portal rewards.
+@export var game_data: GameData = preload("res://sinan/systems/data/game_data.tres")
 ## The line-appears-then-tears opening (seconds).
 @export var opening_time := 0.7
-
-@export_group("Spawning")
-## Maximum portals open at the same time.
-@export var max_portals := 3
-## Seconds between enemies coming out of one portal.
-@export var spawn_interval := 3.2
-## Portals stop pushing out enemies while this many are alive.
-@export var max_enemies_alive := 12
 
 @export_group("Placement")
 ## Distance from the player (left or right) a portal opens at.
@@ -49,23 +32,14 @@ const FxLib := preload("res://sinan/fx/core/fx_lib.gd")
 @export var portal_width := 64.0
 @export var glow_color := Color(0.7, 0.35, 1.0)
 
-@export_group("Rewards")
-@export var game_data: GameData = preload("res://sinan/systems/data/game_data.tres")
-
 var _wait := 0.0
 var _portals: Array[Node2D] = []
 var _player
 
 
-## Enemies alive for spawn limits: a whole bat flock counts as ONE enemy
-## (single bats are in the "swarm" group), so a flock cannot block every portal.
-static func unit_count(tree: SceneTree) -> int:
-	return tree.get_nodes_in_group("enemies").size() - tree.get_nodes_in_group("swarm").size() 		+ tree.get_nodes_in_group("bat_flocks").size()
-
-
 func _ready() -> void:
 	add_to_group("portal_director")
-	_wait = first_portal_delay
+	_wait = game_data.first_portal_delay
 
 
 func _process(delta: float) -> void:
@@ -75,18 +49,18 @@ func _process(delta: float) -> void:
 	for i in range(_portals.size() - 1, -1, -1):
 		if not is_instance_valid(_portals[i]):
 			_portals.remove_at(i)
-	if not auto_open:
+	if not game_data.auto_open_portals:
 		return
 	_wait -= delta
 	if _wait > 0.0:
 		return
-	_wait = randf_range(portal_interval_min, portal_interval_max)
+	_wait = randf_range(game_data.portal_interval_min, game_data.portal_interval_max)
 	open_portal()
 
 
 ## How many portals may be open at once (Sealed Sky lowers it).
 func portal_limit() -> int:
-	return maxi(1, max_portals - int(Progress.stat(&"portal_max_reduce")))
+	return game_data.portal_limit()
 
 
 ## Open one portal at `at` (global), or near the player when not given.
@@ -101,16 +75,14 @@ func open_portal(at: Variant = null) -> Node2D:
 	if spot == null:
 		return null
 	var p := Portal.new()
-	var duration := randf_range(portal_duration_min, portal_duration_max) * maxf(0.2, 1.0 - Progress.stat(&"portal_duration"))
-	var interval := spawn_interval * (1.0 + Progress.stat(&"portal_spawn_slow"))
+	var duration := game_data.portal_duration()
 	p.height = portal_height
 	p.max_width = portal_width
 	p.glow_color = glow_color
 	p.cut_time = opening_time
 	p.spawn_duration = duration
-	p.enemies_to_spawn = maxi(1, int(duration / interval))
-	p.enemy_scenes = enemy_scenes
-	p.max_enemies_alive = max_enemies_alive
+	p.enemies_to_spawn = game_data.portal_enemy_count(duration)
+	p.game_data = game_data
 	p.on_closed = _on_portal_closed.bind(p)
 	var world := get_parent()
 	p.position = FxLib.to_parent_space(world, spot)
@@ -124,7 +96,7 @@ func _on_portal_closed(p: Node2D) -> void:
 		return
 	game_data.spawn_drops(get_parent(), p.global_position, &"portal")
 	var bonus := int(Progress.stat(&"portal_bounty"))
-	if bonus > 0 and game_data.use_batched_drops:
+	if bonus > 0:
 		var field = game_data.get_pickup_field(get_parent())
 		for i in bonus:
 			var v := Vector2.UP.rotated(randf_range(-1.2, 1.2)) * randf_range(200.0, 450.0)
@@ -132,6 +104,8 @@ func _on_portal_closed(p: Node2D) -> void:
 
 
 func _find_spot() -> Variant:
+	if not is_instance_valid(_player):
+		return null
 	var space := get_world_2d().direct_space_state
 	var pp: Vector2 = _player.global_position
 	var ex: Array[RID] = []

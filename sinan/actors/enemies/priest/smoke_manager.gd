@@ -43,6 +43,7 @@ enum { SMOKE, BURNING }
 var _puffs: Array = []
 var _damage_t := 0.0
 var _paint_t := 0.0
+var _spread_t := 0.0   # fire spread is checked at 20 Hz (it has its own delay anyway)
 var _time := 0.0
 var _fire: Node2D
 var _soot: Node2D
@@ -197,16 +198,42 @@ func _process(delta: float) -> void:
 				p[5] = p[4]  # gone
 			else:
 				burning.append(p)
-	# fire spreads to neighbouring puffs
-	for b in burning:
-		for p in _puffs:
-			if p[7] == SMOKE and p[9] < 0.0 and (p[0] as Vector2).distance_to(b[0]) < (p[2] + b[2]) * spread_reach:
-				p[9] = spread_delay * randf_range(0.5, 1.5)
+	_spread_t -= delta
+	if not burning.is_empty() and _spread_t <= 0.0:
+		_spread_t = 0.05
+		_spread(burning)
 	_puffs = _puffs.filter(func(p): return p[4] < p[5])
 	if not burning.is_empty():
 		_burn(burning)
 	_emit_fire(burning, delta)
 	queue_redraw()
+
+
+## Fire jumps from burning puffs to smoke puffs close enough. The smoke is
+## bucketed into a grid first, so each burning puff only checks the cells
+## around it - not every puff in the cloud (that was burning x all, every frame).
+func _spread(burning: Array) -> void:
+	var cell := 0.0
+	for p in _puffs:
+		cell = maxf(cell, p[2])
+	cell = maxf(cell * 2.0 * spread_reach, 16.0)  # two of the biggest puffs touching fit in one cell
+	var grid := {}
+	for p in _puffs:
+		if p[7] == SMOKE and p[9] < 0.0:
+			var k := Vector2i(floori(p[0].x / cell), floori(p[0].y / cell))
+			if grid.has(k):
+				grid[k].append(p)
+			else:
+				grid[k] = [p]
+	if grid.is_empty():
+		return
+	for b in burning:
+		var c := Vector2i(floori(b[0].x / cell), floori(b[0].y / cell))
+		for dx in range(-1, 2):
+			for dy in range(-1, 2):
+				for p in grid.get(c + Vector2i(dx, dy), []):
+					if p[9] < 0.0 and (p[0] as Vector2).distance_to(b[0]) < (p[2] + b[2]) * spread_reach:
+						p[9] = spread_delay * randf_range(0.5, 1.5)
 
 
 ## Flame and soot particles from every burning puff, plus one light that

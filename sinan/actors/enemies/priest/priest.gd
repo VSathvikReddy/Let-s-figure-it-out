@@ -89,6 +89,8 @@ var health := 14.0
 
 var _state := State.FLOAT
 var _t := 0.0
+var _think_dt := 0.0   # time since its AI last ran (less often far off screen)
+var _cloth_dt := 0.0   # cloth is simulated at 30 fps (it is soft and slow)
 var _face := 1.0
 var _player
 var _nav: NavGraph
@@ -144,6 +146,15 @@ func _scale() -> float:
 func _physics_process(delta: float) -> void:
 	if _state == State.DEAD:
 		return
+	# far off screen the AI runs every few frames; it still drifts every frame
+	var step := delta
+	_think_dt += delta
+	if not View.think(self):
+		global_position += velocity * step
+		NavGraph.keep_above_ground(self, ROBE_HEM * _scale() * 0.5)
+		return
+	delta = _think_dt
+	_think_dt = 0.0
 	_t += delta
 	_seq_cd -= delta
 	_burst_cd -= delta
@@ -155,7 +166,7 @@ func _physics_process(delta: float) -> void:
 	var dist := global_position.distance_to(pp)
 
 	# too close: burst (from any calm state)
-	if dist < burst_range and _burst_cd <= 0.0 and _state in [State.FLOAT, State.MOVE, State.ORB_WINDUP]:
+	if dist < burst_range and _burst_cd <= 0.0 and _player_alive() and _state in [State.FLOAT, State.MOVE, State.ORB_WINDUP]:
 		_set_state(State.BURST_TELL)
 
 	match _state:
@@ -226,7 +237,8 @@ func _physics_process(delta: float) -> void:
 			if _t >= hurt_time:
 				_set_state(State.FLOAT)
 
-	move_and_slide()
+	# it collides with nothing (mask 0): a plain move, no physics motion test
+	global_position += velocity * step
 	NavGraph.keep_above_ground(self, ROBE_HEM * _scale() * 0.5)
 	_aim_breath()
 
@@ -302,7 +314,13 @@ func _pick_spot() -> Variant:
 
 # ---------------------------------------------------------------- deciding
 
+func _player_alive() -> bool:
+	return is_instance_valid(_player) and _player.is_alive()
+
+
 func _decide(dist: float) -> void:
+	if not _player_alive():
+		return  # nothing to attack while the player is respawning
 	if dist < preferred_range.x * 0.8 or dist > preferred_range.y * 1.25:
 		var spot: Variant = _pick_spot()
 		if spot != null:
@@ -432,19 +450,26 @@ func _wanted_anim() -> StringName:
 
 
 func _process(delta: float) -> void:
-	if _state == State.DEAD:
-		return
+	if _state == State.DEAD or not View.cull(self, anim):
+		return  # off screen: no animation or cloth (nobody sees it)
 	var want := _wanted_anim()
 	if want != _anim_name and anim.has_animation(want):
 		_anim_name = want
 		anim.play(want, 0.0 if want in [&"burst", &"throw"] else 0.15)
 	visual.scale = Vector2(_face, 1.0)
-	# cloth trails the movement (velocity in its own facing space)
+	# cloth trails the movement (velocity in its own facing space). Each strip
+	# rebuilds its mesh when driven, so it runs every other frame (staggered per
+	# priest) with the time of both frames - the soft cloth looks the same.
+	_cloth_dt += delta
+	if (Engine.get_process_frames() + get_instance_id()) % 2 != 0:
+		return
+	var dt := _cloth_dt
+	_cloth_dt = 0.0
 	var local_vx := velocity.x * _face
-	_robe.call("drive", local_vx, delta)
-	_stole.call("drive", local_vx, delta)
-	_cloth_f.call("drive", local_vx * 0.7 + _sleeve_f.rotation * -40.0, delta)
-	_cloth_b.call("drive", local_vx * 0.7 + _sleeve_b.rotation * -40.0, delta)
+	_robe.call("drive", local_vx, dt)
+	_stole.call("drive", local_vx, dt)
+	_cloth_f.call("drive", local_vx * 0.7 + _sleeve_f.rotation * -40.0, dt)
+	_cloth_b.call("drive", local_vx * 0.7 + _sleeve_b.rotation * -40.0, dt)
 
 
 # ---------------------------------------------------------------- damage

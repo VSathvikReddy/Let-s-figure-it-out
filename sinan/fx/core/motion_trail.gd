@@ -38,6 +38,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _ages.is_empty() and not emitting:
+		return  # nothing to age or record
 	global_position = Vector2.ZERO
 	global_rotation = 0.0
 	# age points; drop the old ones (oldest are first)

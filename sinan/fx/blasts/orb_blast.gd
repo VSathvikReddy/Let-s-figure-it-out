@@ -48,7 +48,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
-	queue_redraw()
+	View.redraw(self)
 	if _t > 2.5:
 		queue_free()
 

@@ -10,22 +10,18 @@ uniform float edge_wobble = 3.0;    // how much the border wavers like smoke (te
 uniform float haze = 0.45;          // strength of the dark haze just outside the body
 uniform float ink_swirl = 0.02;     // faint moving texture inside the body
 
-float a_at(sampler2D tex, vec2 uv) {
-	return texture(tex, uv).a;
-}
-
 void fragment() {
 	// wobble the lookup a little so the border shifts like smoke
 	vec2 wob = vec2(sin(UV.y * 90.0 + TIME * 3.1), cos(UV.x * 80.0 - TIME * 2.7)) * edge_wobble * TEXTURE_PIXEL_SIZE;
 	vec2 uv = UV + wob;
 	vec2 r1 = TEXTURE_PIXEL_SIZE * edge_blur;
-	float sum = a_at(TEXTURE, uv);
+	float sum = texture(TEXTURE, uv).a;  // (TEXTURE cannot be passed to a function)
 	float outer = 0.0;
 	for (int i = 0; i < 8; i++) {
 		float ang = float(i) * 0.785398 + 0.39;
 		vec2 d = vec2(cos(ang), sin(ang));
-		sum += a_at(TEXTURE, uv + d * r1);
-		outer = max(outer, a_at(TEXTURE, uv + d * r1 * 2.2));
+		sum += texture(TEXTURE, uv + d * r1).a;
+		outer = max(outer, texture(TEXTURE, uv + d * r1 * 2.2).a);
 	}
 	float body = sum / 9.0;                       // blurred silhouette
 	body = smoothstep(0.08, 0.85, body);
