@@ -28,6 +28,7 @@ window/stretch/aspect="expand"
 player="player"
 enemy="enemy"
 level_bounds=""
+destructible=""
 
 [input]
 

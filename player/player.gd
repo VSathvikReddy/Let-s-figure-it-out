@@ -23,6 +23,8 @@ extends CharacterBody2D
 @onready var left_particle: GPUParticles2D = $Sprite2D/leftparti
 @onready var right_particle: GPUParticles2D = $Sprite2D/rightparti
 
+
+
 func _ready() -> void:
 	_set_jetpacks_visible(false)
 

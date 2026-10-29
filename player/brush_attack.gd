@@ -12,7 +12,7 @@ class_name SectorAttack
 ##       └─ CollisionPolygon2D     <- leave empty, the script fills it
 
 const CHASE_SHARPNESS := 12.0
-@export var damage := 1
+@export var damage :int= 1
 
 @export var radius := 160.0
 @export var radmin := 40.0
@@ -100,10 +100,10 @@ func _apply_damage() -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	for body in hurtbox.get_overlapping_bodies():
-		if body.has_method("take_damage") and body.is_in_group("enemy"):
+		if body.has_method("take_damage") and  ( body.is_in_group("enemy") or body.is_in_group("destructible") ):
 			body.take_damage(damage)
 	for area in hurtbox.get_overlapping_areas():
-		if area.has_method("take_damage") and area.is_in_group("enemy"):
+		if area.has_method("take_damage") and ( area.is_in_group("enemy") or area.is_in_group("destructible") ):
 			area.take_damage(damage)
 	hurtbox.monitoring = false
 

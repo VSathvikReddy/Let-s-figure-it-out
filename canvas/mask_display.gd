@@ -14,7 +14,6 @@ var mat: ShaderMaterial
 
 
 func _ready() -> void:
-	
 	var sprites: Array[Sprite2D] = []
 	for c in get_children():
 		if c is Sprite2D:

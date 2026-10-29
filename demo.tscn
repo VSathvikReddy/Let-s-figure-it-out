@@ -1,18 +1,15 @@
-[gd_scene format=3 uid="uid://bf3g8u8305nc8"]
+[gd_scene format=3 uid="uid://lwsgmw7cv40q"]
 
-[ext_resource type="Script" uid="uid://bl8nrjfgit5pe" path="res://demo.gd" id="1_7058v"]
 [ext_resource type="PackedScene" uid="uid://bnp6j87rr6nc6" path="res://player/player.tscn" id="2_6uxse"]
-[ext_resource type="PackedScene" uid="uid://cytjvhjptoas" path="res://enemies/cannon/cannon.tscn" id="2_884kg"]
-[ext_resource type="PackedScene" uid="uid://bgggmdmw3ihsv" path="res://enemies/bomber/bomber.tscn" id="2_d4o4o"]
 [ext_resource type="Script" uid="uid://dwrl1rhhejxok" path="res://canvas/mask_display.gd" id="2_vcfbe"]
 [ext_resource type="Texture2D" uid="uid://ctaj3ej43ma4l" path="res://canvas/assets/hill_100.png" id="3_6uxse"]
 [ext_resource type="Texture2D" uid="uid://dj3p44iicn75t" path="res://canvas/assets/hill_80.png" id="4_r4ddi"]
 [ext_resource type="Texture2D" uid="uid://c4ppxj01obqtd" path="res://canvas/assets/hill_60.png" id="5_qxpsc"]
 [ext_resource type="Texture2D" uid="uid://luavej3y17ay" path="res://canvas/assets/hill_40.png" id="6_7yxti"]
+[ext_resource type="PackedScene" uid="uid://c50bwdl722kae" path="res://enemies/bat/thrower.tscn" id="7_d4o4o"]
 [ext_resource type="Texture2D" uid="uid://bl3f0j87qi7n8" path="res://canvas/assets/hill_20.png" id="7_uodgu"]
 
 [node name="Demo" type="Node2D" unique_id=1005141647]
-script = ExtResource("1_7058v")
 
 [node name="Canvas" type="Node2D" parent="." unique_id=347827446]
 script = ExtResource("2_vcfbe")
@@ -42,15 +39,13 @@ position = Vector2(577, 323)
 scale = Vector2(1.1386719, 1.8647058)
 texture = ExtResource("7_uodgu")
 
-[node name="Cannon" parent="." unique_id=1728814908 instance=ExtResource("2_884kg")]
-position = Vector2(870, 193)
-
-[node name="HeavyBomber" parent="." unique_id=383231011 instance=ExtResource("2_d4o4o")]
-position = Vector2(-97, 369)
+[node name="Thrower" parent="Canvas" unique_id=383231011 instance=ExtResource("7_d4o4o")]
+position = Vector2(838, -376)
 
 [node name="Player" parent="." unique_id=1428108754 instance=ExtResource("2_6uxse")]
 
 [node name="LevelBounds" type="ReferenceRect" parent="." unique_id=1469522004 groups=["level_bounds"]]
+visible = false
 offset_left = -618.0
 offset_top = -387.0
 offset_right = 1380.0
