@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bgggmdmw3ihsv"]
 
-[ext_resource type="Script" uid="uid://dl7so41ed7l3r" path="res://game_objects/suicidebomber/bomber.gd" id="1_kpdca"]
-[ext_resource type="Texture2D" uid="uid://b8ajht7gn015s" path="res://icon.svg" id="2_yvlhf"]
+[ext_resource type="Script" uid="uid://dl7so41ed7l3r" path="res://game_objects/enemies/suicidebomber/bomber.gd" id="1_rawpo"]
+[ext_resource type="Texture2D" uid="uid://b8ajht7gn015s" path="res://icon.svg" id="2_sdawp"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lisrb"]
 radius = 64.0
@@ -17,7 +17,7 @@ size = Vector2(64, 64)
 radius = 192.0
 
 [node name="CharacterBody2D" type="CharacterBody2D" unique_id=383231011]
-script = ExtResource("1_kpdca")
+script = ExtResource("1_rawpo")
 wander_speed = 80.0
 
 [node name="ContactZone" type="Area2D" parent="." unique_id=1997828865]
@@ -52,7 +52,7 @@ texture = SubResource("NoiseTexture2D_unkvp")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1269660307]
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_yvlhf")
+texture = ExtResource("2_sdawp")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1265723178]
 shape = SubResource("RectangleShape2D_unkvp")

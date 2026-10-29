@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://bqji1x44edi4e"]
+
+[ext_resource type="Script" uid="uid://d6owmrgag3jn" path="res://game_objects/weapons/pain_brush.gd" id="1_5pe3p"]
+[ext_resource type="Script" uid="uid://2522uv4n2kpl" path="res://attack_box.gd" id="1_mcnks"]
+
+[node name="MelleWepon" type="Node2D" unique_id=1390441842]
+script = ExtResource("1_5pe3p")
+
+[node name="AttackBox" type="Area2D" parent="." unique_id=521557797]
+script = ExtResource("1_mcnks")
+metadata/_custom_type_script = "uid://2522uv4n2kpl"
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="AttackBox" unique_id=599653122]
+position = Vector2(-1, 2)
+scale = Vector2(2.1687775, 2.1120312)
+polygon = PackedVector2Array(-11.456793, -24.644634, -11.456793, 25.355366, 1.54321, 23.355366, 7.543206, 18.355366, 17.543198, 6.3553734, 17.543198, -0.6446276, 13.543205, -14.644627, 6.543206, -19.64463)
