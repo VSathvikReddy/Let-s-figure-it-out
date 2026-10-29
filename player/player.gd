@@ -27,9 +27,9 @@ func _ready() -> void:
 func _physics_process(delta: float) -> void:
 	# 1. Read Inputs (Horizontal & Up Thrust Only)
 	var input_vector = Vector2.ZERO
-	input_vector.x = Input.get_axis("ui_left", "ui_right")
+	input_vector.x = Input.get_axis("move_left", "move_right")
 	
-	var is_thrusting_up = Input.is_action_pressed("ui_up")
+	var is_thrusting_up = Input.is_action_pressed("move_up")
 	
 	# 2. Apply Thrust & Fast Gravity Forces
 	if input_vector.x != 0:
@@ -70,3 +70,10 @@ func _set_jetpacks_visible(active: bool) -> void:
 		left_jetpack.visible = active
 	if right_jetpack:
 		right_jetpack.visible = active
+
+func take_damage(damage:int) ->void:
+	var tw := create_tween()
+	# Instantly turn fully white (modulate acts as a tint multiplier)
+	sprite.modulate = Color(5.0, 5.0, 5.0, 1.0) # HDR white for an extra bright flash, or Color.WHITE * 3
+	# Tween back to normal over 0.15 seconds
+	tw.tween_property(sprite, "modulate", Color.WHITE, 0.15)
