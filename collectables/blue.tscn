@@ -1,3 +1,18 @@
 [gd_scene format=3 uid="uid://dpfgoftoob6i5"]
 
-[node name="Blue" type="Node2D" unique_id=772716775]
+[ext_resource type="Script" uid="uid://bvtvi1pn67yti" path="res://collectables/gem.gd" id="1_7aikj"]
+[ext_resource type="Texture2D" uid="uid://mhaypj6vai5d" path="res://collectables/gems/gems/blue-Photoroom.png" id="2_h5e0r"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gxmxl"]
+radius = 26.076809
+
+[node name="Blue" type="Area2D" unique_id=1906171657]
+script = ExtResource("1_7aikj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=806838636]
+shape = SubResource("CircleShape2D_gxmxl")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=196670827]
+position = Vector2(4.7683716e-07, 4.7683716e-07)
+scale = Vector2(0.21875, 0.21875)
+texture = ExtResource("2_h5e0r")

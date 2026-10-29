@@ -27,6 +27,7 @@ enum State { WANDER, CHASE, BREATHE }
 @export var fireball_scene: PackedScene = preload("res://enemies/bat/fire ball.tscn")
 
 
+
 var state: State = State.WANDER
 var target_player: Node2D = null
 var wander_direction: Vector2 = Vector2.ZERO

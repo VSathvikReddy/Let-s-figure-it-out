@@ -1,5 +1,9 @@
 extends CharacterBody2D
 
+
+@export_group("Win Condition")
+@export var gems_required:int = 4
+
 ## --- Movement & Thruster Parameters ---
 @export_group("Thruster Forces")
 @export var horizontal_thrust: float = 600.0
@@ -23,7 +27,12 @@ extends CharacterBody2D
 @onready var left_particle: GPUParticles2D = $Sprite2D/leftparti
 @onready var right_particle: GPUParticles2D = $Sprite2D/rightparti
 
-
+var gems_collected:int=0:
+	set(value):
+		gems_collected = value
+		print(gems_collected)
+		if value >= gems_required:
+			print("Game Wons")
 
 func _ready() -> void:
 	_set_jetpacks_visible(false)
@@ -86,3 +95,7 @@ func take_damage(damage:int) ->void:
 	sprite.modulate = Color(5.0, 5.0, 5.0, 1.0) # HDR white for an extra bright flash, or Color.WHITE * 3
 	# Tween back to normal over 0.15 seconds
 	tw.tween_property(sprite, "modulate", Color.WHITE, 0.15)
+
+func collect_gem(gem:Gem)->void:
+	gems_collected+=1
+	gem.queue_free()

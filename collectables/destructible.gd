@@ -2,7 +2,7 @@ extends Area2D
 class_name Destructible
 
 @export var health: int = 3
-@export var spawn_scene: PackedScene = preload("res://enemies/bomber/bomber.tscn")
+@export var spawn_scene: PackedScene
 
 var state: int = 0:
 	set(value):

@@ -1,15 +1,27 @@
 [gd_scene format=3 uid="uid://lwsgmw7cv40q"]
 
+[ext_resource type="PackedScene" uid="uid://dpfgoftoob6i5" path="res://collectables/blue.tscn" id="1_n4w22"]
 [ext_resource type="PackedScene" uid="uid://bnp6j87rr6nc6" path="res://player/player.tscn" id="2_6uxse"]
 [ext_resource type="Script" uid="uid://dwrl1rhhejxok" path="res://canvas/mask_display.gd" id="2_vcfbe"]
 [ext_resource type="Texture2D" uid="uid://ctaj3ej43ma4l" path="res://canvas/assets/hill_100.png" id="3_6uxse"]
 [ext_resource type="Texture2D" uid="uid://dj3p44iicn75t" path="res://canvas/assets/hill_80.png" id="4_r4ddi"]
 [ext_resource type="Texture2D" uid="uid://c4ppxj01obqtd" path="res://canvas/assets/hill_60.png" id="5_qxpsc"]
 [ext_resource type="Texture2D" uid="uid://luavej3y17ay" path="res://canvas/assets/hill_40.png" id="6_7yxti"]
-[ext_resource type="PackedScene" uid="uid://c50bwdl722kae" path="res://enemies/bat/thrower.tscn" id="7_d4o4o"]
 [ext_resource type="Texture2D" uid="uid://bl3f0j87qi7n8" path="res://canvas/assets/hill_20.png" id="7_uodgu"]
 
 [node name="Demo" type="Node2D" unique_id=1005141647]
+
+[node name="Blue" parent="." unique_id=1906171657 instance=ExtResource("1_n4w22")]
+position = Vector2(132, 0)
+
+[node name="Blue2" parent="." unique_id=726904255 instance=ExtResource("1_n4w22")]
+position = Vector2(-3, 91)
+
+[node name="Blue3" parent="." unique_id=1331847568 instance=ExtResource("1_n4w22")]
+position = Vector2(-227, 0)
+
+[node name="Blue4" parent="." unique_id=98681816 instance=ExtResource("1_n4w22")]
+position = Vector2(-8, -123)
 
 [node name="Canvas" type="Node2D" parent="." unique_id=347827446]
 script = ExtResource("2_vcfbe")
@@ -38,9 +50,6 @@ texture = ExtResource("6_7yxti")
 position = Vector2(577, 323)
 scale = Vector2(1.1386719, 1.8647058)
 texture = ExtResource("7_uodgu")
-
-[node name="Thrower" parent="Canvas" unique_id=383231011 instance=ExtResource("7_d4o4o")]
-position = Vector2(838, -376)
 
 [node name="Player" parent="." unique_id=1428108754 instance=ExtResource("2_6uxse")]
 
