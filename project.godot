@@ -23,6 +23,11 @@ PaintCanvas="*uid://055rj44ske8j"
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[global_group]
+
+player="player"
+enemy="enemy"
+
 [input]
 
 attack={

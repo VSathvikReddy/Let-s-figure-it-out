@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://n5e70vie5tvo"]
+
+[ext_resource type="Script" uid="uid://byb3hp37ulog" path="res://enemies/cannon/bullet.gd" id="1_p66fo"]
+[ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="2_qf1mf"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wgfkt"]
+radius = 10.049875
+
+[node name="Bullet" type="Area2D" unique_id=2026631543]
+script = ExtResource("1_p66fo")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=876246752]
+position = Vector2(0, -2.3841858e-07)
+scale = Vector2(0.15, 0.15624999)
+texture = ExtResource("2_qf1mf")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=209448723]
+shape = SubResource("CircleShape2D_wgfkt")
+
+[node name="TrailParticles" type="CPUParticles2D" parent="." unique_id=2064626524]
+amount = 12
+lifetime = 0.25
+gravity = Vector2(0, 0)
+scale_amount_min = 2.0
+scale_amount_max = 4.0
+color = Color(0.84045684, 0.35624132, 0.25241622, 1)

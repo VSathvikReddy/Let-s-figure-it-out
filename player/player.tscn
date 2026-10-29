@@ -7,7 +7,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4uyoc"]
 size = Vector2(64, 64)
 
-[node name="Player" type="CharacterBody2D" unique_id=1428108754]
+[node name="Player" type="CharacterBody2D" unique_id=1428108754 groups=["player"]]
 script = ExtResource("1_rkbax")
 
 [node name="BrushAttack" parent="." unique_id=1935253786 instance=ExtResource("2_yw30f")]
