@@ -1,10 +1,8 @@
 extends Area2D
 
-# Signal emitted when the bullet hits the player
-signal turret_bullet_hit_player(damage: int)
 
 @export var speed: float = 450.0
-@export var damage: int = 10
+@export var damage: int = 1
 @export var explosion_scale:float = 5.0
 @export var max_lifetime: float = 1.0
 
@@ -28,7 +26,7 @@ func _physics_process(delta: float) -> void:
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
-		turret_bullet_hit_player.emit(damage)
+		body.take_damage(damage)
 		_trigger_explosion_and_die(Color(1.0, 0.2, 0.2))
 	elif not body.is_in_group("enemy"):
 		_trigger_explosion_and_die(Color(1.0, 0.8, 0.2))

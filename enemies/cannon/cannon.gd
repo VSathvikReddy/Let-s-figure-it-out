@@ -72,3 +72,7 @@ func _play_recoil_effect() -> void:
 	var tween := create_tween().set_parallel(true)
 	tween.tween_property(barrel_sprite, "position:x", 20.0, 0.15).set_trans(Tween.TRANS_SINE)
 	tween.tween_property(barrel_sprite, "modulate", Color.WHITE, 0.15)
+
+func take_damage(damage:int) ->void:
+	barrel_sprite.modulate = Color(5.0, 5.0, 5.0, 1.0) # Flash bright white
+	queue_free()

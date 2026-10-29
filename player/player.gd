@@ -77,3 +77,10 @@ func _set_jetpacks_visible(active: bool) -> void:
 	if right_jetpack:
 		right_jetpack.visible = active
 		right_particle.emitting = true
+
+func take_damage(damage:int) ->void:
+	var tw := create_tween()
+	# Instantly turn fully white (modulate acts as a tint multiplier)
+	sprite.modulate = Color(5.0, 5.0, 5.0, 1.0) # HDR white for an extra bright flash, or Color.WHITE * 3
+	# Tween back to normal over 0.15 seconds
+	tw.tween_property(sprite, "modulate", Color.WHITE, 0.15)

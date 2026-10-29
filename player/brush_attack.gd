@@ -12,6 +12,7 @@ class_name SectorAttack
 ##       └─ CollisionPolygon2D     <- leave empty, the script fills it
 
 const CHASE_SHARPNESS := 12.0
+@export var damage := 1
 
 @export var radius := 160.0
 @export var radmin := 40.0
@@ -22,7 +23,7 @@ const CHASE_SHARPNESS := 12.0
 @export var max_sweep := PI
 @export var brush_distance := 120.0
 @export var shockwave_time := 0.35
-@export var damage := 10
+
 @export var color_gradient: Gradient    # optional, white if left empty
 @export var hit_window := 0.1
 
@@ -99,10 +100,10 @@ func _apply_damage() -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	for body in hurtbox.get_overlapping_bodies():
-		if body.has_method("take_damage"):
+		if body.has_method("take_damage") and body.is_in_group("enemy"):
 			body.take_damage(damage)
 	for area in hurtbox.get_overlapping_areas():
-		if area.has_method("take_damage"):
+		if area.has_method("take_damage") and area.is_in_group("enemy"):
 			area.take_damage(damage)
 	hurtbox.monitoring = false
 
