@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bnbdjv8ycecsb"
-path="res://.godot/imported/violet-Photoroom.png-b472b8832694b1c13561327b70c062c3.ctex"
+uid="uid://bnmsf1k1mgikw"
+path="res://.godot/imported/green10.png-6c46b69e146f3fe7a199336d13152d89.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://collectables/assets/violet-Photoroom.png"
-dest_files=["res://.godot/imported/violet-Photoroom.png-b472b8832694b1c13561327b70c062c3.ctex"]
+source_file="res://collectables/assets/green10.png"
+dest_files=["res://.godot/imported/green10.png-6c46b69e146f3fe7a199336d13152d89.ctex"]
 
 [params]
 

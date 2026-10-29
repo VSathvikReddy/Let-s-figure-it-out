@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://di11mwktvs140"
-path="res://.godot/imported/violet_level50-Photoroom.png-9671657f2d6f3dc51a8309c471946402.ctex"
+uid="uid://dlitt6jr6vn45"
+path="res://.godot/imported/sparkle.png-68aa21e40e57c4d832fc1bcf4797ddc3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://collectables/assets/violet_level50-Photoroom.png"
-dest_files=["res://.godot/imported/violet_level50-Photoroom.png-9671657f2d6f3dc51a8309c471946402.ctex"]
+source_file="res://collectables/assets/sparkle.png"
+dest_files=["res://.godot/imported/sparkle.png-68aa21e40e57c4d832fc1bcf4797ddc3.ctex"]
 
 [params]
 

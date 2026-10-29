@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c50bwdl722kae"]
 
-[ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="1_58c1j"]
-[ext_resource type="Script" uid="uid://b5p4evfff4rxp" path="res://enemies/bat/thrower.gd" id="2_thrower"]
+[ext_resource type="Script" uid="uid://b5p4evfff4rxp" path="res://enemies/bat/bat.gd" id="1_ffxfj"]
+[ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="1_nwj43"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_unkvp"]
 size = Vector2(64, 64)
@@ -10,11 +10,11 @@ size = Vector2(64, 64)
 radius = 1039.1083
 
 [node name="Thrower" type="CharacterBody2D" unique_id=383231011 groups=["enemy"]]
-script = ExtResource("2_thrower")
+script = ExtResource("1_ffxfj")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1269660307]
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("1_58c1j")
+texture = ExtResource("1_nwj43")
 
 [node name="Hitbox" type="CollisionShape2D" parent="." unique_id=1265723178]
 shape = SubResource("RectangleShape2D_unkvp")

@@ -1,57 +1,60 @@
-[gd_scene format=3 uid="uid://lwsgmw7cv40q"]
+[gd_scene format=3 uid="uid://mxji7wtto15g"]
 
-[ext_resource type="PackedScene" uid="uid://dpfgoftoob6i5" path="res://collectables/blue.tscn" id="1_n4w22"]
-[ext_resource type="PackedScene" uid="uid://bnp6j87rr6nc6" path="res://player/player.tscn" id="2_6uxse"]
-[ext_resource type="Script" uid="uid://dwrl1rhhejxok" path="res://canvas/mask_display.gd" id="2_vcfbe"]
-[ext_resource type="Texture2D" uid="uid://ctaj3ej43ma4l" path="res://canvas/assets/hill_100.png" id="3_6uxse"]
-[ext_resource type="Texture2D" uid="uid://dj3p44iicn75t" path="res://canvas/assets/hill_80.png" id="4_r4ddi"]
-[ext_resource type="Texture2D" uid="uid://c4ppxj01obqtd" path="res://canvas/assets/hill_60.png" id="5_qxpsc"]
-[ext_resource type="Texture2D" uid="uid://luavej3y17ay" path="res://canvas/assets/hill_40.png" id="6_7yxti"]
-[ext_resource type="Texture2D" uid="uid://bl3f0j87qi7n8" path="res://canvas/assets/hill_20.png" id="7_uodgu"]
+[ext_resource type="PackedScene" uid="uid://bblrk7lheweab" path="res://collectables/blue_dest.tscn" id="1_uwe7w"]
+[ext_resource type="PackedScene" uid="uid://2bcbiv2evtrr" path="res://collectables/green_dest.tscn" id="2_ohoxa"]
+[ext_resource type="PackedScene" uid="uid://c64rr4ghmhxim" path="res://collectables/star_dest.tscn" id="3_6uato"]
+[ext_resource type="PackedScene" uid="uid://dfjm5kko0tanv" path="res://collectables/violet_dest.tscn" id="4_jethn"]
+[ext_resource type="Script" uid="uid://dwrl1rhhejxok" path="res://canvas/mask_display.gd" id="5_52ixd"]
+[ext_resource type="Texture2D" uid="uid://ctaj3ej43ma4l" path="res://canvas/assets/hill_100.png" id="6_u60dg"]
+[ext_resource type="Texture2D" uid="uid://dj3p44iicn75t" path="res://canvas/assets/hill_80.png" id="7_tqg24"]
+[ext_resource type="Texture2D" uid="uid://c4ppxj01obqtd" path="res://canvas/assets/hill_60.png" id="8_q0a81"]
+[ext_resource type="Texture2D" uid="uid://luavej3y17ay" path="res://canvas/assets/hill_40.png" id="9_mgf2i"]
+[ext_resource type="Texture2D" uid="uid://bl3f0j87qi7n8" path="res://canvas/assets/hill_20.png" id="10_ei6xs"]
+[ext_resource type="PackedScene" uid="uid://bnp6j87rr6nc6" path="res://player/player.tscn" id="11_1lmwf"]
 
 [node name="Demo" type="Node2D" unique_id=1005141647]
 
-[node name="Blue" parent="." unique_id=1906171657 instance=ExtResource("1_n4w22")]
-position = Vector2(132, 0)
+[node name="BlueDestructible" parent="." unique_id=511559028 instance=ExtResource("1_uwe7w")]
+position = Vector2(-70, 48)
 
-[node name="Blue2" parent="." unique_id=726904255 instance=ExtResource("1_n4w22")]
-position = Vector2(-3, 91)
+[node name="GreenDestructible" parent="." unique_id=1262935629 instance=ExtResource("2_ohoxa")]
+position = Vector2(-151, -90)
 
-[node name="Blue3" parent="." unique_id=1331847568 instance=ExtResource("1_n4w22")]
-position = Vector2(-227, 0)
+[node name="StarDestructible" parent="." unique_id=83410747 instance=ExtResource("3_6uato")]
+position = Vector2(-42, -108)
 
-[node name="Blue4" parent="." unique_id=98681816 instance=ExtResource("1_n4w22")]
-position = Vector2(-8, -123)
+[node name="VioletDestructible" parent="." unique_id=1616893594 instance=ExtResource("4_jethn")]
+position = Vector2(-159, 0)
 
 [node name="Canvas" type="Node2D" parent="." unique_id=347827446]
-script = ExtResource("2_vcfbe")
+script = ExtResource("5_52ixd")
 
 [node name="Sprite2D5" type="Sprite2D" parent="Canvas" unique_id=78959564]
 position = Vector2(568.5, 325.99997)
 scale = Vector2(0.53545123, 0.88397783)
-texture = ExtResource("3_6uxse")
+texture = ExtResource("6_u60dg")
 
 [node name="Sprite2D4" type="Sprite2D" parent="Canvas" unique_id=57850736]
 position = Vector2(577.5, 325)
 scale = Vector2(1.1142578, 1.8764706)
-texture = ExtResource("4_r4ddi")
+texture = ExtResource("7_tqg24")
 
 [node name="Sprite2D3" type="Sprite2D" parent="Canvas" unique_id=301533695]
 position = Vector2(579.5, 325.49997)
 scale = Vector2(1.1103516, 1.897059)
-texture = ExtResource("5_qxpsc")
+texture = ExtResource("8_q0a81")
 
 [node name="Sprite2D2" type="Sprite2D" parent="Canvas" unique_id=1397928555]
 position = Vector2(571.5, 327)
 scale = Vector2(1.1220703, 1.9176471)
-texture = ExtResource("6_7yxti")
+texture = ExtResource("9_mgf2i")
 
 [node name="Sprite2D" type="Sprite2D" parent="Canvas" unique_id=1799706105]
 position = Vector2(577, 323)
 scale = Vector2(1.1386719, 1.8647058)
-texture = ExtResource("7_uodgu")
+texture = ExtResource("10_ei6xs")
 
-[node name="Player" parent="." unique_id=1428108754 instance=ExtResource("2_6uxse")]
+[node name="Player" parent="." unique_id=1428108754 instance=ExtResource("11_1lmwf")]
 
 [node name="LevelBounds" type="ReferenceRect" parent="." unique_id=1469522004 groups=["level_bounds"]]
 visible = false

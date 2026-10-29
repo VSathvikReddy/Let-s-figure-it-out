@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cq7udfoncc2uy"]
+
+[ext_resource type="Script" uid="uid://bm3ak1hyx3qbf" path="res://collectables/destructible.gd" id="1_ege0b"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4uyoc"]
+radius = 42.047592
+
+[node name="HiddenBat" type="Area2D" unique_id=1220461189 groups=["destructible"]]
+script = ExtResource("1_ege0b")
+metadata/_custom_type_script = "uid://bm3ak1hyx3qbf"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1354324817]
+shape = SubResource("CircleShape2D_4uyoc")
