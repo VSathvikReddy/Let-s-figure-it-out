@@ -816,11 +816,12 @@ region_enabled = true
 region_rect = Rect2(601, 236, 265, 227)
 
 [node name="StaffPivot" type="Node2D" parent="Visual/Rig" unique_id=170461156]
-position = Vector2(8, -11.2)
-rotation = -0.15
+position = Vector2(8.461538, -11.538462)
+rotation = 0.77427816
 
 [node name="Staff" type="Sprite2D" parent="Visual/Rig/StaffPivot" unique_id=1996122553]
-position = Vector2(15.29, -11.94)
+position = Vector2(12.348835, -11.701388)
+rotation = 0.6323627
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("4_sheet")
 centered = false
@@ -855,7 +856,7 @@ autoplay = &"idle"
 position = Vector2(1, -7)
 shape = SubResource("CapsuleShape2D_witch")
 
-[node name="Light" type="PointLight2D" parent="."]
+[node name="Light" type="PointLight2D" parent="." unique_id=1673794770]
 position = Vector2(0, -20)
 color = Color(1, 0.36, 0.42, 1)
 energy = 0.4
