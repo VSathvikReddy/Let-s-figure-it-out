@@ -7,6 +7,9 @@ extends CharacterBody2D
 ##   DetectionZone - big circle, the player inside it gets chased
 ##   TriggerZone   - small circle, the player inside it lights the fuse
 ##   ExplosionZone - what the explosion hits
+##
+## Animations (Sprite): "idle" on a loop (faster, flickering red while the
+## fuse burns), "death" when the brush kills it (it crumbles into ash).
 
 const Effects := preload("res://compined/common/effects.gd")
 
@@ -16,7 +19,7 @@ enum State { WANDER, CHASE, LIT }
 @export var wander_speed := 40.0
 ## Brush hits it can take (it is big and slow, so it is tough).
 @export var max_health := 6
-@export var explosion_damage := 3        ## damage to the player
+@export var explosion_damage := 2        ## hearts the player loses
 @export var painting_damage := 3         ## how much the explosion breaks the painting
 ## Radius of painting the explosion ruins, in px (bigger than its damage area).
 @export var painting_damage_radius := 280.0
@@ -39,6 +42,8 @@ var trail: CPUParticles2D
 @onready var wander_timer: Timer = $WanderTimer
 @onready var fuse_timer: Timer = $FuseTimer
 @onready var fuse_sound: AudioStreamPlayer2D = $FuseSound
+@onready var sprite: AnimatedSprite2D = $Sprite
+var _dying := false
 
 
 func _ready() -> void:
@@ -100,6 +105,7 @@ func _on_trigger_zone_entered(body: Node2D) -> void:
 	if body.is_in_group("player") and state != State.LIT:
 		state = State.LIT
 		fuse_sound.play()
+		_show_fuse()
 		fuse_timer.start()
 
 
@@ -116,17 +122,42 @@ func _explode() -> void:
 
 ## Called by the brush.
 func take_damage(damage: int) -> void:
+	if _dying:
+		return
 	health -= damage
 	health_bar.show_health(health)
 	_flash()
 	if health <= 0:
-		Effects.play_sound(self, death_sound)
-		Effects.leave_trail_behind(trail)
-		queue_free()
+		_die()
+
+
+## Killed by the brush: it stops, crumbles into ash (death animation), then goes.
+func _die() -> void:
+	_dying = true
+	set_physics_process(false)
+	fuse_timer.stop()
+	health_bar.visible = false
+	$BodyShape.set_deferred("disabled", true)
+	detection_zone.set_deferred("monitoring", false)
+	trigger_zone.set_deferred("monitoring", false)
+	Effects.play_sound(self, death_sound)
+	Effects.leave_trail_behind(trail)
+	sprite.speed_scale = 1.0
+	sprite.modulate = Color.WHITE
+	sprite.play("death")
+	await sprite.animation_finished
+	queue_free()
+
+
+## Fuse lit: it twitches faster and flickers red until it explodes.
+func _show_fuse() -> void:
+	sprite.speed_scale = 2.5
+	var flicker := create_tween().set_loops()
+	flicker.tween_property(sprite, "modulate", Color(1.8, 0.5, 0.5), 0.12)
+	flicker.tween_property(sprite, "modulate", Color.WHITE, 0.12)
 
 
 ## Flashes white for a moment when hit.
 func _flash() -> void:
-	var sprite := $Sprite2D as Sprite2D
 	sprite.modulate = Color(3, 3, 3)
 	create_tween().tween_property(sprite, "modulate", Color.WHITE, 0.15)

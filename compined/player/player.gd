@@ -14,6 +14,8 @@ extends CharacterBody2D
 ##                   Shield - for a while, a bubble blocks every hit
 ##                   Veil   - opens the veil
 ##   J           - closes the veil (opening it needs the Veil power-up)
+##                 Inside the veil she heals: one heart back every
+##                 `veil_heal_interval` seconds (the HUD shows the countdown).
 ##
 ## Looks: the witch's cut-out rig (Visual/Rig) is animated by the
 ## AnimationPlayer: idle, walk, cast (brush), summon, hurt. Her staff is
@@ -40,9 +42,12 @@ const Effects := preload("res://compined/common/effects.gd")
 @export var settle_time: float = 0.5          ## Time to come to rest before the veil opens/closes
 
 @export_group("Health")
-@export var max_health := 10
+## One point per heart in the HUD.
+@export var max_health := 5
 ## Seconds she cannot be hurt again after a hit (so one blast is one hit).
 @export var invincible_time := 0.6
+## Inside the veil she gets one heart back every this many seconds.
+@export var veil_heal_interval := 10.0
 
 @export_group("Falling")
 ## How far below the painting she must fall before she is lost (px).
@@ -141,6 +146,8 @@ var health := 0
 var _invincible := 0.0      # seconds of invincibility left
 ## Set by the level from its difficulty: hits hurt this many times more.
 var damage_taken_multiplier := 1.0
+## Seconds healed so far inside the veil (resets when a heart comes back or she leaves).
+var veil_heal_time := 0.0
 var _veil_busy := false     # a veil open/close is running, ignore J until it ends
 var _flash_tween: Tween
 
@@ -461,6 +468,25 @@ func _ghosts_alive() -> int:
 	return _ghosts.size()
 
 
+# --- healing in the veil ----------------------------------------------------
+
+## True while she is inside the open veil and missing health.
+func is_healing_in_veil() -> bool:
+	return portal.active and not frozen and health > 0 and health < max_health
+
+
+func _heal_in_veil(delta: float) -> void:
+	if not is_healing_in_veil():
+		veil_heal_time = 0.0
+		return
+	veil_heal_time += delta
+	if veil_heal_time >= veil_heal_interval:
+		veil_heal_time = 0.0
+		health += 1
+		health_changed.emit(health, max_health)
+		Effects.burst(self, 16, Color(0.8, 0.6, 1.0), 0.6, 40.0, 120.0, 2.0, 5.0)
+
+
 # --- power-ups -------------------------------------------------------------
 
 ## Called by a PowerUp token she touches: she now holds this ability (it
@@ -536,6 +562,7 @@ func _update_power_ups(delta: float) -> void:
 # --- looks -----------------------------------------------------------------
 
 func _process(delta: float) -> void:
+	_heal_in_veil(delta)
 	_hurt_time = maxf(_hurt_time - delta, 0.0)
 	_invincible = maxf(_invincible - delta, 0.0)
 	var attacking: bool = brush_attack.state != 0   # brush charging or swinging

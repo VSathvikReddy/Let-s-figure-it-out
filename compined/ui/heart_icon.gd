@@ -42,6 +42,7 @@ func show_health(left: int, per_heart: int, animate := true) -> void:
 		wanted = State.CRACKED
 	if wanted == state:
 		return
+	var previous := state
 	state = wanted
 	if _animation:
 		_animation.kill()
@@ -49,10 +50,14 @@ func show_health(left: int, per_heart: int, animate := true) -> void:
 	match wanted:
 		State.FULL:
 			texture = _frames[0]
+			if animate and previous != State.FULL:
+				_heal_pop()
 		State.CRACKED:
 			_play(0, LAST_CRACK_FRAME, animate)
 		State.BROKEN:
-			_play(LAST_CRACK_FRAME + 1, FRAME_COUNT - 1, animate)
+			# a whole heart lost at once cracks first, then shatters
+			var first_frame := 0 if previous == State.FULL else LAST_CRACK_FRAME + 1
+			_play(first_frame, FRAME_COUNT - 1, animate)
 			if animate:
 				_animation.tween_callback(_leave_shadow)
 			else:
@@ -78,6 +83,16 @@ func _play(from_frame: int, to_frame: int, animate: bool) -> void:
 
 func _show_frame(frame: float) -> void:
 	texture = _frames[clampi(int(frame), 0, FRAME_COUNT - 1)]
+
+
+## A heart coming back: flashes bright and bounces in.
+func _heal_pop() -> void:
+	pivot_offset = size / 2.0
+	scale = Vector2.ONE * 0.4
+	modulate = Color(2.2, 1.8, 2.4)
+	var pop := create_tween().set_parallel()
+	pop.tween_property(self, "scale", Vector2.ONE, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	pop.tween_property(self, "modulate", Color.WHITE, 0.5)
 
 
 func _leave_shadow() -> void:

@@ -50,6 +50,18 @@ const LIST := [
 		"scene": "res://compined/levels/tsunami.tscn",
 		"preview": "res://compined/asset/tsunami.jpg",
 	},
+	{
+		"title": "Painting IV: Mona Lisa",
+		"subtitle": "She smiles while bombers, turrets and birds swarm the gallery.",
+		"scene": "res://compined/levels/monalisa.tscn",
+		"preview": "res://compined/asset/monalisa.png",
+	},
+	{
+		"title": "Painting V: The Scream",
+		"subtitle": "Everything at once, and it never stops. Good luck.",
+		"scene": "res://compined/levels/scream.tscn",
+		"preview": "res://compined/asset/scream.png",
+	},
 ]
 
 ## Which level is being played (LIST.size() = the custom level).

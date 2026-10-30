@@ -94,6 +94,9 @@ func fit_to_level() -> void:
 	var screen := get_viewport_rect().size
 	var wanted_view := PAINTING.BENCHMARK_SIZE * view_percent / 100.0
 	var zoom_amount := maxf(screen.x / wanted_view.x, screen.y / wanted_view.y)
+	# a narrow (portrait) painting may be thinner than that view: zoom in just
+	# enough that the screen never shows past its edges
+	zoom_amount = maxf(zoom_amount, maxf(screen.x / level_rect.size.x, screen.y / level_rect.size.y))
 	zoom = Vector2(zoom_amount, zoom_amount)
 
 	dead_zone = _visible_size() * dead_zone_percent / 100.0

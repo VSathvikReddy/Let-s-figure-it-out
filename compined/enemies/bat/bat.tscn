@@ -1,8 +1,106 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://compined/enemies/bat/bat.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
 [ext_resource type="PackedScene" path="res://compined/ui/enemy_health_bar.tscn" id="health_bar"]
+[ext_resource type="Texture2D" path="res://compined/enemies/bat/art/bat_emerge.png" id="sheet_emerge"]
+[ext_resource type="Texture2D" path="res://compined/enemies/bat/art/bat_fly.png" id="sheet_fly"]
+
+[sub_resource type="AtlasTexture" id="Emerge_1"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(0, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_2"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(178, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_3"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(356, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_4"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(534, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_5"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(712, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_6"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(890, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_7"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(1068, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_8"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(1246, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Emerge_9"]
+atlas = ExtResource("sheet_emerge")
+region = Rect2(1424, 0, 178, 114)
+
+[sub_resource type="AtlasTexture" id="Fly_1"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(0, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_2"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(133, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_3"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(266, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_4"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(399, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_5"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(532, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_6"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(665, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_7"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(798, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_8"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(931, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_9"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(1064, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_10"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(1197, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_11"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(1330, 0, 133, 116)
+
+[sub_resource type="AtlasTexture" id="Fly_12"]
+atlas = ExtResource("sheet_fly")
+region = Rect2(1463, 0, 133, 116)
+
+[sub_resource type="SpriteFrames" id="Animations"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("Emerge_1")}, {"duration": 1.0, "texture": SubResource("Emerge_2")}, {"duration": 1.0, "texture": SubResource("Emerge_3")}, {"duration": 1.0, "texture": SubResource("Emerge_4")}, {"duration": 1.0, "texture": SubResource("Emerge_5")}, {"duration": 1.0, "texture": SubResource("Emerge_6")}, {"duration": 1.0, "texture": SubResource("Emerge_7")}, {"duration": 1.0, "texture": SubResource("Emerge_8")}, {"duration": 1.0, "texture": SubResource("Emerge_9")}],
+"loop": false,
+"name": &"emerge",
+"speed": 14.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("Fly_1")}, {"duration": 1.0, "texture": SubResource("Fly_2")}, {"duration": 1.0, "texture": SubResource("Fly_3")}, {"duration": 1.0, "texture": SubResource("Fly_4")}, {"duration": 1.0, "texture": SubResource("Fly_5")}, {"duration": 1.0, "texture": SubResource("Fly_6")}, {"duration": 1.0, "texture": SubResource("Fly_7")}, {"duration": 1.0, "texture": SubResource("Fly_8")}, {"duration": 1.0, "texture": SubResource("Fly_9")}, {"duration": 1.0, "texture": SubResource("Fly_10")}, {"duration": 1.0, "texture": SubResource("Fly_11")}, {"duration": 1.0, "texture": SubResource("Fly_12")}],
+"loop": true,
+"name": &"fly",
+"speed": 14.0
+}]
 
 [sub_resource type="RectangleShape2D" id="Shape_body"]
 size = Vector2(64, 64)
@@ -13,9 +111,10 @@ radius = 1040.0
 [node name="Bat" type="CharacterBody2D"]
 script = ExtResource("1_script")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_picture")
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.6, 0.6)
+sprite_frames = SubResource("Animations")
+animation = &"fly"
 
 [node name="BodyShape" type="CollisionShape2D" parent="."]
 shape = SubResource("Shape_body")

@@ -1,6 +1,7 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://compined/ui/health_hud.gd" id="1_script"]
+[ext_resource type="Script" path="res://compined/ui/veil_heal_timer.gd" id="2_heal_timer"]
 
 [node name="HealthHUD" type="CanvasLayer"]
 layer = 10
@@ -14,3 +15,15 @@ offset_right = 314.0
 offset_bottom = 50.0
 mouse_filter = 2
 theme_override_constants/separation = 2
+
+[node name="VeilHealTimer" type="Control" parent="."]
+unique_name_in_owner = true
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_left = 232.0
+offset_top = 8.0
+offset_right = 362.0
+offset_bottom = 52.0
+mouse_filter = 2
+script = ExtResource("2_heal_timer")
