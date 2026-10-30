@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://cxy4j2e22t868"]
+
+[node name="Player" type="CharacterBody2D" unique_id=2041544026]

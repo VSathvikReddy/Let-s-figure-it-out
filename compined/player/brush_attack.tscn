@@ -1,0 +1,28 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/player/brush_attack.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://compined/player/brush.png" id="2_brush"]
+[ext_resource type="AudioStream" path="res://compined/player/swordattack.wav" id="3_sound"]
+
+[sub_resource type="Gradient" id="Gradient_arc"]
+
+[node name="BrushAttack" type="Node2D"]
+script = ExtResource("1_script")
+brush_distance = 0.0
+color_gradient = SubResource("Gradient_arc")
+
+[node name="HurtBox" type="Area2D" parent="."]
+monitoring = false
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="HurtBox"]
+
+[node name="Brush" type="Node2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Brush"]
+rotation = 1.3491396
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("2_brush")
+offset = Vector2(65, -300)
+
+[node name="HitSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_sound")

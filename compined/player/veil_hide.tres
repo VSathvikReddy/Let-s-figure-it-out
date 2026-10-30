@@ -1,0 +1,6 @@
+[gd_resource type="ShaderMaterial" format=3]
+
+[ext_resource type="Shader" path="res://compined/player/veil_hide.gdshader" id="1_hide"]
+
+[resource]
+shader = ExtResource("1_hide")

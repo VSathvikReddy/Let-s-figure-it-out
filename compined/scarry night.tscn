@@ -1,0 +1,49 @@
+[gd_scene format=3 uid="uid://cfkxevxj7qomg"]
+
+[ext_resource type="Script" path="res://compined/level.gd" id="0_level"]
+[ext_resource type="PackedScene" path="res://compined/painting/painting.tscn" id="1_painting"]
+[ext_resource type="PackedScene" path="res://compined/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://compined/gems/blue_rock.tscn" id="3_blue_rock"]
+[ext_resource type="PackedScene" path="res://compined/gems/green_rock.tscn" id="4_green_rock"]
+[ext_resource type="PackedScene" path="res://compined/gems/star_rock.tscn" id="5_star_rock"]
+[ext_resource type="PackedScene" path="res://compined/gems/violet_rock.tscn" id="6_violet_rock"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bomber/bomber.tscn" id="7_bomber"]
+[ext_resource type="PackedScene" path="res://compined/enemies/cannon/cannon.tscn" id="8_cannon"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="9_bat"]
+[ext_resource type="PackedScene" path="res://compined/ui/win_screen.tscn" id="10_win_screen"]
+
+[node name="ScarryNight" type="Node2D" node_paths=PackedStringArray("painting")]
+script = ExtResource("0_level")
+painting = NodePath("Painting")
+
+[node name="Painting" parent="." instance=ExtResource("1_painting")]
+position = Vector2(381, 237)
+
+[node name="HiddenGems" type="Node2D" parent="."]
+
+[node name="BlueRock" parent="HiddenGems" instance=ExtResource("3_blue_rock")]
+position = Vector2(-70, 48)
+
+[node name="GreenRock" parent="HiddenGems" instance=ExtResource("4_green_rock")]
+position = Vector2(-151, -90)
+
+[node name="StarRock" parent="HiddenGems" instance=ExtResource("5_star_rock")]
+position = Vector2(-42, -108)
+
+[node name="VioletRock" parent="HiddenGems" instance=ExtResource("6_violet_rock")]
+position = Vector2(-159, 0)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Bomber" parent="Enemies" instance=ExtResource("7_bomber")]
+position = Vector2(313, 151)
+
+[node name="Cannon" parent="Enemies" instance=ExtResource("8_cannon")]
+position = Vector2(1043, 60)
+
+[node name="Bat" parent="Enemies" instance=ExtResource("9_bat")]
+position = Vector2(1100, -145)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+
+[node name="WinScreen" parent="." instance=ExtResource("10_win_screen")]
