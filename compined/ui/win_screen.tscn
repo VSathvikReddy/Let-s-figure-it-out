@@ -1,0 +1,100 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/ui/win_screen.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="Style_card"]
+bg_color = Color(0.1, 0.09, 0.08, 0.95)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.95, 0.75, 0.3, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+
+[node name="WinScreen" type="CanvasLayer"]
+layer = 100
+script = ExtResource("1_script")
+
+[node name="GemCounter" type="Label" parent="."]
+offset_left = 16.0
+offset_top = 12.0
+offset_right = 216.0
+offset_bottom = 44.0
+theme_override_font_sizes/font_size = 22
+text = "Gems  0 / 4"
+
+[node name="ForceWinButton" type="Button" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -160.0
+offset_top = 12.0
+offset_right = -16.0
+offset_bottom = 43.0
+grow_horizontal = 0
+text = "Force Win (debug)"
+
+[node name="WinCard" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Dim" type="ColorRect" parent="WinCard"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.6)
+
+[node name="Card" type="PanelContainer" parent="WinCard"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -110.0
+offset_right = 200.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("Style_card")
+
+[node name="Margin" type="MarginContainer" parent="WinCard/Card"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 20
+
+[node name="Rows" type="VBoxContainer" parent="WinCard/Card/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="Title" type="Label" parent="WinCard/Card/Margin/Rows"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.95, 0.75, 0.3, 1)
+theme_override_font_sizes/font_size = 36
+text = "Painting Restored!"
+horizontal_alignment = 1
+
+[node name="Summary" type="Label" parent="WinCard/Card/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "You found all 4 gems!"
+horizontal_alignment = 1
+
+[node name="PlayAgainButton" type="Button" parent="WinCard/Card/Margin/Rows"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "Play Again"

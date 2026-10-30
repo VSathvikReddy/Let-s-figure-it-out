@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/enemies/bat/bat.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
+
+[sub_resource type="RectangleShape2D" id="Shape_body"]
+size = Vector2(64, 64)
+
+[sub_resource type="CircleShape2D" id="Shape_detection"]
+radius = 1040.0
+
+[node name="Bat" type="CharacterBody2D"]
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_picture")
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape_body")
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(0, 20)
+
+[node name="DetectionZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="DetectionZone"]
+shape = SubResource("Shape_detection")
+
+[node name="WanderTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true

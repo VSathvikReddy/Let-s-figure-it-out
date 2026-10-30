@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/enemies/bat/fireball.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
+
+[sub_resource type="CircleShape2D" id="Shape_hit"]
+radius = 10.0
+
+[sub_resource type="CircleShape2D" id="Shape_splash"]
+radius = 90.0
+
+[node name="Fireball" type="Area2D"]
+script = ExtResource("1_script")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.55, 0.15, 1)
+scale = Vector2(0.16, 0.16)
+texture = ExtResource("2_picture")
+
+[node name="HitShape" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape_hit")
+
+[node name="SplashZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="SplashZone"]
+shape = SubResource("Shape_splash")

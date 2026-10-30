@@ -1,0 +1,57 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/enemies/bomber/bomber.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
+[ext_resource type="AudioStream" path="res://compined/enemies/bomber/explosion.wav" id="3_explode"]
+[ext_resource type="AudioStream" path="res://compined/common/enemy_death.wav" id="4_death"]
+[ext_resource type="AudioStream" path="res://compined/enemies/bomber/ignite.wav" id="5_fuse"]
+
+[sub_resource type="RectangleShape2D" id="Shape_body"]
+size = Vector2(64, 64)
+
+[sub_resource type="CircleShape2D" id="Shape_detection"]
+radius = 290.0
+
+[sub_resource type="CircleShape2D" id="Shape_trigger"]
+radius = 73.0
+
+[sub_resource type="CircleShape2D" id="Shape_explosion"]
+radius = 142.0
+
+[node name="Bomber" type="CharacterBody2D"]
+script = ExtResource("1_script")
+explode_sound = ExtResource("3_explode")
+death_sound = ExtResource("4_death")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_picture")
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape_body")
+
+[node name="DetectionZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="DetectionZone"]
+shape = SubResource("Shape_detection")
+
+[node name="TriggerZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="TriggerZone"]
+shape = SubResource("Shape_trigger")
+
+[node name="ExplosionZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="ExplosionZone"]
+shape = SubResource("Shape_explosion")
+
+[node name="WanderTimer" type="Timer" parent="."]
+wait_time = 2.0
+autostart = true
+
+[node name="FuseTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="FuseSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_fuse")
+volume_db = -17.0
