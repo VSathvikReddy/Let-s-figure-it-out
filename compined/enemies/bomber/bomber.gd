@@ -91,7 +91,7 @@ func _explode() -> void:
 		if body.is_in_group("player") and body.has_method("take_damage"):
 			body.take_damage(explosion_damage)
 	Effects.paint(explosion_zone, -painting_damage)
-	Effects.fire_explosion(self)
+	Effects.rpg_explosion(self, 142.0)   # as big as the ExplosionZone
 	Effects.play_sound(self, explode_sound)
 	Effects.leave_trail_behind(trail)
 	queue_free()

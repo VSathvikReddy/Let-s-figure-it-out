@@ -1,9 +1,0 @@
-[gd_scene format=3]
-
-[ext_resource type="PackedScene" path="res://compined/gems/gem.tscn" id="1_gem"]
-[ext_resource type="Texture2D" path="res://compined/gems/art/green.png" id="2_picture"]
-
-[node name="GreenGem" instance=ExtResource("1_gem")]
-picture = ExtResource("2_picture")
-glow_color = Color(0.25, 0.9, 0.4, 1)
-sparkle_color = Color(0.88, 1, 0.82, 1)

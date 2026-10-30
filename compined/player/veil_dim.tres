@@ -1,7 +1,6 @@
-[gd_resource type="ShaderMaterial" format=3]
+[gd_resource type="ShaderMaterial" format=3 uid="uid://cydnd2sq55ipf"]
 
-[ext_resource type="Shader" path="res://compined/player/veil_dim.gdshader" id="1_dim"]
+[ext_resource type="Shader" uid="uid://cjcn4601e0ed0" path="res://compined/player/veil_dim.gdshader" id="1_dim"]
 
 [resource]
 shader = ExtResource("1_dim")
-shader_parameter/dim_strength = 0.6

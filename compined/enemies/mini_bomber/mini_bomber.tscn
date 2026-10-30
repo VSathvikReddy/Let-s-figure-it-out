@@ -1,0 +1,111 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/enemies/mini_bomber/mini_bomber.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://compined/enemies/mini_bomber/mini_bomber.png" id="2_sheet"]
+[ext_resource type="AudioStream" path="res://compined/enemies/bomber/explosion.wav" id="3_explode"]
+[ext_resource type="AudioStream" path="res://compined/common/enemy_death.wav" id="4_death"]
+
+[sub_resource type="AtlasTexture" id="Fly_1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(32, 96, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Fly_2"]
+atlas = ExtResource("2_sheet")
+region = Rect2(352, 96, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Fly_3"]
+atlas = ExtResource("2_sheet")
+region = Rect2(672, 96, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Fly_4"]
+atlas = ExtResource("2_sheet")
+region = Rect2(992, 96, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Fly_5"]
+atlas = ExtResource("2_sheet")
+region = Rect2(1312, 96, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Fly_6"]
+atlas = ExtResource("2_sheet")
+region = Rect2(1632, 96, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Death_1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(32, 416, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Death_2"]
+atlas = ExtResource("2_sheet")
+region = Rect2(352, 416, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Death_3"]
+atlas = ExtResource("2_sheet")
+region = Rect2(672, 416, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Death_4"]
+atlas = ExtResource("2_sheet")
+region = Rect2(992, 416, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Death_5"]
+atlas = ExtResource("2_sheet")
+region = Rect2(1312, 416, 320, 320)
+
+[sub_resource type="AtlasTexture" id="Death_6"]
+atlas = ExtResource("2_sheet")
+region = Rect2(1632, 416, 320, 320)
+
+[sub_resource type="SpriteFrames" id="Animations"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("Fly_1")}, {"duration": 1.0, "texture": SubResource("Fly_2")}, {"duration": 1.0, "texture": SubResource("Fly_3")}, {"duration": 1.0, "texture": SubResource("Fly_4")}, {"duration": 1.0, "texture": SubResource("Fly_5")}, {"duration": 1.0, "texture": SubResource("Fly_6")}],
+"loop": true,
+"name": &"fly",
+"speed": 6.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("Death_1")}, {"duration": 1.0, "texture": SubResource("Death_2")}, {"duration": 1.0, "texture": SubResource("Death_3")}, {"duration": 1.0, "texture": SubResource("Death_4")}, {"duration": 1.0, "texture": SubResource("Death_5")}, {"duration": 1.0, "texture": SubResource("Death_6")}],
+"loop": false,
+"name": &"death",
+"speed": 18.0
+}]
+
+[sub_resource type="RectangleShape2D" id="Shape_body"]
+size = Vector2(32, 32)
+
+[sub_resource type="CircleShape2D" id="Shape_detection"]
+radius = 420.0
+
+[sub_resource type="CircleShape2D" id="Shape_trigger"]
+radius = 53.0
+
+[sub_resource type="CircleShape2D" id="Shape_explosion"]
+radius = 73.0
+
+[node name="MiniBomber" type="CharacterBody2D"]
+script = ExtResource("1_script")
+explode_sound = ExtResource("3_explode")
+death_sound = ExtResource("4_death")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+sprite_frames = SubResource("Animations")
+animation = &"fly"
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape_body")
+
+[node name="DetectionZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="DetectionZone"]
+shape = SubResource("Shape_detection")
+
+[node name="TriggerZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="TriggerZone"]
+shape = SubResource("Shape_trigger")
+
+[node name="ExplosionZone" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="ExplosionZone"]
+shape = SubResource("Shape_explosion")
+
+[node name="WanderTimer" type="Timer" parent="."]
+wait_time = 1.5
+autostart = true
