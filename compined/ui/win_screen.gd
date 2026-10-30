@@ -100,4 +100,3 @@ func _show_card() -> void:
 	win_card.visible = true
 	win_card.modulate.a = 0.0
 	create_tween().tween_property(win_card, "modulate:a", 1.0, 0.3)
-

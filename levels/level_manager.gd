@@ -2,7 +2,14 @@ extends CanvasLayer
 
 # Emitted when the player collects all 4 gems OR clicks the debug win button
 signal won
+const START_MENU_PATH: String = "res://compined/levels/start_menu.tscn"
+const CREDITS_PATH: String = "res://compined/levels/credits.tscn"
+func go_to_start_menu() -> void:
+	_transition_to_scene(START_MENU_PATH, false)
 
+
+func go_to_credits() -> void:
+	_transition_to_scene(CREDITS_PATH, false)
 # --- LEVEL DATABASE (Add your new level .tscn paths here) ---
 var levels: Array[Dictionary] = [
 	{
@@ -31,7 +38,7 @@ var levels: Array[Dictionary] = [
 	}
 ]
 
-const LEVEL_SELECT_PATH: String = "res://levels/LevelSelect.tscn"
+const LEVEL_SELECT_PATH: String = "res://compined/levels/level_select.tscn"
 const GEMS_TO_WIN: int = 4
 const CUSTOM_LEVEL_SCENE_PATH: String = "res://levels/custom/CustomLevel.tscn"
 
