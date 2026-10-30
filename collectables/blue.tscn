@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://bvtvi1pn67yti" path="res://collectables/gem.gd" id="1_7aikj"]
 [ext_resource type="Texture2D" uid="uid://mhaypj6vai5d" path="res://collectables/assets/blue.png" id="2_h5e0r"]
+[ext_resource type="AudioStream" uid="uid://cbq81m10jdsu5" path="res://collectables/assets/gempick.wav" id="2_ki5bn"]
 [ext_resource type="Texture2D" uid="uid://dlitt6jr6vn45" path="res://collectables/assets/sparkle.png" id="3_dh627"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_gxmxl"]
@@ -186,6 +187,7 @@ _data = {
 
 [node name="BlueGem" type="Area2D" unique_id=1906171657]
 script = ExtResource("1_7aikj")
+gem_sound = ExtResource("2_ki5bn")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=806838636]
 shape = SubResource("CircleShape2D_gxmxl")

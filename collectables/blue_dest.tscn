@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://bm3ak1hyx3qbf" path="res://collectables/destructible.gd" id="1_obj50"]
 [ext_resource type="PackedScene" uid="uid://dpfgoftoob6i5" path="res://collectables/blue.tscn" id="2_mwa4f"]
 [ext_resource type="Texture2D" uid="uid://xbnfpyu2x7wh" path="res://collectables/assets/blue10.png" id="3_fw7ty"]
+[ext_resource type="AudioStream" uid="uid://oxmrle0mxljw" path="res://collectables/assets/gemspawn.wav" id="3_k7veg"]
 [ext_resource type="Texture2D" uid="uid://5yliea4ud005" path="res://collectables/assets/blue20.png" id="4_jjghd"]
 [ext_resource type="Texture2D" uid="uid://mhaypj6vai5d" path="res://collectables/assets/blue.png" id="5_2fq7e"]
 
@@ -16,6 +17,7 @@ resource_name = "Blank"
 script = ExtResource("1_obj50")
 health = 5
 spawn_scene = ExtResource("2_mwa4f")
+spawn_sound = ExtResource("3_k7veg")
 
 [node name="HitBox" type="CollisionShape2D" parent="." unique_id=1698196782]
 shape = SubResource("CircleShape2D_4uyoc")

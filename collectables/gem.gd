@@ -1,12 +1,20 @@
 extends Area2D
 class_name Gem
 
+@export var gem_sound: AudioStream
+
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 
 func _on_body_entered(body: Node2D) -> void:
 	if body.has_method("collect_gem"):
 		_spawn_explosion()
+		var sfx_player = AudioStreamPlayer2D.new() #New Node
+		sfx_player.stream = gem_sound #Assign Sound
+		sfx_player.global_position = global_position #set pos
+		get_tree().current_scene.add_child(sfx_player) #make it the sibling
+		sfx_player.play() #play
+		sfx_player.finished.connect(sfx_player.queue_free) #let it play and then kill it
 		body.collect_gem(self) # if player collects, he despwans it, other may store it
 
 func _spawn_explosion() -> void:
