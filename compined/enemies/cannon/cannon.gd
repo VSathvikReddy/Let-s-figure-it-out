@@ -8,7 +8,7 @@ const Effects := preload("res://compined/common/effects.gd")
 @export var bullet_scene: PackedScene = preload("res://compined/enemies/cannon/bullet.tscn")
 @export var death_sound: AudioStream
 ## Brush hits it can take (armoured, so the toughest enemy).
-@export var max_health := 8
+@export var max_health := 4
 
 ## Where the barrel sprite rests (it kicks back when shooting).
 const BARREL_REST_X := 37.0

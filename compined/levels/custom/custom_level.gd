@@ -7,8 +7,6 @@ extends "res://compined/level.gd"
 ##
 ## No pictures made yet? Then it goes straight back to the level selector.
 
-const Levels := preload("res://compined/levels/levels.gd")
-
 ## How far from the painting's edge things are kept, in px.
 @export var edge_margin := 120.0
 

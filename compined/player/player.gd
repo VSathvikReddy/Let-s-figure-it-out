@@ -3,12 +3,17 @@ extends CharacterBody2D
 ##   W / Up      - thrust up (magic sparkles shoot out of her boots)
 ##   A / D       - push left / right
 ##   attack      - hold to charge the brush, release to swing (restores the painting)
-##   J           - open / close the veil (Portal)
-##   hold Q / right click - summon ghosts: she rises into a floating stance,
-##                 a glowing rune circle fills up under her, then friendly ghosts
-##                 rise, fly to the most damaged parts of the painting and CLEAN
-##                 them. Letting go early fizzles it out; getting hit breaks the
-##                 stance and knocks her back. Not possible inside the veil.
+##   Q / right click - use the POWER-UP she is holding (top-right corner).
+##                 She holds one at a time; picking up a token replaces it.
+##                   Dash   - a quick burst toward the mouse, unhurtable during it
+##                   Ghost  - HOLD Q: she rises into a floating stance, a rune
+##                            circle fills, then friendly ghosts clean the
+##                            painting. Letting go early fizzles it (the power-up
+##                            is kept); a hit breaks the stance. Not in the veil.
+##                   Trail  - for a while, the painting is restored where she flies
+##                   Shield - for a while, a bubble blocks every hit
+##                   Veil   - opens the veil
+##   J           - closes the veil (opening it needs the Veil power-up)
 ##
 ## Looks: the witch's cut-out rig (Visual/Rig) is animated by the
 ## AnimationPlayer: idle, walk, cast (brush), summon, hurt. Her staff is
@@ -75,6 +80,15 @@ const Effects := preload("res://compined/common/effects.gd")
 @export var ghost_clean_time := 2.0
 @export var ghost_color := Color(1.0, 0.82, 0.86)
 
+@export_group("Power-ups")
+@export var dash_speed := 950.0
+@export var dash_time := 0.22             ## seconds the dash lasts
+@export var shield_time := 6.0            ## seconds the shield lasts
+@export var trail_time := 6.0             ## seconds the magic trail lasts
+@export var trail_radius := 80.0          ## width of the restored band, in px
+@export var trail_spacing := 40.0         ## px flown between two restore stamps
+@export var trail_amount := 1             ## detail levels each stamp brings back
+
 @export_group("Summon Stance")
 ## How fast she rises when the stance starts (px per second).
 @export var float_rise_speed := 60.0
@@ -111,16 +125,22 @@ var frozen := false
 var gems_collected := 0
 
 ## Sent every time a gem is picked up (the win screen listens to it).
-signal gem_collected(total: int)
+signal gem_collected(total: int, picture: Texture2D)
 ## Sent once when she falls out of the bottom of the painting.
 signal fell_out
 ## Sent when her health changes (the health bar listens to it).
 signal health_changed(current: float, maximum: float)
 ## Sent once when her health reaches zero.
 signal died
+## Sent when the held power-up changes (picture null = she holds none).
+signal power_changed(picture: Texture2D, power_name: String)
+
+const ShieldBubble := preload("res://compined/powerup/shield_bubble.gd")
 var _fell := false
 var health := 0
 var _invincible := 0.0      # seconds of invincibility left
+## Set by the level from its difficulty: hits hurt this many times more.
+var damage_taken_multiplier := 1.0
 var _veil_busy := false     # a veil open/close is running, ignore J until it ends
 var _flash_tween: Tween
 
@@ -129,6 +149,14 @@ var summoning := false
 var summon_progress := 0.0          # 0..1 while the circle fills
 var _summon_wait := 0.0             # cooldown left, in seconds
 var _ghosts: Array[Node] = []
+
+# power-ups
+var collected_power_up = null       # the PowerUp.PowerType she holds, or null
+var _dash_left := 0.0
+var _dash_direction := Vector2.RIGHT
+var _trail_left := 0.0
+var _trail_last_stamp := Vector2.INF
+var _shield: Node2D
 
 # looks
 var _facing := 1.0                  # 1 = right, -1 = left
@@ -139,7 +167,8 @@ var _hurt_time := 0.0               # plays the hurt animation while > 0
 
 func collect_gem(gem: Node2D) -> void:
 	gems_collected += 1
-	gem_collected.emit(gems_collected)
+	var sprite := gem.get_node_or_null("Sprite2D") as Sprite2D   # the gem's picture, for the counter
+	gem_collected.emit(gems_collected, sprite.texture if sprite else null)
 	gem.queue_free()
 
 
@@ -155,6 +184,8 @@ func _ready() -> void:
 	# run after the brush attack each frame, so the hand uses its newest angle
 	process_priority = 10
 	summon_circle.visible = false
+	_shield = ShieldBubble.new()
+	add_child(_shield)
 
 
 ## Brings the player to rest (velocity and tilt) before a veil animation.
@@ -170,9 +201,16 @@ func _settle() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _is_summon_button(event):
-		_try_start_summon()
+		use_power()
 		return
-	if not event.is_action_pressed("open_veil") or _veil_busy:
+	# J only closes the veil; opening it needs the Veil power-up
+	if event.is_action_pressed("open_veil") and portal.active:
+		_toggle_veil()
+
+
+## Opens the veil if it is closed, closes it if it is open.
+func _toggle_veil() -> void:
+	if _veil_busy:
 		return
 	_veil_busy = true
 	portal_sound.play()
@@ -201,6 +239,10 @@ func _physics_process(delta: float) -> void:
 		_update_summon(delta)
 		move_and_slide()
 		_stay_inside_level()
+		return
+	_update_power_ups(delta)
+	if _dash_left > 0.0:
+		_dash(delta)
 		return
 
 	# 1. Read inputs (horizontal & up thrust only)
@@ -298,7 +340,11 @@ func _stop_thrust_fx() -> void:
 func take_damage(damage: int) -> void:
 	if _invincible > 0.0 or health <= 0:
 		return
-	health = maxi(health - damage, 0)
+	if _shield.time_left > 0.0:
+		_shield.flash()   # the shield takes the hit
+		_invincible = invincible_time
+		return
+	health = maxi(health - maxi(1, roundi(damage * damage_taken_multiplier)), 0)
 	_invincible = invincible_time
 	health_changed.emit(health, max_health)
 	if health == 0:
@@ -328,7 +374,9 @@ func _summon_button_held() -> bool:
 
 
 func _try_start_summon() -> void:
-	# not inside the veil, and not while the veil is opening or closing
+	# needs the Ghost power-up; not inside the veil or while it opens or closes
+	if collected_power_up != PowerUp.PowerType.GHOST:
+		return
 	if summoning or frozen or portal.active or _veil_busy or ghost_scene == null:
 		return
 	if _summon_wait > 0.0 or _ghosts_alive() >= max_ghosts_alive:
@@ -366,6 +414,7 @@ func _update_summon(delta: float) -> void:
 func _finish_summon() -> void:
 	summoning = false
 	_summon_wait = summon_cooldown
+	_use_up_power()   # the Ghost power-up is spent only when the summon succeeds
 	Effects.burst(summon_circle, 10, ghost_color, 0.5, 40.0, 110.0, 2.0, 4.0)
 	var count := randi_range(min_ghosts_per_summon, maxi(min_ghosts_per_summon, max_ghosts_per_summon))
 	var first_angle := randf() * TAU
@@ -410,6 +459,78 @@ func _cancel_summon(broken: bool) -> void:
 func _ghosts_alive() -> int:
 	_ghosts = _ghosts.filter(func(ghost): return is_instance_valid(ghost))
 	return _ghosts.size()
+
+
+# --- power-ups -------------------------------------------------------------
+
+## Called by a PowerUp token she touches: she now holds this ability (it
+## replaces the one she had).
+func pick_up_power_up(type: PowerUp.PowerType, picture: Texture2D = null) -> void:
+	if summoning:
+		_cancel_summon(false)   # swapping away from Ghost mid-summon
+	collected_power_up = type
+	power_changed.emit(picture, PowerUp.NAMES[type])
+	Effects.burst(self, 14, Color(1.0, 0.9, 0.6), 0.4, 60.0, 150.0, 2.0, 4.0)
+
+
+## Q: use the held power-up.
+func use_power() -> void:
+	if collected_power_up == null or frozen:
+		return
+	match collected_power_up:
+		PowerUp.PowerType.GHOST:
+			_try_start_summon()       # used up when the summon finishes
+		PowerUp.PowerType.VEIL:
+			if not portal.active and not _veil_busy:
+				_use_up_power()
+				_toggle_veil()
+		PowerUp.PowerType.DASH:
+			_use_up_power()
+			_start_dash()
+		PowerUp.PowerType.SHIELD:
+			_use_up_power()
+			_shield.time_left = shield_time
+		PowerUp.PowerType.TRAIL:
+			_use_up_power()
+			_trail_left = trail_time
+			_trail_last_stamp = Vector2.INF
+
+
+func _use_up_power() -> void:
+	collected_power_up = null
+	power_changed.emit(null, "")
+
+
+func _start_dash() -> void:
+	_dash_direction = global_position.direction_to(get_global_mouse_position())
+	if _dash_direction == Vector2.ZERO:
+		_dash_direction = Vector2(_facing, 0)
+	_dash_left = dash_time
+	_invincible = maxf(_invincible, dash_time + 0.1)   # can't be hurt while dashing
+	Effects.burst(self, 20, Color(0.55, 0.85, 1.0), 0.4, 80.0, 200.0, 3.0, 6.0)
+
+
+## While dashing: straight and fast toward where she aimed, leaving afterimages.
+func _dash(delta: float) -> void:
+	_dash_left -= delta
+	velocity = _dash_direction * dash_speed
+	Effects.burst(self, 3, Color(0.55, 0.85, 1.0, 0.7), 0.3, 10.0, 40.0, 3.0, 6.0)
+	move_and_slide()
+	_stay_inside_level()
+	if _dash_left <= 0.0:
+		velocity *= 0.35   # comes out of the dash with some speed left
+
+
+## Counts down the shield and the trail; the trail restores the painting behind her.
+func _update_power_ups(delta: float) -> void:
+	_shield.time_left = maxf(_shield.time_left - delta, 0.0)
+	if _trail_left <= 0.0:
+		return
+	_trail_left -= delta
+	if _trail_last_stamp == Vector2.INF or global_position.distance_to(_trail_last_stamp) >= trail_spacing:
+		_trail_last_stamp = global_position
+		Effects.paint_circle(self, global_position, trail_radius, trail_amount)
+		Effects.burst(self, 4, Color(1.0, 0.85, 0.4), 0.5, 20.0, 60.0, 2.0, 4.0)
 
 
 # --- looks -----------------------------------------------------------------

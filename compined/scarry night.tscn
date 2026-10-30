@@ -7,25 +7,48 @@
 [ext_resource type="PackedScene" uid="uid://de3cjet1ijdku" path="res://compined/gems/green_dest.tscn" id="4_green_rock"]
 [ext_resource type="PackedScene" uid="uid://dytj8u22mi7e4" path="res://compined/gems/star_dest.tscn" id="5_star_rock"]
 [ext_resource type="PackedScene" uid="uid://djapwd40muwtq" path="res://compined/gems/violet_dest.tscn" id="6_violet_rock"]
-[ext_resource type="PackedScene" path="res://compined/enemies/bomber/bomber.tscn" id="7_bomber"]
-[ext_resource type="PackedScene" path="res://compined/enemies/cannon/cannon.tscn" id="8_cannon"]
-[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="9_bat"]
 [ext_resource type="PackedScene" path="res://compined/ui/win_screen.tscn" id="10_win_screen"]
-[ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="11_mini_bomber"]
 [ext_resource type="PackedScene" path="res://compined/enemies/bat/hidden_bat.tscn" id="12_hidden_bat"]
-[ext_resource type="PackedScene" path="res://compined/enemies/bird/bird.tscn" id="13_bird"]
+[ext_resource type="PackedScene" path="res://compined/enemies/spawner/enemy_spawner.tscn" id="spawner"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="spawn_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bird/bird.tscn" id="spawn_bird"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bomber/bomber.tscn" id="spawn_bomber"]
+[ext_resource type="Script" uid="uid://desdqe7thf42u" path="res://compined/enemies/spawner/enemy_spawn_entry.gd" id="spawn_entry"]
+[ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="spawn_mini_bomber"]
+[ext_resource type="PackedScene" path="res://compined/powerup/power_up_spawner.tscn" id="power_spawner"]
+
+[sub_resource type="Resource" id="Spawn_0_mini_bomber"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_mini_bomber")
+chance = 3.0
+max_alive = 3
+
+[sub_resource type="Resource" id="Spawn_1_bat"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_bat")
+chance = 2.0
+max_alive = 2
+appears_after = 10.0
+
+[sub_resource type="Resource" id="Spawn_2_bomber"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_bomber")
+max_alive = 2
+appears_after = 20.0
+
+[sub_resource type="Resource" id="Spawn_3_bird"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_bird")
+chance = 0.6
+max_alive = 1
+appears_after = 40.0
 
 [node name="ScarryNight" type="Node2D" unique_id=144067878 node_paths=PackedStringArray("painting")]
 script = ExtResource("0_level")
 painting = NodePath("Painting")
-random_gem_spots = null
-gem_edge_margin = null
-gem_spacing = null
-gem_distance_from_player = null
 
 [node name="Painting" parent="." unique_id=1982030760 instance=ExtResource("1_painting")]
 position = Vector2(381, 237)
-match_benchmark_area = null
 
 [node name="HiddenGems" type="Node2D" parent="." unique_id=1468711726]
 
@@ -43,24 +66,46 @@ position = Vector2(-159, 0)
 
 [node name="Enemies" type="Node2D" parent="." unique_id=117957904]
 
-[node name="Bomber" parent="Enemies" unique_id=717355953 instance=ExtResource("7_bomber")]
+[node name="Bomber" parent="Enemies" unique_id=717355953 instance=ExtResource("spawn_bomber")]
 position = Vector2(-226, 475)
 
-[node name="Cannon" parent="Enemies" unique_id=1243142048 instance=ExtResource("8_cannon")]
-position = Vector2(1393, 181)
-
-[node name="Bat" parent="Enemies" unique_id=2047838840 instance=ExtResource("9_bat")]
-position = Vector2(1100, -145)
-
-[node name="MiniBomber" parent="Enemies" unique_id=861988390 instance=ExtResource("11_mini_bomber")]
+[node name="MiniBomber" parent="Enemies" unique_id=861988390 instance=ExtResource("spawn_mini_bomber")]
 position = Vector2(650, 450)
+
+[node name="MiniBomber2" parent="Enemies" unique_id=1274427855 instance=ExtResource("spawn_mini_bomber")]
+position = Vector2(1483, 1038)
+
+[node name="MiniBomber3" parent="Enemies" unique_id=1420792288 instance=ExtResource("spawn_mini_bomber")]
+position = Vector2(-358, 1044)
+
+[node name="MiniBomber4" parent="Enemies" unique_id=562915506 instance=ExtResource("spawn_mini_bomber")]
+position = Vector2(1628, 122)
+
+[node name="MiniBomber5" parent="Enemies" unique_id=1063757297 instance=ExtResource("spawn_mini_bomber")]
+position = Vector2(-1018, -344)
 
 [node name="HiddenBat" parent="Enemies" unique_id=936846232 instance=ExtResource("12_hidden_bat")]
 position = Vector2(900, 550)
 
-[node name="Bird" parent="Enemies" unique_id=1649941527 instance=ExtResource("13_bird")]
-position = Vector2(250, -150)
+[node name="HiddenBat2" parent="Enemies" unique_id=1220461189 instance=ExtResource("12_hidden_bat")]
+position = Vector2(-832, 950)
+
+[node name="HiddenBat3" parent="Enemies" unique_id=747587058 instance=ExtResource("12_hidden_bat")]
+position = Vector2(-1044, -180)
+
+[node name="HiddenBat4" parent="Enemies" unique_id=1635310373 instance=ExtResource("12_hidden_bat")]
+position = Vector2(-136, -348)
 
 [node name="Player" parent="." unique_id=509409210 instance=ExtResource("2_player")]
 
 [node name="WinScreen" parent="." unique_id=1973757360 instance=ExtResource("10_win_screen")]
+
+[node name="EnemySpawner" parent="." unique_id=478198593 instance=ExtResource("spawner")]
+spawn_list = Array[ExtResource("spawn_entry")]([SubResource("Spawn_0_mini_bomber"), SubResource("Spawn_1_bat"), SubResource("Spawn_2_bomber"), SubResource("Spawn_3_bird")])
+max_per_wave = 3
+first_wave_after = 6.0
+min_time_between_waves = 7.0
+max_time_between_waves = 11.0
+speed_up_per_minute = 0.1
+
+[node name="PowerUpSpawner" parent="." instance=ExtResource("power_spawner")]

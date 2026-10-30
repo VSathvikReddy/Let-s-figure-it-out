@@ -1,30 +1,26 @@
 extends CanvasLayer
-## The player's health bar (top left). Copied from the sinan HUD, health part
-## only. The layout and colours live in health_hud.tscn; this script connects
-## the bars to the player's health and adds a little juice:
-##   - a light "damage" bar that catches up with the red bar after a hit
-##   - the panel shakes when she is hit
-##   - the bar pulses red like a heartbeat when her health is low
-##
-## Needed nodes (unique names): %HealthBar, %TrailBar, %Panel. Optional: %Value.
+## The player's health (top left): a row of pixel hearts (heart_icon.gd).
+## Each heart is worth `health_per_heart` points; when it loses part of that
+## it cracks, when it loses all of it it shatters and leaves a shadow.
+## The row shakes when she is hit, and the last heart beats when health is low.
 
-## Below this part of her max health the heartbeat pulse starts.
+## Health points in one heart (10 health / 2 = 5 hearts).
+@export var health_per_heart := 2
+## Size of each heart on screen, in px.
+@export var heart_size := 40.0
+## Below this part of her max health the last heart starts beating.
 @export_range(0.0, 1.0) var low_health_ratio := 0.4
-## Pause before the light "damage" bar catches up with the red bar.
-@export var trail_delay := 0.35
-@export var trail_duration := 0.45
 @export var shake_strength := 6.0
 
-@onready var health_bar: ProgressBar = %HealthBar
-@onready var trail_bar: ProgressBar = %TrailBar
-@onready var panel: Control = %Panel
-@onready var value_label: Label = get_node_or_null("%Value")
+const HeartIcon := preload("res://compined/ui/heart_icon.gd")
+
+@onready var row: HBoxContainer = %Hearts
 
 var _player: Node
-var _trail_tween: Tween
-var _pulse_tween: Tween
+var _hearts: Array = []
+var _beat_timer := 0.0
 var _low := false
-var _panel_home_x := NAN
+var _home_x := NAN
 
 
 func _ready() -> void:
@@ -37,55 +33,58 @@ func _connect_player() -> void:
 		push_warning("Health HUD: no player with a health_changed signal found")
 		return
 	_player.health_changed.connect(_on_health_changed)
-	_set_bars(_player.health, _player.max_health, false)
+	_make_hearts(_player.max_health)
+	_show(_player.health, _player.max_health, false)
+
+
+func _make_hearts(max_health: int) -> void:
+	for heart in _hearts:
+		heart.queue_free()
+	_hearts.clear()
+	for i in ceili(float(max_health) / health_per_heart):
+		var heart := HeartIcon.new()
+		heart.custom_minimum_size = Vector2(heart_size, heart_size)
+		row.add_child(heart)
+		_hearts.append(heart)
 
 
 func _on_health_changed(current: float, maximum: float) -> void:
-	_set_bars(current, maximum, true)
+	if ceili(maximum / health_per_heart) != _hearts.size():
+		_make_hearts(int(maximum))
+	_show(int(current), int(maximum), true)
+	_shake()
 
 
-func _set_bars(current: float, maximum: float, animate: bool) -> void:
-	var dropped := current < health_bar.value
-	health_bar.max_value = maximum
-	trail_bar.max_value = maximum
-	health_bar.value = current
-	if value_label:
-		value_label.text = "%d / %d" % [ceili(current), roundi(maximum)]
+## Heart number i holds health from i * health_per_heart up to the next one.
+func _show(current: int, maximum: int, animate: bool) -> void:
+	for i in _hearts.size():
+		var left := clampi(current - i * health_per_heart, 0, health_per_heart)
+		_hearts[i].show_health(left, health_per_heart, animate)
+	_low = maximum > 0 and float(current) / maximum <= low_health_ratio and current > 0
 
-	if _trail_tween:
-		_trail_tween.kill()
-	if animate and dropped:
-		_trail_tween = create_tween()
-		_trail_tween.tween_interval(trail_delay)
-		_trail_tween.tween_property(trail_bar, "value", current, trail_duration) \
-			.set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
-		_shake()
-	else:
-		trail_bar.value = current
 
-	var low := maximum > 0.0 and current / maximum <= low_health_ratio
-	if low != _low:
-		_low = low
-		_update_pulse()
+func _process(delta: float) -> void:
+	if not _low:
+		return
+	_beat_timer -= delta
+	if _beat_timer <= 0.0:
+		_beat_timer = 0.7
+		var last := _last_living_heart()
+		if last:
+			last.beat()
+
+
+func _last_living_heart() -> Control:
+	for i in range(_hearts.size() - 1, -1, -1):
+		if _hearts[i].state != HeartIcon.State.BROKEN:
+			return _hearts[i]
+	return null
 
 
 func _shake() -> void:
-	if is_nan(_panel_home_x):
-		_panel_home_x = panel.position.x
+	if is_nan(_home_x):
+		_home_x = row.position.x
 	var shake := create_tween()
 	for i in 4:
-		shake.tween_property(panel, "position:x", _panel_home_x + randf_range(-shake_strength, shake_strength), 0.04)
-	shake.tween_property(panel, "position:x", _panel_home_x, 0.05)
-
-
-## Heartbeat at low health: the bar flashes red over and over.
-func _update_pulse() -> void:
-	if _pulse_tween:
-		_pulse_tween.kill()
-	health_bar.modulate = Color.WHITE
-	if not _low:
-		return
-	_pulse_tween = create_tween().set_loops()
-	_pulse_tween.tween_property(health_bar, "modulate", Color(1.6, 0.7, 0.7), 0.12)
-	_pulse_tween.tween_property(health_bar, "modulate", Color.WHITE, 0.3)
-	_pulse_tween.tween_interval(0.25)
+		shake.tween_property(row, "position:x", _home_x + randf_range(-shake_strength, shake_strength), 0.04)
+	shake.tween_property(row, "position:x", _home_x, 0.05)
