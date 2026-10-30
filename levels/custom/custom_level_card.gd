@@ -14,7 +14,7 @@ const POLL_INTERVAL := 0.1            ## seconds between file-count checks
 # Shape counts, from MOST BROKEN to FULL PAINTING. Must be strictly increasing, and the pool
 # can't be bigger than MaskDisplay.MAX_LEVELS. When the player asks for N levels we pick N
 # evenly spread entries, always including the first and the last one.
-var shape_count_pool: Array[int] = [10, 30, 70, 150, 300, 500, 800, 1200]
+var shape_count_pool: Array[int] = [10, 30, 70, 300, 500, 2000, 5000]
 var shape_mode := 1        # 1 = triangles (see CustomLevel.generate for the other modes)
 var resize_input := 256    # primitive -r
 var output_size := 256     # primitive -s
