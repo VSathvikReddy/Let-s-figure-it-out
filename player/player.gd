@@ -27,6 +27,8 @@ extends CharacterBody2D
 @onready var portal: Node2D = $Portal
 @onready var sprite_2d: Sprite2D = $BrushAttack/Brush/Sprite2D
 @onready var wand: Sprite2D = $Portal/Wand
+@onready var audio_thrust_start: AudioStreamPlayer2D = $AudioThrustStart
+@onready var audio_thrust_loop: AudioStreamPlayer2D = $AudioThrustLoop
 
 var gems_collected:int=0:
 	set(value):
@@ -68,6 +70,11 @@ func _physics_process(delta: float) -> void:
 	input_vector.x = Input.get_axis("move_left", "move_right")
 	
 	var is_thrusting_up = Input.is_action_pressed("move_up")
+# Check for thrust input
+	var thrust_just_started: bool = Input.is_action_just_pressed("move_up")
+	var is_thrusting: bool = Input.is_action_pressed("move_up")
+	
+	_handle_thruster_audio(thrust_just_started, is_thrusting)
 	
 	# 2. Apply Thrust & Fast Gravity Forces
 	if input_vector.x != 0:
@@ -100,6 +107,21 @@ func _physics_process(delta: float) -> void:
 ## --- Recoil Helper Function ---
 func apply_recoil(impulse: Vector2) -> void:
 	velocity += impulse
+
+## --- Thrust Audio Function ---
+func _handle_thruster_audio(just_started: bool, active: bool) -> void:
+	if just_started:
+		# Play the initial blast/ignition sound once
+		audio_thrust_start.play()
+		
+	if active:
+		# Start loop audio if it's not already playing
+		if not audio_thrust_loop.playing:
+			audio_thrust_loop.play()
+	else:
+		# Stop looping sound immediately upon releasing the thrust key
+		if audio_thrust_loop.playing:
+			audio_thrust_loop.stop()
 
 ## --- Visual Helper Functions ---
 func _update_sprite_tilt(input_x: float, delta: float) -> void:
