@@ -1,23 +1,24 @@
-extends MaskDisplay
+extends Node2D
 class_name CustomLevel
-## Builds its AnimatedSprite2D children at runtime from user-made PNGs named
-## output_<i>_<n>.png (i = animation frame, n = level, both starting at 0), then hands off to MaskDisplay.
+## Builds a MaskDisplay as its own child from user-made PNGs named
+## output_<i>_<n>.png (i = animation frame, n = level, both starting at 0).
 ## Level 0 is the most broken, the last level is the full painting.
+## The MaskDisplay is the FIRST child, so it is drawn behind everything else in this scene.
 ## Set folder / levels / animation_frames (or use CustomLevel.create) BEFORE add_child().
 ## Images can be produced with CustomLevel.generate(), which runs fogleman/primitive.
 
 const USER_TEXTURES := "user://"
+const MAX_LEVELS := MaskDisplay.MAX_LEVELS
 const ZOOM_LEVEL := 8.0          ## scale applied on top of the image's native size
 const FPS := 8.0
+
+@export var blur := 1.5          ## forwarded to the MaskDisplay
 
 var folder := ""                 ## subfolder inside user://, e.g. "levels/my_level"
 var levels := 0                  ## 0 = auto-detect from files
 var animation_frames := 0        ## 0 = auto-detect from files
+var display: MaskDisplay         ## the child that holds the AnimatedSprite2Ds
 
-
-# ---------------------------------------------------------------------------
-# Creation
-# ---------------------------------------------------------------------------
 
 ## Create and configure in one step. Add the result to the tree afterwards.
 static func create(p_folder: String, p_levels := 0, p_frames := 0) -> CustomLevel:
@@ -29,6 +30,8 @@ static func create(p_folder: String, p_levels := 0, p_frames := 0) -> CustomLeve
 
 
 func _ready() -> void:
+	if folder == "":
+		folder = LevelManager.custom_folder   # set by the level select's custom card
 	if levels <= 0:
 		levels = _count_levels()
 	if animation_frames <= 0:
@@ -41,12 +44,20 @@ func _ready() -> void:
 		push_warning("CustomLevel: %d levels found, using only the first %d" % [levels, MAX_LEVELS])
 		levels = MAX_LEVELS
 
-	if not _build_sprites():
+	var level_sprites := _build_sprites()
+	if level_sprites.is_empty():
 		return
 
-	super._ready()           # MaskDisplay now finds the sprites we just added
-	if full:
-		full.play("default")
+	# Fill the MaskDisplay BEFORE it enters the tree, so its _ready finds the sprites.
+	display = MaskDisplay.new()
+	display.name = "MaskDisplay"
+	display.blur = blur
+	for s in level_sprites:
+		display.add_child(s)
+	add_child(display)
+	move_child(display, 0)   # first child = drawn first = behind every sibling
+	if display.full:
+		display.full.play("default")
 
 
 # ---------------------------------------------------------------------------
@@ -73,7 +84,8 @@ func _count_frames() -> int:
 	return k
 
 
-func _build_sprites() -> bool:
+## Returns the sprites ordered MOST BROKEN first, FULL PAINTING last (empty array on failure).
+func _build_sprites() -> Array[AnimatedSprite2D]:
 	var level_sprites: Array[AnimatedSprite2D] = []
 
 	for n in levels:
@@ -85,11 +97,11 @@ func _build_sprites() -> bool:
 			var path := _file_path(folder, i, n)
 			if not FileAccess.file_exists(path):
 				push_warning("CustomLevel: missing file %s" % path)
-				return false
+				return []
 			var img := Image.load_from_file(path)
 			if img == null or img.is_empty():
 				push_warning("CustomLevel: could not load %s" % path)
-				return false
+				return []
 			sf.add_frame("default", ImageTexture.create_from_image(img))
 
 		var spr := AnimatedSprite2D.new()
@@ -99,16 +111,7 @@ func _build_sprites() -> bool:
 		spr.texture_filter = CanvasItem.TEXTURE_FILTER_NEAREST
 		level_sprites.append(spr)
 
-	# Remove any placeholder sprites immediately so MaskDisplay doesn't see them
-	for c in get_children():
-		if c is AnimatedSprite2D:
-			remove_child(c)
-			c.queue_free()
-
-	# Order matters: MOST BROKEN first, FULL PAINTING last
-	for s in level_sprites:
-		add_child(s)
-	return true
+	return level_sprites
 
 
 # ---------------------------------------------------------------------------
