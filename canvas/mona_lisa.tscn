@@ -1,0 +1,175 @@
+[gd_scene format=3 uid="uid://dbb44poi0ie61"]
+
+[ext_resource type="Script" uid="uid://dwrl1rhhejxok" path="res://canvas/mask_display.gd" id="1_5ieu4"]
+[ext_resource type="Texture2D" uid="uid://ciw0gbmcp2s66" path="res://canvas/assets/mona_lisa/output_n10_run1.svg" id="2_whxb1"]
+[ext_resource type="Texture2D" uid="uid://cisr60cbxpt00" path="res://canvas/assets/mona_lisa/output_n10_run2.svg" id="3_gqqeb"]
+[ext_resource type="Texture2D" uid="uid://dpu28qusn3ti8" path="res://canvas/assets/mona_lisa/output_n10_run3.svg" id="4_2kmwa"]
+[ext_resource type="Texture2D" uid="uid://bbcygtucn63b0" path="res://canvas/assets/mona_lisa/output_n10_run4.svg" id="5_h5dq7"]
+[ext_resource type="Texture2D" uid="uid://de6mgfv1rpwme" path="res://canvas/assets/mona_lisa/output_n10_run5.svg" id="6_2hfpe"]
+[ext_resource type="Texture2D" uid="uid://drda1pkf66hk1" path="res://canvas/assets/mona_lisa/output_n30_run1.svg" id="7_5yn2o"]
+[ext_resource type="Texture2D" uid="uid://04pphpvi6hnw" path="res://canvas/assets/mona_lisa/output_n30_run2.svg" id="8_dn48c"]
+[ext_resource type="Texture2D" uid="uid://b81gbfdpwxg87" path="res://canvas/assets/mona_lisa/output_n30_run3.svg" id="9_nfwpq"]
+[ext_resource type="Texture2D" uid="uid://kvi6th5wld7y" path="res://canvas/assets/mona_lisa/output_n30_run4.svg" id="10_2o5u3"]
+[ext_resource type="Texture2D" uid="uid://e4f5878yvgdy" path="res://canvas/assets/mona_lisa/output_n30_run5.svg" id="11_2rstp"]
+[ext_resource type="Texture2D" uid="uid://3yrn1p58o75a" path="res://canvas/assets/mona_lisa/output_n70_run1.svg" id="12_vcykl"]
+[ext_resource type="Texture2D" uid="uid://c8p8l20dx7sci" path="res://canvas/assets/mona_lisa/output_n70_run2.svg" id="13_os75y"]
+[ext_resource type="Texture2D" uid="uid://bu3yaljac7snw" path="res://canvas/assets/mona_lisa/output_n70_run3.svg" id="14_w47o5"]
+[ext_resource type="Texture2D" uid="uid://cdac70v4ya12e" path="res://canvas/assets/mona_lisa/output_n70_run4.svg" id="15_5rlcy"]
+[ext_resource type="Texture2D" uid="uid://dl84tsptk1vfq" path="res://canvas/assets/mona_lisa/output_n70_run5.svg" id="16_c41b2"]
+[ext_resource type="Texture2D" uid="uid://xusbistrjbua" path="res://canvas/assets/mona_lisa/output_n300_run1.svg" id="17_iosg5"]
+[ext_resource type="Texture2D" uid="uid://non4qt6y4rex" path="res://canvas/assets/mona_lisa/output_n300_run2.svg" id="18_y5mtp"]
+[ext_resource type="Texture2D" uid="uid://bc0c846bik4ed" path="res://canvas/assets/mona_lisa/output_n300_run3.svg" id="19_6etsa"]
+[ext_resource type="Texture2D" uid="uid://bxnl8j8vchb0d" path="res://canvas/assets/mona_lisa/output_n300_run4.svg" id="20_mcj6j"]
+[ext_resource type="Texture2D" uid="uid://ddvicpi2xyxc5" path="res://canvas/assets/mona_lisa/output_n300_run5.svg" id="21_ymmp0"]
+[ext_resource type="Texture2D" uid="uid://b2u4jov3mjuf3" path="res://canvas/assets/mona_lisa/output_n2000_run1.svg" id="22_mfm24"]
+[ext_resource type="Texture2D" uid="uid://bk4hfpsyyqs7h" path="res://canvas/assets/mona_lisa/output_n2000_run2.svg" id="23_ccvts"]
+[ext_resource type="Texture2D" uid="uid://neolvvrngv55" path="res://canvas/assets/mona_lisa/output_n2000_run3.svg" id="24_tno0t"]
+[ext_resource type="Texture2D" uid="uid://cvy1cowi1jcm3" path="res://canvas/assets/mona_lisa/output_n2000_run4.svg" id="25_ii80j"]
+[ext_resource type="Texture2D" uid="uid://cxqoa1v7dv8mv" path="res://canvas/assets/mona_lisa/output_n2000_run5.svg" id="26_4nmyi"]
+[ext_resource type="PackedScene" uid="uid://bnp6j87rr6nc6" path="res://player/player.tscn" id="27_y5mtp"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5l6il"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("22_mfm24")
+}, {
+"duration": 1.0,
+"texture": ExtResource("23_ccvts")
+}, {
+"duration": 1.0,
+"texture": ExtResource("24_tno0t")
+}, {
+"duration": 1.0,
+"texture": ExtResource("25_ii80j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("26_4nmyi")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_yytih"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("17_iosg5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("18_y5mtp")
+}, {
+"duration": 1.0,
+"texture": ExtResource("19_6etsa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("20_mcj6j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("21_ymmp0")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vcykl"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_vcykl")
+}, {
+"duration": 1.0,
+"texture": ExtResource("13_os75y")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_w47o5")
+}, {
+"duration": 1.0,
+"texture": ExtResource("15_5rlcy")
+}, {
+"duration": 1.0,
+"texture": ExtResource("16_c41b2")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_5yn2o"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("7_5yn2o")
+}, {
+"duration": 1.0,
+"texture": ExtResource("8_dn48c")
+}, {
+"duration": 1.0,
+"texture": ExtResource("9_nfwpq")
+}, {
+"duration": 1.0,
+"texture": ExtResource("10_2o5u3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("11_2rstp")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 1.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_4uyoc"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_whxb1")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_gqqeb")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_2kmwa")
+}, {
+"duration": 1.0,
+"texture": ExtResource("5_h5dq7")
+}, {
+"duration": 1.0,
+"texture": ExtResource("6_2hfpe")
+}],
+"loop": 1,
+"name": &"default",
+"speed": 1.0
+}]
+
+[node name="MonaLisa" type="Node2D" unique_id=1248126629]
+script = ExtResource("1_5ieu4")
+metadata/_custom_type_script = "uid://dwrl1rhhejxok"
+
+[node name="AnimatedSprite2D5" type="AnimatedSprite2D" parent="." unique_id=1786914286]
+scale = Vector2(6.040001, 6.040001)
+sprite_frames = SubResource("SpriteFrames_5l6il")
+autoplay = "default"
+
+[node name="AnimatedSprite2D4" type="AnimatedSprite2D" parent="." unique_id=1399717915]
+scale = Vector2(6.040001, 6.040001)
+sprite_frames = SubResource("SpriteFrames_yytih")
+autoplay = "default"
+
+[node name="AnimatedSprite2D3" type="AnimatedSprite2D" parent="." unique_id=1986623301]
+scale = Vector2(6.040001, 6.040001)
+sprite_frames = SubResource("SpriteFrames_vcykl")
+autoplay = "default"
+
+[node name="AnimatedSprite2D2" type="AnimatedSprite2D" parent="." unique_id=1549153938]
+scale = Vector2(6.040001, 6.040001)
+sprite_frames = SubResource("SpriteFrames_5yn2o")
+autoplay = "default"
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=96774558]
+scale = Vector2(6.040001, 6.040001)
+sprite_frames = SubResource("SpriteFrames_4uyoc")
+autoplay = "default"
+
+[node name="Player" parent="." unique_id=1428108754 instance=ExtResource("27_y5mtp")]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dj3p44iicn75t"
-path="res://.godot/imported/hill_80.png-c26f0a93fe7c26a5d936e4a42ece8452.ctex"
+uid="uid://dl84tsptk1vfq"
+path="res://.godot/imported/output_n70_run5.svg-38d322451706c5a6b17efdd1e46ad8f2.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://canvas/assets/hill_80.png"
-dest_files=["res://.godot/imported/hill_80.png-c26f0a93fe7c26a5d936e4a42ece8452.ctex"]
+source_file="res://canvas/assets/mona_lisa/output_n70_run5.svg"
+dest_files=["res://.godot/imported/output_n70_run5.svg-38d322451706c5a6b17efdd1e46ad8f2.ctex"]
 
 [params]
 
@@ -38,3 +38,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false
