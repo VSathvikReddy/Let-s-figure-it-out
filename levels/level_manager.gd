@@ -22,6 +22,12 @@ var levels: Array[Dictionary] = [
 		"subtitle": "Toggle the Veil (J) to see unseen paths",
 		"scene_path": "res://demo.tscn", # Replace with level_3.tscn when ready
 		"preview_color": Color(0.42, 0.24, 0.68)
+	},
+	{
+		"title": "Painting IV: Entropy's Edge",
+		"subtitle": "Survive the final shifting architecture",
+		"scene_path": "res://demo.tscn", # Ensure you create a level_4.tscn eventually!
+		"preview_color": Color(0.25, 0.65, 0.45)
 	}
 ]
 
