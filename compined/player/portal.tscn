@@ -1,0 +1,79 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/player/portal.gd" id="1_e4lhe"]
+[ext_resource type="Shader" path="res://compined/player/edge_detect.gdshader" id="2_12dtq"]
+[ext_resource type="Shader" path="res://compined/player/veil_overlay.gdshader" id="3_r34a7"]
+
+[ext_resource type="ShaderMaterial" path="res://compined/player/veil_hide.tres" id="4_hide"]
+[ext_resource type="ShaderMaterial" path="res://compined/player/veil_dim.tres" id="5_dim"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_boad6"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hg6s5"]
+shader = ExtResource("2_12dtq")
+shader_parameter/thickness = 1.5
+shader_parameter/threshold = 0.06000000285
+shader_parameter/softness = 0.00999999977648
+shader_parameter/strength = 1.0
+shader_parameter/scene_keep = 0.0
+shader_parameter/edge_color = Color(1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_fvc1v"]
+frequency = 0.012
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mmtct"]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_fvc1v")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_6diby"]
+shader = ExtResource("3_r34a7")
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_mmtct")
+shader_parameter/viewport_size = Vector2(1152, 648)
+shader_parameter/center_px = Vector2(576, 324)
+shader_parameter/sweep = 1.0
+shader_parameter/hole_radius = 150.0
+shader_parameter/disk_fade = 1.0
+shader_parameter/veil_radius = 0.0
+shader_parameter/veil_alpha = 0.0
+shader_parameter/disk_width = 70.0
+shader_parameter/flow_speed = 0.04
+shader_parameter/bleed = 0.6
+shader_parameter/bristle = 1.0
+shader_parameter/veil_soft = 60.0
+shader_parameter/paint_light = Color(1, 0.88, 0.45, 1)
+shader_parameter/paint_mid = Color(0.95, 0.68, 0.18, 1)
+shader_parameter/paint_dark = Color(0.35, 0.14, 0.03, 1)
+
+[node name="Portal" type="Node2D"]
+process_mode = 3
+script = ExtResource("1_e4lhe")
+hide_material = ExtResource("4_hide")
+dim_material = ExtResource("5_dim")
+
+[node name="Wand" type="Sprite2D" parent="."]
+position = Vector2(44.75, 1.75)
+scale = Vector2(90.5, 4.5)
+texture = SubResource("PlaceholderTexture2D_boad6")
+
+[node name="Veil" type="CanvasLayer" parent="."]
+
+[node name="EdgeRect" type="ColorRect" parent="Veil"]
+material = SubResource("ShaderMaterial_hg6s5")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="VeilRect" type="ColorRect" parent="Veil"]
+material = SubResource("ShaderMaterial_6diby")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

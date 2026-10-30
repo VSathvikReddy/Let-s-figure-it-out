@@ -1,0 +1,71 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/enemies/cannon/cannon.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://compined/enemies/cannon/cannon_fire_sheet.png" id="2_sheet"]
+[ext_resource type="AudioStream" path="res://compined/common/enemy_death.wav" id="3_death"]
+[ext_resource type="AudioStream" path="res://compined/enemies/cannon/shoot.wav" id="4_shoot"]
+
+[sub_resource type="AtlasTexture" id="Frame_1140"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 1140, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="Frame_855"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 855, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="Frame_570"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 570, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="Frame_285"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 285, 1024, 285)
+
+[sub_resource type="AtlasTexture" id="Frame_0"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 0, 1024, 285)
+
+[sub_resource type="SpriteFrames" id="Animations"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("Frame_1140")}, {"duration": 1.0, "texture": SubResource("Frame_855")}, {"duration": 1.0, "texture": SubResource("Frame_570")}, {"duration": 1.0, "texture": SubResource("Frame_285")}, {"duration": 1.0, "texture": SubResource("Frame_0")}],
+"loop": false,
+"name": &"fire",
+"speed": 20.0
+}]
+
+[sub_resource type="RectangleShape2D" id="Shape_body"]
+size = Vector2(50, 50)
+
+[sub_resource type="CircleShape2D" id="Shape_detection"]
+radius = 293.0
+
+[node name="Cannon" type="StaticBody2D"]
+script = ExtResource("1_script")
+death_sound = ExtResource("3_death")
+
+[node name="BodyShape" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape_body")
+
+[node name="BarrelPivot" type="Node2D" parent="."]
+
+[node name="BarrelSprite" type="AnimatedSprite2D" parent="BarrelPivot"]
+position = Vector2(37, 0)
+rotation = 1.5717645
+scale = Vector2(0.49, 0.49)
+sprite_frames = SubResource("Animations")
+animation = &"fire"
+
+[node name="Muzzle" type="Marker2D" parent="BarrelPivot"]
+position = Vector2(67, 0)
+
+[node name="DetectionArea" type="Area2D" parent="."]
+
+[node name="Shape" type="CollisionShape2D" parent="DetectionArea"]
+shape = SubResource("Shape_detection")
+
+[node name="FireTimer" type="Timer" parent="."]
+autostart = true
+
+[node name="ShootSound" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_shoot")
+volume_db = 5.0

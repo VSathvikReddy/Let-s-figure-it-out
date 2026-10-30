@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://compined/gems/gem_rock.tscn" id="1_rock"]
+[ext_resource type="PackedScene" path="res://compined/gems/blue_gem.tscn" id="2_gem"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/blue5.png" id="3_crack1"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/blue10.png" id="4_crack2"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/blue20.png" id="5_crack3"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/blue.png" id="6_gem"]
+
+[node name="BlueRock" instance=ExtResource("1_rock")]
+pictures = Array[Texture2D]([null, ExtResource("3_crack1"), ExtResource("4_crack2"), ExtResource("5_crack3"), ExtResource("6_gem")])
+gem_scene = ExtResource("2_gem")
