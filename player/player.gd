@@ -40,6 +40,7 @@ var gems_collected:int=0:
 			
 func collect_gem(gem:Gem)->void:
 	gems_collected += 1
+	LevelManager.register_gem_collected(gems_collected)
 	gem.queue_free()
 
 func _ready() -> void:

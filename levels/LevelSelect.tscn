@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://b0q3sil2knggc"]
+
+[ext_resource type="Script" uid="uid://egy7ievpbiey" path="res://levels/level_select.gd" id="1_5rv0k"]
+
+[node name="LevelSelect" type="Control" unique_id=1227965324]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_5rv0k")
+
+[node name="Background" type="ColorRect" parent="." unique_id=259954645]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+color = Color(0.29337206, 0.29337206, 0.3491902, 1)
+
+[node name="HeaderLabel" type="Label" parent="." unique_id=1338042242]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 36.0
+offset_bottom = 85.0
+grow_horizontal = 2
+text = "SELECT A PAINTING
+"
+horizontal_alignment = 1
+
+[node name="HintLabel" type="Label" parent="." unique_id=1872927269]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -58.0
+offset_bottom = -35.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "Swipe Left / Right or use Arrow Keys  •  Click Center Painting to Enter"
+horizontal_alignment = 1
+
+[node name="CardsPivot" type="Control" parent="." unique_id=1351518182]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
