@@ -33,10 +33,17 @@ extends Camera2D
 ## Rounds the camera position to whole pixels (crisper pixel art).
 @export var snap_to_pixels := true
 
+@export_group("Shake")
+## Strongest shake, in px (at shake strength 1).
+@export var max_shake := 18.0
+## How fast a shake calms down (strength lost per second).
+@export var shake_recovery := 1.6
+
 var player: Node2D
 var level_rect := Rect2()        # the painting, in world space
 var dead_zone := Vector2.ZERO    # in world pixels, worked out from the level size
 var exact_position := Vector2.ZERO
+var _shake_strength := 0.0       # 0..1, set by shake(), fades by itself
 
 
 func _ready() -> void:
@@ -54,6 +61,20 @@ func _process(delta: float) -> void:
 		return
 	_follow_player(delta)
 	global_position = exact_position.round() if snap_to_pixels else exact_position
+	_update_shake(delta)
+
+
+## Shakes the screen (explosions call this). 0.3 = small bump, 1 = huge blast.
+## Several shakes add up, but never above 1.
+func shake(strength: float) -> void:
+	_shake_strength = minf(_shake_strength + strength, 1.0)
+
+
+func _update_shake(delta: float) -> void:
+	_shake_strength = maxf(_shake_strength - shake_recovery * delta, 0.0)
+	# squared, so small shakes stay gentle and big ones really kick
+	var amount := _shake_strength * _shake_strength * max_shake
+	offset = Vector2(randf_range(-amount, amount), randf_range(-amount, amount))
 
 
 ## Reads the level size and works out the zoom and the dead zone from it.
