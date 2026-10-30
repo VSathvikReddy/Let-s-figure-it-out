@@ -1,0 +1,26 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/gems/destructible.gd" id="1_ege0b"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="2_0fg6j"]
+[ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="3_ldgfi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4uyoc"]
+radius = 42.047592
+
+[node name="HiddenBat" type="Area2D" unique_id=1220461189 groups=["destructible"]]
+script = ExtResource("1_ege0b")
+health = 2
+spawn_scene = ExtResource("2_0fg6j")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1354324817]
+shape = SubResource("CircleShape2D_4uyoc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=847438459]
+position = Vector2(-1.000001, -2.000001)
+scale = Vector2(0.38281253, 0.38281253)
+texture = ExtResource("3_ldgfi")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1652947527]
+position = Vector2(-1.000001, -2.000001)
+scale = Vector2(0.38281253, 0.38281253)
+texture = ExtResource("3_ldgfi")

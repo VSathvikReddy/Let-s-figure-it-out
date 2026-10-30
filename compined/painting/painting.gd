@@ -86,6 +86,17 @@ func world_rect() -> Rect2:
 	return root.get_global_transform() * Rect2(-size / 2.0, size)
 
 
+## How detailed the painting is at a world position:
+## 0 = crudest, 1 = fully restored. Outside the painting it returns 1.
+func detail_at(world: Vector2) -> float:
+	if steps == 0:
+		return 1.0
+	var square := Vector2i(_world_to_mask(world).floor())
+	if square.x < 0 or square.y < 0 or square.x >= mask_size.x or square.y >= mask_size.y:
+		return 1.0
+	return mask_data[square.y * mask_size.x + square.x] / 255.0
+
+
 ## The first picture: it sets the size of the whole painting.
 func root_picture() -> Node2D:
 	return pictures[0] if not pictures.is_empty() else null

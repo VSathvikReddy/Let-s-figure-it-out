@@ -7,6 +7,9 @@ extends RefCounted
 ##     Effects.play_sound(self, my_sound)
 ##     Effects.burst(self, 30, Color.ORANGE)
 ##     Effects.paint(my_area, -3)
+##     Effects.rpg_explosion(self, 140.0)
+
+const EXPLOSION := preload("res://compined/common/explosion.gd")
 
 
 ## Plays a sound where `from` is. The sound keeps playing even if `from` is
@@ -49,6 +52,16 @@ static func fire_explosion(from: Node2D, big := true) -> void:
 	var size := 1.0 if big else 0.75
 	burst(from, int(40 * size), Color(1.0, 0.6, 0.1), 0.5, 120.0 * size, 280.0 * size)
 	burst(from, int(16 * size), Color(0.25, 0.25, 0.25, 0.8), 0.9, 30.0, 90.0, 8.0, 14.0)
+
+
+## A big RPG-style explosion (flash, shockwave, fireball, sparks, debris,
+## embers, smoke and a camera shake). `radius` = how far the shockwave reaches.
+static func rpg_explosion(from: Node2D, radius := 150.0, fire_color := Color(1.0, 0.55, 0.15)) -> void:
+	var explosion = EXPLOSION.new()
+	explosion.radius = radius
+	explosion.fire_color = fire_color
+	from.get_tree().current_scene.add_child(explosion)
+	explosion.global_position = from.global_position
 
 
 ## A trail of particles that follows `owner` (and stays in the world, so it
