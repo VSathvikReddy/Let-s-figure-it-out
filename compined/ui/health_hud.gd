@@ -1,11 +1,14 @@
 extends CanvasLayer
 ## The player's health (top left): a row of pixel hearts (heart_icon.gd).
-## Each heart is worth `health_per_heart` points; when it loses part of that
-## it cracks, when it loses all of it it shatters and leaves a shadow.
+## Each heart is worth `health_per_heart` points (1: one heart per health
+## point). A heart that loses all of its points cracks and shatters and leaves
+## a shadow; with more than 1 point per heart, losing part of it cracks it.
 ## The row shakes when she is hit, and the last heart beats when health is low.
+## Inside the veil a countdown ring (veil_heal_timer.gd) shows when the next
+## heart comes back.
 
-## Health points in one heart (10 health / 2 = 5 hearts).
-@export var health_per_heart := 2
+## Health points in one heart (5 health / 1 = 5 hearts).
+@export var health_per_heart := 1
 ## Size of each heart on screen, in px.
 @export var heart_size := 40.0
 ## Below this part of her max health the last heart starts beating.
@@ -15,12 +18,14 @@ extends CanvasLayer
 const HeartIcon := preload("res://compined/ui/heart_icon.gd")
 
 @onready var row: HBoxContainer = %Hearts
+@onready var heal_timer: Control = %VeilHealTimer
 
 var _player: Node
 var _hearts: Array = []
 var _beat_timer := 0.0
 var _low := false
 var _home_x := NAN
+var _shown_health := 0
 
 
 func _ready() -> void:
@@ -34,6 +39,7 @@ func _connect_player() -> void:
 		return
 	_player.health_changed.connect(_on_health_changed)
 	_make_hearts(_player.max_health)
+	_shown_health = _player.health
 	_show(_player.health, _player.max_health, false)
 
 
@@ -51,8 +57,11 @@ func _make_hearts(max_health: int) -> void:
 func _on_health_changed(current: float, maximum: float) -> void:
 	if ceili(maximum / health_per_heart) != _hearts.size():
 		_make_hearts(int(maximum))
+	var hurt := current < _shown_health
+	_shown_health = int(current)
 	_show(int(current), int(maximum), true)
-	_shake()
+	if hurt:
+		_shake()
 
 
 ## Heart number i holds health from i * health_per_heart up to the next one.
@@ -64,6 +73,7 @@ func _show(current: int, maximum: int, animate: bool) -> void:
 
 
 func _process(delta: float) -> void:
+	_update_heal_timer()
 	if not _low:
 		return
 	_beat_timer -= delta
@@ -72,6 +82,15 @@ func _process(delta: float) -> void:
 		var last := _last_living_heart()
 		if last:
 			last.beat()
+
+
+## The veil countdown: shown only while she is healing in the veil.
+func _update_heal_timer() -> void:
+	var healing: bool = _player != null and _player.is_healing_in_veil()
+	heal_timer.visible = healing
+	if healing:
+		heal_timer.progress = _player.veil_heal_time / _player.veil_heal_interval
+		heal_timer.seconds_left = _player.veil_heal_interval - _player.veil_heal_time
 
 
 func _last_living_heart() -> Control:

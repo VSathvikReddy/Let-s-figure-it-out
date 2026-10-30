@@ -4,6 +4,9 @@ extends CharacterBody2D
 ##   - Spits fireballs from a distance; they burst and splash the player.
 ##   - Keeps its distance: hovers at `breath_range`, backs off if you come closer.
 ## It wanders until the player enters its DetectionZone.
+##
+## Animations (Sprite): "emerge" when it appears (shards come together into a
+## bat), then "fly" on a loop.
 
 const Effects := preload("res://compined/common/effects.gd")
 
@@ -35,7 +38,7 @@ var trail: CPUParticles2D
 var _breath_cooldown := 0.0
 var _time := 0.0
 
-@onready var sprite: Sprite2D = $Sprite2D
+@onready var sprite: AnimatedSprite2D = $Sprite
 @onready var muzzle: Marker2D = $Muzzle
 @onready var health_bar: Node2D = $HealthBar   # the small bar over its head
 @onready var detection_zone: Area2D = $DetectionZone
@@ -52,6 +55,8 @@ func _ready() -> void:
 	trail = Effects.make_trail(self, Color(1.0, 0.55, 0.15))
 	_pick_wander_direction()
 	_breath_cooldown = breath_interval
+	sprite.play("emerge")
+	sprite.animation_finished.connect(func() -> void: sprite.play("fly"), CONNECT_ONE_SHOT)
 
 
 func _physics_process(delta: float) -> void:
