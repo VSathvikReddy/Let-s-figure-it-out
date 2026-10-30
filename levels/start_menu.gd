@@ -3,10 +3,9 @@ extends Control
 # Drag and drop your 4 background images into this array in the Inspector!
 # (If left empty, it uses icon.svg as a safe placeholder until you assign them)
 @export var background_images: Array[Texture2D] = [
-	preload("res://icon.svg"),
-	preload("res://icon.svg"),
-	preload("res://icon.svg"),
-	preload("res://icon.svg")
+	preload("res://levels/background paintings/scarry_night.png"),
+	preload("res://levels/background paintings/skull.png"),
+	preload("res://levels/background paintings/tsunami.png")
 ]
 @export var crossfade_duration: float = 1.5
 
