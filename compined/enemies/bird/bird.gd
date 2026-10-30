@@ -30,7 +30,8 @@ enum State { FLY, CLAW_WINDUP, CLAW, DIVE_CLIMB, DIVE_HANG, DIVE, RECOVER,
 	TO_PAINTING, SCRATCH, FEINT, HURT, DEAD }
 
 @export_group("Health")
-@export var health := 5
+## Brush hits it can take (fast and hard to hit, but not tough).
+@export var max_health := 4
 @export var hurt_knockback := 260.0
 @export var hurt_stun_time := 0.35
 
@@ -91,10 +92,14 @@ enum State { FLY, CLAW_WINDUP, CLAW, DIVE_CLIMB, DIVE_HANG, DIVE, RECOVER,
 @export var flyby_radius := 34.0
 @export var flyby_cooldown := 10.0
 
+## How close it may get to the painting's edges, in px.
+@export var edge_margin := 50.0
+
 @export_group("Look")
 @export var feather_color := Color(0.9, 0.86, 0.82)
 @export var death_sound: AudioStream
 
+var health := 0
 var state := State.FLY
 var _time_in_state := 0.0
 var _face := 1.0                  # 1 = looking right
@@ -126,6 +131,7 @@ var _smooth_y := 0.0
 var _pitch := 0.0
 var _anim_name := &""
 
+@onready var health_bar: Node2D = $HealthBar   # the small bar over its head
 @onready var visual: Node2D = $Visual
 @onready var anim: AnimationPlayer = $AnimationPlayer
 @onready var rig: Node2D = $Visual/Rig
@@ -137,6 +143,8 @@ var _anim_name := &""
 
 
 func _ready() -> void:
+	health = max_health
+	health_bar.setup(max_health)
 	add_to_group("enemy")
 	z_index = 3
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
@@ -246,13 +254,13 @@ func _face_point(point: Vector2) -> void:
 		_face = signf(point.x - global_position.x)
 
 
-## Keeps it inside the painting (it can fly a little past the edges).
+## Never leaves the painting: at an edge it stops going that way.
 func _stay_inside_level() -> void:
-	var bounds := get_tree().get_first_node_in_group("level_bounds") as Control
-	if bounds == null:
-		return
-	var area := bounds.get_global_rect().grow(40.0)
-	global_position = global_position.clamp(area.position, area.end)
+	var push := Effects.keep_inside_level(self, edge_margin)
+	if push.x != 0.0:
+		velocity.x = 0.0
+	if push.y != 0.0:
+		velocity.y = 0.0
 
 
 # ---------------------------------------------------------------- flight physics
@@ -479,6 +487,8 @@ func _scratch(delta: float) -> void:
 	var progress := _scratch_done / _scratch_length
 	# dips a little in the middle of the rake
 	global_position = _scratch_from + _scratch_dir * _scratch_done + Vector2(0, sin(progress * PI) * 10.0)
+	if Effects.keep_inside_level(self, edge_margin) != Vector2.ZERO:
+		_scratch_done = _scratch_length   # reached the edge of the painting: the rake ends here
 	if int(_scratch_done / scratch_step) > int(before / scratch_step):
 		_scratch_mark()
 	if _scratch_done >= _scratch_length:
@@ -564,6 +574,7 @@ func take_damage(damage: int) -> void:
 	if state == State.DEAD:
 		return
 	health -= damage
+	health_bar.show_health(health)
 	_feather_puff()
 	visual.modulate = Color(5, 5, 5)
 	create_tween().tween_property(visual, "modulate", Color.WHITE, 0.15)

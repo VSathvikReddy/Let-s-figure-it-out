@@ -1,6 +1,8 @@
 extends Area2D
 ## Fireball spat by the bat. Flies to where the player was, then bursts:
 ## hurts the player inside the SplashZone and breaks the painting there.
+## Its SmudgeTrail child smudges the painting all along its path (tweak it on
+## that node in the Inspector).
 ## Bursts early if it touches the player or anything else on the way.
 
 const Effects := preload("res://compined/common/effects.gd")
@@ -8,6 +10,8 @@ const Effects := preload("res://compined/common/effects.gd")
 @export var speed := 380.0
 @export var splash_damage := 1
 @export var painting_damage := 3
+## Radius of painting the burst ruins, in px.
+@export var painting_damage_radius := 180.0
 @export var max_life := 2.5          ## seconds before it bursts on its own
 
 var _direction := Vector2.RIGHT
@@ -40,8 +44,8 @@ func _physics_process(delta: float) -> void:
 	if global_position.distance_to(_target) <= step:
 		global_position = _target   # arrived
 		_burst()
-	elif _age >= max_life:
-		_burst()                    # never arrived
+	elif _age >= max_life or not Effects.is_inside_level(self, global_position):
+		_burst()                    # never arrived, or reached the painting's edge
 	else:
 		global_position += _direction * step
 
@@ -61,7 +65,7 @@ func _burst() -> void:
 	for body in splash_zone.get_overlapping_bodies():
 		if body.is_in_group("player") and body.has_method("take_damage"):
 			body.take_damage(splash_damage)
-	Effects.paint(splash_zone, -painting_damage)
+	Effects.paint_circle(self, global_position, painting_damage_radius, -painting_damage)
 	Effects.fire_explosion(self, false)
 	Effects.leave_trail_behind(trail)
 	queue_free()

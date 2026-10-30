@@ -11,21 +11,21 @@
 script = ExtResource("1_script")
 
 [node name="Full" type="Sprite2D" parent="." unique_id=312830931]
-scale = Vector2(2, 2)
+scale = Vector2(1.5, 1.5)
 texture = ExtResource("2_full")
 
 [node name="Detail5000" type="Sprite2D" parent="." unique_id=124085974]
-scale = Vector2(3.28125, 3.28125)
+scale = Vector2(2.4609375, 2.4609375)
 texture = ExtResource("3_detail_5000")
 
 [node name="Detail500" type="Sprite2D" parent="." unique_id=766996483]
-scale = Vector2(3.28125, 3.28125)
+scale = Vector2(2.4609375, 2.4609375)
 texture = ExtResource("4_detail_500")
 
 [node name="Detail50" type="Sprite2D" parent="." unique_id=2073508587]
-scale = Vector2(3.28125, 3.28125)
+scale = Vector2(2.4609375, 2.4609375)
 texture = ExtResource("5_detail_50")
 
 [node name="Detail20" type="Sprite2D" parent="." unique_id=1863776590]
-scale = Vector2(3.28125, 3.28125)
+scale = Vector2(2.4609375, 2.4609375)
 texture = ExtResource("6_detail_20")

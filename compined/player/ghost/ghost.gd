@@ -37,10 +37,17 @@ enum State { WAITING, RISE, GLIDE, CLEAN, DONE }
 @export var spots_to_check := 12
 
 @export_group("Look")
-@export var ghost_radius := 14.0
+## Size of the ghost's head, in px.
+@export var ghost_radius := 20.0
 @export var ghost_color := Color(1.0, 0.82, 0.86)
 @export var clean_color := Color(1.0, 0.92, 0.6)   ## its glow while cleaning
-@export_range(0.0, 1.0) var opacity := 0.55
+@export_range(0.0, 1.0) var opacity := 0.75
+## Thin outline, so it shows up on light and dark paintings alike.
+@export var rim_color := Color(1.0, 1.0, 1.0, 0.6)
+## Seconds it takes to grow in when it appears.
+@export var appear_time := 0.9
+## Seconds the "cleaning wave" ring takes to reach clean_radius.
+@export var impact_time := 0.6
 @export var eye_color := Color(0.12, 0.0, 0.22)
 @export var wiggle_speed := 6.0
 @export var wiggle_amount := 1.0
@@ -62,8 +69,11 @@ func _ready() -> void:
 	_start = global_position
 	scale = Vector2.ZERO
 	(clean_shape.shape as CircleShape2D).radius = clean_radius
-	_wisps = Effects.make_trail(self, ghost_color, 18, 0.7)
+	_wisps = Effects.make_trail(self, ghost_color, 14, 0.7)
 	_wisps.position = Vector2(0, ghost_radius)
+	var light := get_node_or_null("Light") as PointLight2D
+	if light:
+		light.color = ghost_color
 
 
 func _process(delta: float) -> void:
@@ -77,7 +87,7 @@ func _process(delta: float) -> void:
 			var progress := clampf(_time_in_state / rise_time, 0.0, 1.0)
 			var eased := smoothstep(0.0, 1.0, progress)   # slow start, slow stop
 			global_position = _start + Vector2(sin(_age * 2.5) * 10.0, -rise_height * eased)
-			scale = Vector2.ONE * minf(1.0, _time_in_state / 0.5)
+			scale = Vector2.ONE * smoothstep(0.0, 1.0, _time_in_state / appear_time)
 			if progress >= 1.0:
 				_glide_from = global_position
 				_set_state(State.GLIDE)
@@ -94,7 +104,7 @@ func _process(delta: float) -> void:
 			if _time_in_state >= clean_time:
 				_clean()
 		State.DONE:
-			if _time_in_state > 0.5:
+			if _time_in_state > impact_time:
 				queue_free()
 	queue_redraw()
 
@@ -137,7 +147,7 @@ func _find_most_damaged_spot() -> Vector2:
 ## Releases its light: restores the painting around it, then fades away.
 func _clean() -> void:
 	Effects.paint(clean_area, clean_amount)
-	Effects.burst(self, 24, clean_color, 0.7, 60.0, 180.0, 3.0, 7.0)
+	Effects.burst(self, 16, clean_color, 0.6, 80.0, 200.0, 2.0, 5.0)
 	Effects.leave_trail_behind(_wisps)
 	_set_state(State.DONE)
 
@@ -158,22 +168,23 @@ func _draw() -> void:
 			grow = 1.0 + 0.15 * glow
 		State.DONE:
 			glow = 1.0
-			var fade := clampf(_time_in_state / 0.5, 0.0, 1.0)
+			var fade := clampf(_time_in_state / impact_time, 0.0, 1.0)
 			grow = 1.3 + 0.4 * fade
 			alpha = 1.0 - fade
+			_draw_cleaning_wave(fade)
 
 	# the spot it is going to clean: a soft turning ring
 	if state in [State.RISE, State.GLIDE]:
 		var ring_at := to_local(target)
 		for i in 8:
 			var start_angle := _age * 1.5 + i * TAU / 8.0
-			draw_arc(ring_at, clean_radius * 0.5, start_angle, start_angle + 0.45, 6, Color(clean_color, 0.4), 2.0, true)
+			draw_arc(ring_at, clean_radius * 0.5, start_angle, start_angle + 0.45, 6, Color(clean_color, 0.35), 2.0, true)
 
 	# while cleaning: a growing ring of light around it
 	if state == State.CLEAN:
 		var ring := R * 2.6 * (1.0 + glow * 0.5)
-		draw_arc(Vector2.ZERO, ring, 0.0, TAU, 32, Color(clean_color, 0.2 + 0.6 * glow), 2.0, true)
-		draw_circle(Vector2.ZERO, ring, Color(clean_color, 0.08 * glow))
+		draw_arc(Vector2.ZERO, ring, 0.0, TAU, 32, Color(clean_color, 0.2 + 0.4 * glow), 2.0, true)
+		draw_circle(Vector2.ZERO, ring, Color(clean_color, 0.06 * glow))
 
 	# body wobble
 	var w := wiggle_amount
@@ -183,7 +194,8 @@ func _draw() -> void:
 	draw_set_transform(sway, tilt, Vector2(grow / squish, grow * squish))
 
 	var body_color := ghost_color.lerp(clean_color, glow)
-	draw_circle(Vector2(0, R * 0.2), R * 1.9, Color(body_color, 0.08 * alpha))   # soft halo
+	# soft halo: two layers, so it glows even on a bright painting
+	draw_circle(Vector2(0, R * 0.2), R * 1.8, Color(body_color, 0.1 * alpha))
 
 	# body: round head, straight sides, wavy tail
 	var body := PackedVector2Array()
@@ -196,6 +208,9 @@ func _draw() -> void:
 		body.append(Vector2(x, R * 1.3 + sin(x / R * PI * 1.5 + _age * wiggle_speed * 1.5) * R * 0.25 * w))
 	body.append(Vector2(-R, R * 0.9))
 	draw_colored_polygon(body, Color(body_color, opacity * alpha))
+	var outline := body.duplicate()
+	outline.append(body[0])
+	draw_polyline(outline, Color(rim_color, rim_color.a * alpha), 1.5, true)
 	var inner := PackedVector2Array()
 	for point in body:
 		inner.append(point * 0.62 + Vector2(0, -R * 0.15))
@@ -207,3 +222,12 @@ func _draw() -> void:
 		draw_circle(eye, R * 0.2, Color(eye_color, 0.95 * alpha))
 		draw_circle(eye + Vector2(-R * 0.06, -R * 0.07), R * 0.07, Color(1, 1, 1, 0.9 * alpha))
 	draw_arc(Vector2(0, R * 0.25), R * 0.22, 0.2, PI - 0.2, 8, Color(eye_color, 0.9 * alpha), 1.5, true)
+
+
+## The moment it cleans: a ring of light sweeps out to the edge of the area
+## it restores, so you can see how far the cleaning reached.
+func _draw_cleaning_wave(progress: float) -> void:
+	var reach := clean_radius * ease(progress, 0.4) / maxf(scale.x, 0.01)
+	var strength := 1.0 - progress
+	draw_circle(Vector2.ZERO, reach, Color(clean_color, 0.06 * strength))
+	draw_arc(Vector2.ZERO, reach, 0.0, TAU, 64, Color(clean_color, 0.5 * strength), 3.0, true)

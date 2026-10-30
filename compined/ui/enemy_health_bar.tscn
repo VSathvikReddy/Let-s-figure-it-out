@@ -1,0 +1,59 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/ui/enemy_health_bar.gd" id="1_script"]
+
+[sub_resource type="StyleBoxFlat" id="Style_background"]
+bg_color = Color(0.1, 0.03, 0.05, 0.85)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0, 0, 0, 0.8)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="Style_trail_fill"]
+bg_color = Color(1, 0.88, 0.7, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxEmpty" id="Style_none"]
+
+[sub_resource type="StyleBoxFlat" id="Style_health_fill"]
+bg_color = Color(0.88, 0.16, 0.24, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[node name="HealthBar" type="Node2D"]
+z_index = 10
+script = ExtResource("1_script")
+
+[node name="TrailBar" type="ProgressBar" parent="."]
+offset_left = -28.0
+offset_top = -4.0
+offset_right = 28.0
+offset_bottom = 4.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("Style_background")
+theme_override_styles/fill = SubResource("Style_trail_fill")
+max_value = 3.0
+value = 3.0
+show_percentage = false
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -28.0
+offset_top = -4.0
+offset_right = 28.0
+offset_bottom = 4.0
+mouse_filter = 2
+theme_override_styles/background = SubResource("Style_none")
+theme_override_styles/fill = SubResource("Style_health_fill")
+max_value = 3.0
+value = 3.0
+show_percentage = false
