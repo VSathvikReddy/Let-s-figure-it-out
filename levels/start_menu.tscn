@@ -1,0 +1,175 @@
+[gd_scene format=3 uid="uid://clcndtw74xdy1"]
+
+[ext_resource type="Script" uid="uid://jgi42svkc4ww" path="res://levels/start_menu.gd" id="1_nl3ga"]
+
+[node name="StartMenu" type="Control" unique_id=242257088]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_nl3ga")
+
+[node name="BaseBackground" type="ColorRect" parent="." unique_id=1725012293]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.07, 0.07, 0.1, 1)
+
+[node name="BgImageA" type="TextureRect" parent="." unique_id=1075833418]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BgImageB" type="TextureRect" parent="." unique_id=769577794]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DarkTintOverlay" type="ColorRect" parent="." unique_id=280550108]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05, 0.05, 0.08, 0.55)
+
+[node name="SlideTimer" type="Timer" parent="." unique_id=1451536108]
+wait_time = 10.0
+autostart = true
+
+[node name="MenuCard" type="PanelContainer" parent="." unique_id=1035099855]
+custom_minimum_size = Vector2(380, 420)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -210.0
+offset_right = 190.0
+offset_bottom = 210.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuCard" unique_id=1768513121]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuCard/MarginContainer" unique_id=1434048383]
+layout_mode = 2
+theme_override_constants/separation = 14
+alignment = 1
+
+[node name="GameTitle" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=50813950]
+layout_mode = 2
+text = "PAINT / VOID BRUSH"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=721691002]
+modulate = Color(0.75, 0.75, 0.85, 1)
+layout_mode = 2
+text = "Unseen Architecture"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Button" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=587399848]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Start Game"
+
+[node name="SettingsButton" type="Button" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=660502197]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Settings"
+
+[node name="CreditsButton" type="Button" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=843172274]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Credits"
+
+[node name="QuitButton" type="Button" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=1971914077]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Quit"
+
+[node name="SettingsPopup" type="Control" parent="." unique_id=54098407]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DimBg" type="ColorRect" parent="SettingsPopup" unique_id=1660149357]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75)
+
+[node name="SettingsCard" type="PanelContainer" parent="SettingsPopup" unique_id=902197591]
+custom_minimum_size = Vector2(340, 220)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -170.0
+offset_top = -110.0
+offset_right = 170.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="SettingsPopup/SettingsCard" unique_id=37271585]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/SettingsCard/MarginContainer" unique_id=187894945]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="SettingsTitle" type="Label" parent="SettingsPopup/SettingsCard/MarginContainer/VBoxContainer" unique_id=545237532]
+layout_mode = 2
+text = "SETTINGS"
+horizontal_alignment = 1
+
+[node name="SoundToggleButton" type="CheckButton" parent="SettingsPopup/SettingsCard/MarginContainer/VBoxContainer" unique_id=192967354]
+layout_mode = 2
+button_pressed = true
+text = "Game Audio (On / Off)"
+
+[node name="CloseSettingsButton" type="Button" parent="SettingsPopup/SettingsCard/MarginContainer/VBoxContainer" unique_id=1155050002]
+layout_mode = 2
+text = "Back"

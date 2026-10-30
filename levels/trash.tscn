@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://cyvqk60u20vq6"]
+
+[node name="StartMenu" type="Control" unique_id=79941849]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="BaseBackground" type="ColorRect" parent="." unique_id=1790693352]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.29337206, 0.29337206, 0.3491902, 1)
+
+[node name="BgImageA" type="TextureRect" parent="." unique_id=2135030377]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="BgImageB" type="TextureRect" parent="." unique_id=2052655771]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 1
+stretch_mode = 6
+
+[node name="DarkTintOverlay" type="ColorRect" parent="." unique_id=1281850269]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.24780053, 0.24780053, 0.3133042, 0.55)
+
+[node name="SlideTimer" type="Timer" parent="." unique_id=1935175389]
+wait_time = 10.0
+autostart = true
+
+[node name="MenuCard" type="PanelContainer" parent="." unique_id=479205774]
+custom_minimum_size = Vector2(380, 420)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -79.0
+offset_right = 20.0
+offset_bottom = 79.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MenuCard" unique_id=41509605]
+layout_mode = 2
+theme_override_constants/margin_left = 28
+theme_override_constants/margin_top = 28
+theme_override_constants/margin_right = 28
+theme_override_constants/margin_bottom = 28
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MenuCard/MarginContainer" unique_id=1506046941]
+layout_mode = 2
+theme_override_constants/separation = 14
+
+[node name="GameTitle" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=1671092833]
+layout_mode = 2
+text = "GAME TITLE"
+horizontal_alignment = 1
+
+[node name="Subtitle" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=1042474375]
+modulate = Color(0.8808251, 0.8808251, 0.9309246, 1)
+layout_mode = 2
+text = "subtitle"
+horizontal_alignment = 1
+
+[node name="StartButton" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=71701869]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Start Game"
+horizontal_alignment = 1
+
+[node name="SettingsButton" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=1590292857]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="CreditsButton" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=1295319260]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="QuitButton" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=499708740]
+custom_minimum_size = Vector2(0, 42)
+layout_mode = 2
+text = "Quit"
+horizontal_alignment = 1
+
+[node name="SettingsPopup" type="Control" parent="." unique_id=311187890]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DimBg" type="ColorRect" parent="SettingsPopup" unique_id=571354665]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SettingsCard" type="PanelContainer" parent="SettingsPopup" unique_id=1950211555]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="MarginContainer" type="MarginContainer" parent="SettingsPopup/SettingsCard" unique_id=936171952]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SettingsPopup/SettingsCard/MarginContainer" unique_id=612258708]
+layout_mode = 2
+
+[node name="SettingsTitle" type="Label" parent="SettingsPopup/SettingsCard/MarginContainer/VBoxContainer" unique_id=730138048]
+layout_mode = 2
+
+[node name="SoundToggleButton" type="CheckButton" parent="SettingsPopup/SettingsCard/MarginContainer/VBoxContainer" unique_id=102349207]
+layout_mode = 2
+
+[node name="CloseSettingsButton" type="Button" parent="SettingsPopup/SettingsCard/MarginContainer/VBoxContainer" unique_id=1631536063]
+layout_mode = 2

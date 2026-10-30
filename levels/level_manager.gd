@@ -3,6 +3,16 @@ extends CanvasLayer
 # Emitted when the player collects all 4 gems OR clicks the debug win button
 signal won
 
+const START_MENU_PATH: String = "res://levels/start_menu.tscn"
+const CREDITS_PATH: String = "res://levels/credits.tscn"
+
+func go_to_start_menu() -> void:
+	_transition_to_scene(START_MENU_PATH, false)
+
+
+func go_to_credits() -> void:
+	_transition_to_scene(CREDITS_PATH, false)
+
 # --- LEVEL DATABASE (Add your new level .tscn paths here) ---
 var levels: Array[Dictionary] = [
 	{
