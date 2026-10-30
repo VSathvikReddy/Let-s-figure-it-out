@@ -1,9 +1,13 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dc1ra6m87f0k1"]
 
-[ext_resource type="Script" path="res://compined/enemies/cannon/cannon.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://compined/enemies/cannon/cannon_fire_sheet.png" id="2_sheet"]
-[ext_resource type="AudioStream" path="res://compined/common/enemy_death.wav" id="3_death"]
-[ext_resource type="AudioStream" path="res://compined/enemies/cannon/shoot.wav" id="4_shoot"]
+[ext_resource type="Script" uid="uid://bl8r5re2qbigc" path="res://compined/enemies/cannon/cannon.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ljlrs5ob7xoa" path="res://compined/enemies/cannon/cannon_fire_sheet.png" id="2_sheet"]
+[ext_resource type="AudioStream" uid="uid://dr1r4atyafbm6" path="res://compined/common/enemy_death.wav" id="3_death"]
+[ext_resource type="AudioStream" uid="uid://c466gkhsgptxm" path="res://compined/enemies/cannon/shoot.wav" id="4_shoot"]
+[ext_resource type="PackedScene" path="res://compined/ui/enemy_health_bar.tscn" id="health_bar"]
+
+[sub_resource type="RectangleShape2D" id="Shape_body"]
+size = Vector2(50, 50)
 
 [sub_resource type="AtlasTexture" id="Frame_1140"]
 atlas = ExtResource("2_sheet")
@@ -27,45 +31,60 @@ region = Rect2(0, 0, 1024, 285)
 
 [sub_resource type="SpriteFrames" id="Animations"]
 animations = [{
-"frames": [{"duration": 1.0, "texture": SubResource("Frame_1140")}, {"duration": 1.0, "texture": SubResource("Frame_855")}, {"duration": 1.0, "texture": SubResource("Frame_570")}, {"duration": 1.0, "texture": SubResource("Frame_285")}, {"duration": 1.0, "texture": SubResource("Frame_0")}],
-"loop": false,
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("Frame_1140")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_855")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_570")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_285")
+}, {
+"duration": 1.0,
+"texture": SubResource("Frame_0")
+}],
+"loop": 0,
 "name": &"fire",
 "speed": 20.0
 }]
 
-[sub_resource type="RectangleShape2D" id="Shape_body"]
-size = Vector2(50, 50)
-
 [sub_resource type="CircleShape2D" id="Shape_detection"]
-radius = 293.0
+radius = 660.0273
 
-[node name="Cannon" type="StaticBody2D"]
+[node name="Cannon" type="StaticBody2D" unique_id=390215111]
 script = ExtResource("1_script")
 death_sound = ExtResource("3_death")
 
-[node name="BodyShape" type="CollisionShape2D" parent="."]
+[node name="BodyShape" type="CollisionShape2D" parent="." unique_id=1889607320]
 shape = SubResource("Shape_body")
 
-[node name="BarrelPivot" type="Node2D" parent="."]
+[node name="BarrelPivot" type="Node2D" parent="." unique_id=1480806257]
 
-[node name="BarrelSprite" type="AnimatedSprite2D" parent="BarrelPivot"]
+[node name="BarrelSprite" type="AnimatedSprite2D" parent="BarrelPivot" unique_id=1872429048]
 position = Vector2(37, 0)
 rotation = 1.5717645
 scale = Vector2(0.49, 0.49)
 sprite_frames = SubResource("Animations")
 animation = &"fire"
 
-[node name="Muzzle" type="Marker2D" parent="BarrelPivot"]
+[node name="Muzzle" type="Marker2D" parent="BarrelPivot" unique_id=2091367733]
 position = Vector2(67, 0)
 
-[node name="DetectionArea" type="Area2D" parent="."]
+[node name="DetectionArea" type="Area2D" parent="." unique_id=431641745]
 
-[node name="Shape" type="CollisionShape2D" parent="DetectionArea"]
+[node name="Shape" type="CollisionShape2D" parent="DetectionArea" unique_id=1309014964]
 shape = SubResource("Shape_detection")
 
-[node name="FireTimer" type="Timer" parent="."]
+[node name="FireTimer" type="Timer" parent="." unique_id=1315493879]
 autostart = true
 
-[node name="ShootSound" type="AudioStreamPlayer2D" parent="."]
+[node name="ShootSound" type="AudioStreamPlayer2D" parent="." unique_id=1583278532]
 stream = ExtResource("4_shoot")
 volume_db = 5.0
+
+[node name="HealthBar" parent="." unique_id=1322770602 instance=ExtResource("health_bar")]
+position = Vector2(0, -46)

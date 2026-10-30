@@ -5,6 +5,7 @@
 [ext_resource type="AudioStream" path="res://compined/enemies/bomber/explosion.wav" id="3_explode"]
 [ext_resource type="AudioStream" path="res://compined/common/enemy_death.wav" id="4_death"]
 [ext_resource type="AudioStream" path="res://compined/enemies/bomber/ignite.wav" id="5_fuse"]
+[ext_resource type="PackedScene" path="res://compined/ui/enemy_health_bar.tscn" id="health_bar"]
 
 [sub_resource type="RectangleShape2D" id="Shape_body"]
 size = Vector2(64, 64)
@@ -55,3 +56,6 @@ one_shot = true
 [node name="FuseSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource("5_fuse")
 volume_db = -17.0
+
+[node name="HealthBar" parent="." instance=ExtResource("health_bar")]
+position = Vector2(0, -48)

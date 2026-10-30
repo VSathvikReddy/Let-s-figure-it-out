@@ -1,0 +1,56 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/levels/custom/custom_level.gd" id="0_level"]
+[ext_resource type="PackedScene" path="res://compined/levels/custom/custom_painting.tscn" id="1_painting"]
+[ext_resource type="PackedScene" path="res://compined/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://compined/ui/win_screen.tscn" id="3_win_screen"]
+[ext_resource type="PackedScene" path="res://compined/gems/blue_dest.tscn" id="gem_blue"]
+[ext_resource type="PackedScene" path="res://compined/gems/green_dest.tscn" id="gem_green"]
+[ext_resource type="PackedScene" path="res://compined/gems/star_dest.tscn" id="gem_star"]
+[ext_resource type="PackedScene" path="res://compined/gems/violet_dest.tscn" id="gem_violet"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="enemy_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bird/bird.tscn" id="enemy_bird"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bomber/bomber.tscn" id="enemy_bomber"]
+[ext_resource type="PackedScene" path="res://compined/enemies/cannon/cannon.tscn" id="enemy_cannon"]
+[ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="enemy_mini_bomber"]
+
+[node name="CustomLevel" type="Node2D" node_paths=PackedStringArray("painting")]
+script = ExtResource("0_level")
+painting = NodePath("Painting")
+
+[node name="Painting" parent="." instance=ExtResource("1_painting")]
+
+[node name="HiddenGems" type="Node2D" parent="."]
+
+[node name="BlueRock" parent="HiddenGems" instance=ExtResource("gem_blue")]
+position = Vector2(-800, -400)
+
+[node name="GreenRock" parent="HiddenGems" instance=ExtResource("gem_green")]
+position = Vector2(850, -350)
+
+[node name="StarRock" parent="HiddenGems" instance=ExtResource("gem_star")]
+position = Vector2(-650, 450)
+
+[node name="VioletRock" parent="HiddenGems" instance=ExtResource("gem_violet")]
+position = Vector2(700, 500)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Bomber" parent="Enemies" instance=ExtResource("enemy_bomber")]
+position = Vector2(-400, 200)
+
+[node name="MiniBomber" parent="Enemies" instance=ExtResource("enemy_mini_bomber")]
+position = Vector2(500, 300)
+
+[node name="Cannon" parent="Enemies" instance=ExtResource("enemy_cannon")]
+position = Vector2(1000, -100)
+
+[node name="Bat" parent="Enemies" instance=ExtResource("enemy_bat")]
+position = Vector2(-1000, -300)
+
+[node name="Bird" parent="Enemies" instance=ExtResource("enemy_bird")]
+position = Vector2(0, -500)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+
+[node name="WinScreen" parent="." instance=ExtResource("3_win_screen")]

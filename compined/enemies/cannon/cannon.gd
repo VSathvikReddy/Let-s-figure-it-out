@@ -1,27 +1,33 @@
 extends StaticBody2D
 ## A turret. Turns its barrel toward the player while the player is inside
 ## the DetectionArea, and shoots a bullet at them every time FireTimer ticks.
-## One brush hit destroys it.
+## An armoured turret: it takes many brush hits (max_health).
 
 const Effects := preload("res://compined/common/effects.gd")
 
 @export var bullet_scene: PackedScene = preload("res://compined/enemies/cannon/bullet.tscn")
 @export var death_sound: AudioStream
+## Brush hits it can take (armoured, so the toughest enemy).
+@export var max_health := 8
 
 ## Where the barrel sprite rests (it kicks back when shooting).
 const BARREL_REST_X := 37.0
 
 var target: Node2D = null
+var health := 0
 
 @onready var barrel_pivot: Node2D = $BarrelPivot
 @onready var barrel_sprite: AnimatedSprite2D = $BarrelPivot/BarrelSprite
 @onready var muzzle: Marker2D = $BarrelPivot/Muzzle
+@onready var health_bar: Node2D = $HealthBar   # the small bar over its head
 @onready var detection_area: Area2D = $DetectionArea
 @onready var fire_timer: Timer = $FireTimer
 @onready var shoot_sound: AudioStreamPlayer2D = $ShootSound
 
 
 func _ready() -> void:
+	health = max_health
+	health_bar.setup(max_health)
 	add_to_group("enemy")
 	detection_area.body_entered.connect(_on_body_entered)
 	detection_area.body_exited.connect(_on_body_exited)
@@ -60,7 +66,13 @@ func _shoot() -> void:
 
 
 ## Called by the brush.
-func take_damage(_damage: int) -> void:
+func take_damage(damage: int) -> void:
+	health -= damage
+	health_bar.show_health(health)
+	barrel_sprite.modulate = Color(3, 3, 3)
+	create_tween().tween_property(barrel_sprite, "modulate", Color.WHITE, 0.15)
+	if health > 0:
+		return
 	Effects.play_sound(self, death_sound)
 	Effects.burst(self, 20, Color(1.0, 0.8, 0.3), 0.4)
 	queue_free()

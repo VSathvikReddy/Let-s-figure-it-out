@@ -1,0 +1,7 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/levels/custom/custom_painting.gd" id="1_script"]
+
+[node name="CustomPainting" type="Node2D"]
+script = ExtResource("1_script")
+square_size = 2.0

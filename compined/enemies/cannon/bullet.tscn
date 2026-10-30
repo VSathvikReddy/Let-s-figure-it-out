@@ -2,12 +2,10 @@
 
 [ext_resource type="Script" path="res://compined/enemies/cannon/bullet.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
+[ext_resource type="Script" path="res://compined/common/smudge_trail.gd" id="9_smudge"]
 
 [sub_resource type="CircleShape2D" id="Shape_hit"]
 radius = 10.0
-
-[sub_resource type="CircleShape2D" id="Shape_paint"]
-radius = 50.0
 
 [node name="Bullet" type="Area2D"]
 script = ExtResource("1_script")
@@ -19,13 +17,6 @@ texture = ExtResource("2_picture")
 [node name="HitShape" type="CollisionShape2D" parent="."]
 shape = SubResource("Shape_hit")
 
-[node name="PaintArea" type="Area2D" parent="."]
-monitoring = false
-monitorable = false
-
-[node name="Shape" type="CollisionShape2D" parent="PaintArea"]
-shape = SubResource("Shape_paint")
-
 [node name="Trail" type="CPUParticles2D" parent="."]
 amount = 12
 lifetime = 0.25
@@ -33,3 +24,6 @@ gravity = Vector2(0, 0)
 scale_amount_min = 2.0
 scale_amount_max = 4.0
 color = Color(0.84, 0.36, 0.25, 1)
+
+[node name="SmudgeTrail" type="Node2D" parent="."]
+script = ExtResource("9_smudge")

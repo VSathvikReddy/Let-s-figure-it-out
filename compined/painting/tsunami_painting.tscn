@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://c4asmb7i4wxow"]
+
+[ext_resource type="Script" uid="uid://bej8yv3esu86o" path="res://compined/painting/painting.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://pmei66bp3306" path="res://compined/asset/tsunami.jpg" id="2_full"]
+[ext_resource type="Texture2D" uid="uid://cyoqcgmab7dtg" path="res://compined/asset/tsunami-5000-1.png" id="3_detail5000"]
+[ext_resource type="Texture2D" uid="uid://d14h7rebj1olw" path="res://compined/asset/tsunami-500-1.png" id="4_detail500"]
+[ext_resource type="Texture2D" uid="uid://dtewtf5cefd4d" path="res://compined/asset/tsunami-50-5.png" id="5_detail50"]
+[ext_resource type="Texture2D" uid="uid://0g2734qmkrcr" path="res://compined/asset/tsunami-20-1.png" id="6_detail20"]
+
+[node name="Painting" type="Node2D" unique_id=1784481624]
+script = ExtResource("1_script")
+square_size = 3.0
+
+[node name="Full" type="Sprite2D" parent="." unique_id=267727927]
+scale = Vector2(0.85, 0.85)
+texture = ExtResource("2_full")
+
+[node name="Detail5000" type="Sprite2D" parent="." unique_id=1290537115]
+scale = Vector2(3.2032716, 3.2047968)
+texture = ExtResource("3_detail5000")
+
+[node name="Detail500" type="Sprite2D" parent="." unique_id=1779301102]
+scale = Vector2(3.2032716, 3.2047968)
+texture = ExtResource("4_detail500")
+
+[node name="Detail50" type="Sprite2D" parent="." unique_id=521304516]
+scale = Vector2(3.2032716, 3.2047968)
+texture = ExtResource("5_detail50")
+
+[node name="Detail20" type="Sprite2D" parent="." unique_id=957587932]
+scale = Vector2(3.2032716, 3.2047968)
+texture = ExtResource("6_detail20")

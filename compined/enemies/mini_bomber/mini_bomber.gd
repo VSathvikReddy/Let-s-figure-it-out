@@ -13,13 +13,20 @@ const Effects := preload("res://compined/common/effects.gd")
 
 enum State { WANDER, CHASE }
 
+## Brush hits it can take (small and fragile).
+@export var max_health := 1
 @export var chase_speed := 260.0
 @export var wander_speed := 90.0
 @export var explosion_damage := 1        ## damage to the player
 @export var painting_damage := 1         ## how much the explosion breaks the painting
+## Radius of painting the explosion ruins, in px.
+@export var painting_damage_radius := 170.0
+## How close it may get to the painting's edges, in px.
+@export var edge_margin := 30.0
 @export var explode_sound: AudioStream
 @export var death_sound: AudioStream
 
+var health := 0
 var state := State.WANDER
 var target: Node2D = null
 var wander_direction := Vector2.ZERO
@@ -30,6 +37,7 @@ var glow_pulse: Tween
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var body_shape: CollisionShape2D = $BodyShape
+@onready var health_bar: Node2D = $HealthBar   # the small bar over its head
 @onready var detection_zone: Area2D = $DetectionZone
 @onready var trigger_zone: Area2D = $TriggerZone
 @onready var explosion_zone: Area2D = $ExplosionZone
@@ -37,6 +45,8 @@ var glow_pulse: Tween
 
 
 func _ready() -> void:
+	health = max_health
+	health_bar.setup(max_health)
 	add_to_group("enemy")
 	detection_zone.body_entered.connect(_on_detection_zone_entered)
 	detection_zone.body_exited.connect(_on_detection_zone_exited)
@@ -61,7 +71,15 @@ func _physics_process(_delta: float) -> void:
 		State.CHASE:
 			velocity = global_position.direction_to(target.global_position) * chase_speed
 	move_and_slide()
+	_turn_back_at_edges()
 	trail.emitting = velocity.length() > 5.0
+
+
+## Never leaves the painting: at an edge it is pushed back and wanders away.
+func _turn_back_at_edges() -> void:
+	var push := Effects.keep_inside_level(self, edge_margin)
+	if push != Vector2.ZERO and state == State.WANDER:
+		wander_direction = push.normalized().rotated(randf_range(-0.6, 0.6))
 
 
 func _pick_wander_direction() -> void:
@@ -93,15 +111,19 @@ func _explode() -> void:
 	for body in explosion_zone.get_overlapping_bodies():
 		if body.is_in_group("player") and body.has_method("take_damage"):
 			body.take_damage(explosion_damage)
-	Effects.paint(explosion_zone, -painting_damage)
+	Effects.paint_circle(self, global_position, painting_damage_radius, -painting_damage)
 	Effects.rpg_explosion(self, 73.0, Color(0.35, 1.0, 0.5))   # small and green, as big as its ExplosionZone
 	Effects.play_sound(self, explode_sound)
 	_die()
 
 
-## Called by the brush: dies without exploding.
-func take_damage(_damage: int) -> void:
+## Called by the brush: when its health runs out it dies without exploding.
+func take_damage(damage: int) -> void:
 	if dead:
+		return
+	health -= damage
+	health_bar.show_health(health)
+	if health > 0:
 		return
 	Effects.play_sound(self, death_sound)
 	_die()

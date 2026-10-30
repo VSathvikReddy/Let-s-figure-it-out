@@ -4,9 +4,11 @@ extends CharacterBody2D
 ##   A / D       - push left / right
 ##   attack      - hold to charge the brush, release to swing (restores the painting)
 ##   J           - open / close the veil (Portal)
-##   Q / right click - summon ghosts: a rune circle fills up, then friendly
-##                 ghosts rise, fly to the most damaged part of the painting
-##                 and CLEAN it. Getting hit while summoning cancels it.
+##   hold Q / right click - summon ghosts: she rises into a floating stance,
+##                 a glowing rune circle fills up under her, then friendly ghosts
+##                 rise, fly to the most damaged parts of the painting and CLEAN
+##                 them. Letting go early fizzles it out; getting hit breaks the
+##                 stance and knocks her back. Not possible inside the veil.
 ##
 ## Looks: the witch's cut-out rig (Visual/Rig) is animated by the
 ## AnimationPlayer: idle, walk, cast (brush), summon, hurt. Her staff is
@@ -32,26 +34,55 @@ const Effects := preload("res://compined/common/effects.gd")
 @export var tilt_speed: float = 8.0
 @export var settle_time: float = 0.5          ## Time to come to rest before the veil opens/closes
 
+@export_group("Health")
+@export var max_health := 10
+## Seconds she cannot be hurt again after a hit (so one blast is one hit).
+@export var invincible_time := 0.6
+
+@export_group("Falling")
+## How far below the painting she must fall before she is lost (px).
+@export var fall_out_distance := 250.0
+
 @export_group("Summon Ghosts")
 @export var ghost_scene: PackedScene
-## Keyboard key that summons (right mouse button works too).
+## Keyboard key to HOLD for summoning (holding the right mouse button works too).
 @export var summon_key: Key = KEY_Q
-## Seconds the rune circle takes to fill up.
+## Seconds the key must be held while the rune circle fills up.
 @export var summon_time := 1.4
 ## Seconds before she can summon again.
 @export var summon_cooldown := 7.0
-## Shorter wait when a summon was interrupted by a hit.
+## Wait after a hit broke her stance.
 @export var interrupted_summon_cooldown := 2.5
-@export var ghosts_per_summon := 2
-@export var max_ghosts_alive := 4
-## Size of the area each ghost restores, and how much.
-@export var ghost_clean_radius := 200.0
+## Wait after letting go of the key too early.
+@export var released_summon_cooldown := 0.5
+## How many ghosts one summon makes: a random number between these two.
+@export_range(1, 16) var min_ghosts_per_summon := 6
+@export_range(1, 16) var max_ghosts_per_summon := 8
+## Seconds between one ghost appearing and the next (they come out one at a time).
+@export var ghost_spawn_interval := 0.45
+## How far from her the ghosts appear, in a ring around her (px).
+@export var ghost_spawn_distance := 90.0
+## Most ghosts that can be out at the same time.
+@export_range(1, 32) var max_ghosts_alive := 16
+## Size of the area each ghost restores (px), and how much detail it brings back.
+@export var ghost_clean_radius := 320.0
 @export var ghost_clean_amount := 1
+## Size of each ghost (px).
+@export var ghost_size := 20.0
 @export var ghost_rise_height := 140.0
 @export var ghost_rise_time := 2.4
 @export var ghost_glide_time := 1.8
 @export var ghost_clean_time := 2.0
 @export var ghost_color := Color(1.0, 0.82, 0.86)
+
+@export_group("Summon Stance")
+## How fast she rises when the stance starts (px per second).
+@export var float_rise_speed := 60.0
+## Gentle up-and-down while floating: height (px per second) and speed (bobs per second).
+@export var float_bob_height := 18.0
+@export var float_bob_speed := 1.2
+## How hard a hit throws her out of the stance.
+@export var stance_break_knockback := 300.0
 
 ## --- Node References ---
 @onready var visual: Node2D = $Visual
@@ -59,6 +90,7 @@ const Effects := preload("res://compined/common/effects.gd")
 @onready var arm_pivot: Node2D = $Visual/Rig/ArmPivot      # her shoulder: rotating it turns the arm
 @onready var hand: Node2D = $Visual/Rig/ArmPivot/Hand       # where the brush is held
 @onready var summon_circle: Node2D = $SummonCircle
+@onready var summon_aura: GPUParticles2D = $SummonAura      # magic rising around her while summoning
 ## Magic thrust from both boots: glowing motes (Flame) and twinkling stars (Flame/Stars).
 @onready var boot_particles: Array[GPUParticles2D] = [
 	$Visual/Rig/BackLeg/Flame, $Visual/Rig/BackLeg/Flame/Stars,
@@ -80,6 +112,15 @@ var gems_collected := 0
 
 ## Sent every time a gem is picked up (the win screen listens to it).
 signal gem_collected(total: int)
+## Sent once when she falls out of the bottom of the painting.
+signal fell_out
+## Sent when her health changes (the health bar listens to it).
+signal health_changed(current: float, maximum: float)
+## Sent once when her health reaches zero.
+signal died
+var _fell := false
+var health := 0
+var _invincible := 0.0      # seconds of invincibility left
 var _veil_busy := false     # a veil open/close is running, ignore J until it ends
 var _flash_tween: Tween
 
@@ -106,6 +147,7 @@ func _ready() -> void:
 	# Keeps running while the tree is paused, because the veil pauses the world
 	# and the player keeps flying inside it.
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	health = max_health
 	_set_jetpacks(false)
 	wand.visible = false
 	_visual_scale = visual.scale.abs()
@@ -154,6 +196,12 @@ func _physics_process(delta: float) -> void:
 	if frozen:
 		move_and_slide()   # glide to a stop while _settle() eases velocity to zero
 		return
+	if summoning:
+		_float_while_summoning(delta)
+		_update_summon(delta)
+		move_and_slide()
+		_stay_inside_level()
+		return
 
 	# 1. Read inputs (horizontal & up thrust only)
 	var input_x := Input.get_axis("move_left", "move_right")
@@ -187,20 +235,29 @@ func _physics_process(delta: float) -> void:
 	_stay_inside_level()
 
 
-## Stops the player at the level bounds (the painting's edges). The whole body
-## stays inside, so they can fly right up to every edge but never past it.
+## The painting's LEFT, RIGHT and TOP edges stop her (the whole body stays
+## inside). The BOTTOM edge does not: she can fall out of the painting. The
+## camera stays on the painting and does not follow, and once she has fallen
+## `fall_out_distance` below it she is lost (fell_out).
 func _stay_inside_level() -> void:
 	var bounds := get_tree().get_first_node_in_group("level_bounds") as Control
 	if bounds == null:
 		return
+	var area := bounds.get_global_rect()
 	var half_body: Vector2 = body_shape.shape.size / 2.0
-	var inside := bounds.get_global_rect().grow_individual(-half_body.x, -half_body.y, -half_body.x, -half_body.y)
-	var clamped := global_position.clamp(inside.position, inside.end)
-	if clamped.x != global_position.x:
+	var left := area.position.x + half_body.x
+	var right := area.end.x - half_body.x
+	var top := area.position.y + half_body.y
+	if global_position.x < left or global_position.x > right:
+		global_position.x = clampf(global_position.x, left, right)
 		velocity.x = 0.0   # hit a side edge
-	if clamped.y != global_position.y:
-		velocity.y = 0.0   # hit the top or bottom edge
-	global_position = clamped
+	if global_position.y < top:
+		global_position.y = top
+		velocity.y = 0.0   # hit the top edge
+	if global_position.y - half_body.y > area.end.y + fall_out_distance and not _fell:
+		_fell = true
+		_stop_thrust_fx()
+		fell_out.emit()
 
 
 ## --- Recoil Helper Function ---
@@ -238,14 +295,21 @@ func _stop_thrust_fx() -> void:
 		audio_thrust_loop.stop()
 
 
-func take_damage(_damage: int) -> void:
+func take_damage(damage: int) -> void:
+	if _invincible > 0.0 or health <= 0:
+		return
+	health = maxi(health - damage, 0)
+	_invincible = invincible_time
+	health_changed.emit(health, max_health)
+	if health == 0:
+		died.emit()
 	if _flash_tween:
 		_flash_tween.kill()   # a new hit restarts the flash instead of fighting the old one
 	visual.modulate = Color(5.0, 5.0, 5.0, 1.0)   # HDR white for an extra bright flash
 	_flash_tween = create_tween()
 	_flash_tween.tween_property(visual, "modulate", Color.WHITE, 0.15)
 	_hurt_time = 0.3
-	_cancel_summon(true)   # a hit breaks her concentration
+	_cancel_summon(true)   # a hit breaks her stance
 
 
 # --- summoning ghosts ------------------------------------------------------
@@ -258,13 +322,35 @@ func _is_summon_button(event: InputEvent) -> bool:
 	return false
 
 
+## True while the summon key (or the right mouse button) is held down.
+func _summon_button_held() -> bool:
+	return Input.is_physical_key_pressed(summon_key) or Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT)
+
+
 func _try_start_summon() -> void:
-	if summoning or frozen or portal.active or ghost_scene == null:
+	# not inside the veil, and not while the veil is opening or closing
+	if summoning or frozen or portal.active or _veil_busy or ghost_scene == null:
 		return
 	if _summon_wait > 0.0 or _ghosts_alive() >= max_ghosts_alive:
 		return
 	summoning = true
 	summon_progress = 0.0
+
+
+## The summon stance: no thrust, no gravity. She drifts to a stop, rises a
+## little, then bobs gently in the air while the circle fills. Letting go of
+## the key before it is full fizzles the summon.
+func _float_while_summoning(delta: float) -> void:
+	_stop_thrust_fx()
+	if not _summon_button_held():
+		_cancel_summon(false)
+		return
+	var time_floating := summon_progress * summon_time
+	var bob := cos(time_floating * TAU * float_bob_speed) * float_bob_height
+	var wanted_vy := -float_rise_speed * (1.0 - summon_progress) + bob
+	velocity.x = move_toward(velocity.x, 0.0, 900.0 * delta)
+	velocity.y = lerpf(velocity.y, wanted_vy, 1.0 - exp(-6.0 * delta))
+	visual.rotation = lerp_angle(visual.rotation, 0.0, 1.0 - exp(-8.0 * delta))
 
 
 func _update_summon(delta: float) -> void:
@@ -280,13 +366,14 @@ func _update_summon(delta: float) -> void:
 func _finish_summon() -> void:
 	summoning = false
 	_summon_wait = summon_cooldown
-	var circle_at := summon_circle.global_position
-	Effects.burst(summon_circle, 20, ghost_color, 0.6, 60.0, 160.0, 3.0, 6.0)
-	for i in ghosts_per_summon:
+	Effects.burst(summon_circle, 10, ghost_color, 0.5, 40.0, 110.0, 2.0, 4.0)
+	var count := randi_range(min_ghosts_per_summon, maxi(min_ghosts_per_summon, max_ghosts_per_summon))
+	var first_angle := randf() * TAU
+	for i in count:
 		if _ghosts_alive() >= max_ghosts_alive:
 			break
 		var ghost = ghost_scene.instantiate()
-		ghost.start_delay = i * 0.25
+		ghost.start_delay = i * ghost_spawn_interval   # one at a time
 		ghost.rise_height = ghost_rise_height * randf_range(0.85, 1.15)
 		ghost.rise_time = ghost_rise_time
 		ghost.glide_time = ghost_glide_time
@@ -294,22 +381,30 @@ func _finish_summon() -> void:
 		ghost.clean_radius = ghost_clean_radius
 		ghost.clean_amount = ghost_clean_amount
 		ghost.ghost_color = ghost_color
-		# side by side over the circle
-		var spread := (i - (ghosts_per_summon - 1) * 0.5) * 24.0
-		ghost.position = circle_at + Vector2(spread, -10)
+		ghost.ghost_radius = ghost_size
+		# spread evenly in a ring around her, each a little off so it looks natural
+		var angle := first_angle + TAU * i / count + randf_range(-0.2, 0.2)
+		var distance := ghost_spawn_distance * randf_range(0.85, 1.15)
+		ghost.position = global_position + Vector2.from_angle(angle) * distance
 		get_tree().current_scene.add_child(ghost)
 		_ghosts.append(ghost)
 
 
-## Stops a summon that is still filling. `broken` = it was interrupted by a hit
-## (sparks fly and the wait is shorter than a full cooldown).
+## Stops a summon that is still filling.
+##   broken = true  - a hit broke her stance: the circle shatters and she is
+##                    thrown back.
+##   broken = false - she let go of the key (or the veil opened): it fizzles.
 func _cancel_summon(broken: bool) -> void:
 	if not summoning:
 		return
 	summoning = false
 	if broken:
 		_summon_wait = interrupted_summon_cooldown
-		Effects.burst(summon_circle, 22, Color(1.0, 0.36, 0.42), 0.5, 150.0, 380.0, 2.0, 4.0)
+		velocity = Vector2(-_facing * stance_break_knockback, -stance_break_knockback * 0.6)
+		Effects.burst(summon_circle, 18, Color(1.0, 0.36, 0.42), 0.5, 140.0, 320.0, 2.0, 4.0)
+	else:
+		_summon_wait = released_summon_cooldown
+		Effects.burst(summon_circle, 8, Color(1.0, 0.6, 0.9, 0.6), 0.4, 30.0, 80.0, 2.0, 3.0)
 
 
 func _ghosts_alive() -> int:
@@ -321,6 +416,7 @@ func _ghosts_alive() -> int:
 
 func _process(delta: float) -> void:
 	_hurt_time = maxf(_hurt_time - delta, 0.0)
+	_invincible = maxf(_invincible - delta, 0.0)
 	var attacking: bool = brush_attack.state != 0   # brush charging or swinging
 
 	# she always faces the mouse, because her hand points at it
@@ -332,6 +428,8 @@ func _process(delta: float) -> void:
 	_point_arm_and_hold_brush()
 
 	summon_circle.visible = summoning
+	if summon_aura.emitting != summoning:
+		summon_aura.emitting = summoning
 	summon_circle.progress = summon_progress
 
 	_play_animation(attacking)

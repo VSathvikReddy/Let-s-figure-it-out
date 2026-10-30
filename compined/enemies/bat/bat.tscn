@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://compined/enemies/bat/bat.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
+[ext_resource type="PackedScene" path="res://compined/ui/enemy_health_bar.tscn" id="health_bar"]
 
 [sub_resource type="RectangleShape2D" id="Shape_body"]
 size = Vector2(64, 64)
@@ -30,3 +31,6 @@ shape = SubResource("Shape_detection")
 [node name="WanderTimer" type="Timer" parent="."]
 wait_time = 2.0
 autostart = true
+
+[node name="HealthBar" parent="." instance=ExtResource("health_bar")]
+position = Vector2(0, -56)

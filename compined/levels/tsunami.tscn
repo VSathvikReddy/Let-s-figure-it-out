@@ -1,0 +1,64 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/level.gd" id="0_level"]
+[ext_resource type="PackedScene" path="res://compined/painting/tsunami_painting.tscn" id="1_painting"]
+[ext_resource type="PackedScene" path="res://compined/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://compined/ui/win_screen.tscn" id="3_win_screen"]
+[ext_resource type="PackedScene" path="res://compined/gems/blue_dest.tscn" id="gem_blue"]
+[ext_resource type="PackedScene" path="res://compined/gems/green_dest.tscn" id="gem_green"]
+[ext_resource type="PackedScene" path="res://compined/gems/star_dest.tscn" id="gem_star"]
+[ext_resource type="PackedScene" path="res://compined/gems/violet_dest.tscn" id="gem_violet"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="enemy_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bird/bird.tscn" id="enemy_bird"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/hidden_bat.tscn" id="enemy_hidden_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="enemy_mini_bomber"]
+
+[node name="Tsunami" type="Node2D" node_paths=PackedStringArray("painting")]
+script = ExtResource("0_level")
+painting = NodePath("Painting")
+
+[node name="Painting" parent="." instance=ExtResource("1_painting")]
+
+[node name="HiddenGems" type="Node2D" parent="."]
+
+[node name="BlueRock" parent="HiddenGems" instance=ExtResource("gem_blue")]
+position = Vector2(-1300, -700)
+
+[node name="GreenRock" parent="HiddenGems" instance=ExtResource("gem_green")]
+position = Vector2(1350, -800)
+
+[node name="StarRock" parent="HiddenGems" instance=ExtResource("gem_star")]
+position = Vector2(-1100, 800)
+
+[node name="VioletRock" parent="HiddenGems" instance=ExtResource("gem_violet")]
+position = Vector2(1250, 750)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Bird1" parent="Enemies" instance=ExtResource("enemy_bird")]
+position = Vector2(-700, -600)
+
+[node name="Bird2" parent="Enemies" instance=ExtResource("enemy_bird")]
+position = Vector2(800, -600)
+
+[node name="Bat1" parent="Enemies" instance=ExtResource("enemy_bat")]
+position = Vector2(-1200, 0)
+
+[node name="Bat2" parent="Enemies" instance=ExtResource("enemy_bat")]
+position = Vector2(1200, 100)
+
+[node name="HiddenBat1" parent="Enemies" instance=ExtResource("enemy_hidden_bat")]
+position = Vector2(-400, 700)
+
+[node name="HiddenBat2" parent="Enemies" instance=ExtResource("enemy_hidden_bat")]
+position = Vector2(500, -300)
+
+[node name="MiniBomber1" parent="Enemies" instance=ExtResource("enemy_mini_bomber")]
+position = Vector2(300, 500)
+
+[node name="MiniBomber2" parent="Enemies" instance=ExtResource("enemy_mini_bomber")]
+position = Vector2(-600, 300)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+
+[node name="WinScreen" parent="." instance=ExtResource("3_win_screen")]

@@ -14,10 +14,11 @@ extends Node2D
 ## Children order: MOST DETAILED picture first, CRUDEST picture last.
 ## The last child is the one you see; the others only lend their pictures.
 ##
-## SIZE: the FIRST child is the "root" picture. Move and scale IT freely in the
-## Inspector (Transform). Every other picture copies the root: same place, and
-## stretched to exactly the root's size on screen, so the other detail levels
-## can be images of any size.
+## SIZE: the FIRST child is the "root" picture. With match_benchmark_area on
+## (the default) it is scaled automatically so every painting covers the same
+## area as The Starry Night. Turn that off to scale it by hand (Transform).
+## Every other picture copies the root: same place, and stretched to exactly
+## the root's size on screen, so the other detail levels can be any size.
 ## The level reads world_rect() to build the camera bounds, so changing the
 ## root picture changes the level size too.
 ##
@@ -25,6 +26,15 @@ extends Node2D
 
 const SHADER := preload("res://compined/painting/painting.gdshader")
 const MAX_PICTURES := 8          # the shader has room for 8 pictures
+
+## Benchmark: The Starry Night (1680 x 1050 picture at scale 2).
+const BENCHMARK_SIZE := Vector2(3360, 2100)
+
+## On: the root picture is scaled so the painting covers the SAME AREA as the
+## benchmark (keeping its own shape). Every level is then equally big, so the
+## player looks the same size everywhere and only the camera zoom changes that.
+## Off: the root picture keeps the scale you give it in the Inspector.
+@export var match_benchmark_area := true
 
 @export var blur := 1.5          ## softens the mask edges (in mask squares)
 @export var square_size := 4.0   ## size of one mask square, in picture pixels
@@ -102,6 +112,21 @@ func root_picture() -> Node2D:
 	return pictures[0] if not pictures.is_empty() else null
 
 
+## Paints the mask inside a circle in the world (no shapes or physics needed).
+## count > 0 brings detail back, count < 0 removes it.
+func paint_circle(world_center: Vector2, radius: float, count: int) -> void:
+	if steps == 0:
+		return
+	var reach := Vector2(radius, radius)
+	var changed := false
+	for square in _squares_between(_world_to_mask(world_center - reach), _world_to_mask(world_center + reach)):
+		if _mask_to_world(Vector2(square) + Vector2(0.5, 0.5)).distance_to(world_center) <= radius:
+			_add_to_square(square, count)
+			changed = true
+	if changed:
+		mask_texture.update(_mask_image())
+
+
 ## Paints the mask inside every collision shape of `area`.
 ## count > 0 brings detail back, count < 0 removes it.
 func paint(area: Area2D, count: int) -> void:
@@ -132,6 +157,10 @@ func _stretch_pictures() -> void:
 	var root := root_picture()
 	if root == null or _texture_of(root) == null:
 		return
+	if match_benchmark_area:
+		var picture_size := _texture_of(root).get_size()
+		var area_scale := sqrt((BENCHMARK_SIZE.x * BENCHMARK_SIZE.y) / (picture_size.x * picture_size.y))
+		root.scale = Vector2(area_scale, area_scale)
 	var root_size_on_screen := _texture_of(root).get_size() * root.scale
 	for picture in pictures:
 		var texture := _texture_of(picture)

@@ -9,6 +9,9 @@ const Effects := preload("res://compined/common/effects.gd")
 
 enum State { WANDER, CHASE, BREATHE }
 
+## Brush hits it can take (a small flyer).
+@export var max_health := 2
+
 @export_group("Flying")
 @export var fly_speed := 200.0
 @export var wander_speed := 45.0
@@ -21,7 +24,10 @@ enum State { WANDER, CHASE, BREATHE }
 @export var too_close := 150.0       ## closer than this and it backs away
 @export var breath_interval := 1.4   ## seconds between fireballs
 @export var fireball_scene: PackedScene = preload("res://compined/enemies/bat/fireball.tscn")
+## How close it may get to the painting's edges, in px.
+@export var edge_margin := 40.0
 
+var health := 0
 var state := State.WANDER
 var target: Node2D = null
 var wander_direction := Vector2.ZERO
@@ -31,11 +37,14 @@ var _time := 0.0
 
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var muzzle: Marker2D = $Muzzle
+@onready var health_bar: Node2D = $HealthBar   # the small bar over its head
 @onready var detection_zone: Area2D = $DetectionZone
 @onready var wander_timer: Timer = $WanderTimer
 
 
 func _ready() -> void:
+	health = max_health
+	health_bar.setup(max_health)
 	add_to_group("enemy")
 	detection_zone.body_entered.connect(_on_detection_zone_entered)
 	detection_zone.body_exited.connect(_on_detection_zone_exited)
@@ -67,8 +76,20 @@ func _physics_process(delta: float) -> void:
 	# smooth flying: turn toward the wanted velocity, no gravity
 	velocity = velocity.lerp(wanted_velocity, 1.0 - exp(-steering * delta))
 	global_position += velocity * delta
+	_turn_back_at_edges()
 
 	_update_looks()
+
+
+## Never leaves the painting: at an edge it stops going that way.
+func _turn_back_at_edges() -> void:
+	var push := Effects.keep_inside_level(self, edge_margin)
+	if push.x != 0.0:
+		velocity.x = 0.0
+		wander_direction.x = signf(push.x) * absf(wander_direction.x)
+	if push.y != 0.0:
+		velocity.y = 0.0
+		wander_direction.y = signf(push.y) * absf(wander_direction.y)
 
 
 ## Stay at breath range: come closer when too far, back off when too close,
@@ -133,8 +154,14 @@ func _on_detection_zone_exited(body: Node2D) -> void:
 		_pick_wander_direction()
 
 
-## Called by the brush. One hit kills it.
-func take_damage(_damage: int) -> void:
+## Called by the brush. It dies when its health runs out.
+func take_damage(damage: int) -> void:
+	health -= damage
+	health_bar.show_health(health)
+	sprite.modulate = Color(3, 3, 3)
+	create_tween().tween_property(sprite, "modulate", Color.WHITE, 0.15)
+	if health > 0:
+		return
 	Effects.fire_explosion(self, false)
 	Effects.leave_trail_behind(trail)
 	queue_free()

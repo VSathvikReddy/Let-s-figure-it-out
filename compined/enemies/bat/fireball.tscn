@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://compined/enemies/bat/fireball.gd" id="1_script"]
 [ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
+[ext_resource type="Script" path="res://compined/common/smudge_trail.gd" id="9_smudge"]
 
 [sub_resource type="CircleShape2D" id="Shape_hit"]
 radius = 10.0
@@ -24,3 +25,6 @@ shape = SubResource("Shape_hit")
 
 [node name="Shape" type="CollisionShape2D" parent="SplashZone"]
 shape = SubResource("Shape_splash")
+
+[node name="SmudgeTrail" type="Node2D" parent="."]
+script = ExtResource("9_smudge")

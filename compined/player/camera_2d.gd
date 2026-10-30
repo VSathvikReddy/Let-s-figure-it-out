@@ -1,15 +1,18 @@
 extends Camera2D
 ## The player's camera. It is a child of the player but moves on its own:
-##   - SIZE: it zooms so the screen shows `view_percent` % of the painting
-##     (50 = half the painting's width and height). It reads the size from
-##     the level bounds, so it fits ANY level and any painting by itself.
+##   - SIZE: it zooms so the screen shows `view_percent` % of the BENCHMARK
+##     painting (The Starry Night). Every painting covers the same area as the
+##     benchmark, so the zoom - and how big the player looks - is the same in
+##     every level and only changes with view_percent.
 ##   - FOLLOW: it glides after the player. The player can move inside a small
 ##     "dead zone" (a % of the screen) before the camera starts to follow.
 ##   - EDGES: it never shows anything outside the painting. Near an edge the
 ##     camera stops and the player keeps flying right up to the edge.
 
+const PAINTING := preload("res://compined/painting/painting.gd")
+
 @export_group("How much of the painting you see")
-## Part of the painting that fits on the screen, in percent.
+## Part of the benchmark painting (The Starry Night) that fits on the screen, in percent.
 @export_range(10.0, 100.0, 1.0, "suffix:%") var view_percent := 50.0:
 	set(value):
 		view_percent = value
@@ -85,10 +88,11 @@ func fit_to_level() -> void:
 		return
 	level_rect = bounds.get_global_rect()
 
-	# zoom so the screen shows view_percent of the painting
+	# zoom so the screen shows view_percent of the benchmark painting; the same
+	# zoom in every level, so the player always looks the same size
 	# (the larger zoom of the two keeps both width and height inside it)
 	var screen := get_viewport_rect().size
-	var wanted_view := level_rect.size * view_percent / 100.0
+	var wanted_view := PAINTING.BENCHMARK_SIZE * view_percent / 100.0
 	var zoom_amount := maxf(screen.x / wanted_view.x, screen.y / wanted_view.y)
 	zoom = Vector2(zoom_amount, zoom_amount)
 
