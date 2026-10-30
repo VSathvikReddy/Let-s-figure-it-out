@@ -1,0 +1,39 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/powerup/power_up.gd" id="1_script"]
+[ext_resource type="Texture2D" path="res://compined/powerup/icons/dash.png" id="2_dash"]
+[ext_resource type="Texture2D" path="res://compined/powerup/icons/ghost.png" id="3_ghost"]
+[ext_resource type="Texture2D" path="res://compined/powerup/icons/trail.png" id="4_trail"]
+[ext_resource type="Texture2D" path="res://compined/powerup/icons/shield.png" id="5_shield"]
+[ext_resource type="Texture2D" path="res://compined/powerup/icons/veil.png" id="6_veil"]
+
+[sub_resource type="CircleShape2D" id="Shape_pickup"]
+radius = 30.0
+
+[node name="PowerUp" type="Area2D"]
+script = ExtResource("1_script")
+
+[node name="PickupShape" type="CollisionShape2D" parent="."]
+shape = SubResource("Shape_pickup")
+
+[node name="Icons" type="Node2D" parent="."]
+
+[node name="Dash" type="Sprite2D" parent="Icons"]
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("2_dash")
+
+[node name="Ghost" type="Sprite2D" parent="Icons"]
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("3_ghost")
+
+[node name="Trail" type="Sprite2D" parent="Icons"]
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("4_trail")
+
+[node name="Shield" type="Sprite2D" parent="Icons"]
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("5_shield")
+
+[node name="Veil" type="Sprite2D" parent="Icons"]
+scale = Vector2(0.55, 0.55)
+texture = ExtResource("6_veil")

@@ -1,6 +1,11 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://compined/ui/win_screen.gd" id="1_script"]
+[ext_resource type="Script" path="res://compined/ui/gem_slots.gd" id="2_gem_slots"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/blue.png" id="3_blue"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/green.png" id="4_green"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/star.png" id="5_star"]
+[ext_resource type="Texture2D" path="res://compined/gems/art/violet.png" id="6_violet"]
 
 [sub_resource type="StyleBoxFlat" id="Style_card"]
 bg_color = Color(0.1, 0.09, 0.08, 0.95)
@@ -18,22 +23,24 @@ corner_radius_bottom_left = 10
 layer = 100
 script = ExtResource("1_script")
 
-[node name="GemCounter" type="Label" parent="."]
-offset_left = 18.0
+[node name="GemCounter" type="HBoxContainer" parent="."]
+offset_left = 16.0
 offset_top = 56.0
-offset_right = 218.0
-offset_bottom = 88.0
-theme_override_font_sizes/font_size = 22
-text = "Gems  0 / 4"
+offset_right = 216.0
+offset_bottom = 90.0
+mouse_filter = 2
+theme_override_constants/separation = 6
+script = ExtResource("2_gem_slots")
+gem_pictures = Array[Texture2D]([ExtResource("3_blue"), ExtResource("4_green"), ExtResource("5_star"), ExtResource("6_violet")])
 
 [node name="ForceWinButton" type="Button" parent="."]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -160.0
-offset_top = 12.0
+offset_top = 132.0
 offset_right = -16.0
-offset_bottom = 43.0
+offset_bottom = 163.0
 grow_horizontal = 0
 text = "Force Win (debug)"
 
@@ -62,9 +69,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -200.0
-offset_top = -150.0
+offset_top = -180.0
 offset_right = 200.0
-offset_bottom = 150.0
+offset_bottom = 180.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("Style_card")
@@ -92,6 +99,16 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 20
 text = "You found all 4 gems!"
+horizontal_alignment = 1
+
+[node name="Unlocked" type="Label" parent="WinCard/Card/Margin/Rows"]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.85, 0.4, 1)
+theme_override_colors/font_outline_color = Color(0.25, 0.12, 0, 1)
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 18
+text = "New painting unlocked:"
 horizontal_alignment = 1
 
 [node name="PlayAgainButton" type="Button" parent="WinCard/Card/Margin/Rows"]

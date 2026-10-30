@@ -12,6 +12,7 @@
 [ext_resource type="PackedScene" path="res://compined/player/ghost/ghost.tscn" id="13_ghost"]
 [ext_resource type="Texture2D" uid="uid://d0xwdhtu5ifk6" path="res://compined/gems/art/sparkle.png" id="14_sparkle"]
 [ext_resource type="PackedScene" path="res://compined/ui/health_hud.tscn" id="health_hud"]
+[ext_resource type="PackedScene" path="res://compined/powerup/power_hud.tscn" id="power_hud"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
 size = Vector2(30, 80)
@@ -1005,3 +1006,5 @@ stream = ExtResource("10_portal")
 volume_db = 8.0
 
 [node name="HealthHUD" parent="." instance=ExtResource("health_hud")]
+
+[node name="PowerHUD" parent="." instance=ExtResource("power_hud")]

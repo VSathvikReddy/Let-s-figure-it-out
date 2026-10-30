@@ -2,113 +2,15 @@
 
 [ext_resource type="Script" path="res://compined/ui/health_hud.gd" id="1_script"]
 
-[sub_resource type="StyleBoxFlat" id="Style_panel"]
-content_margin_left = 10.0
-content_margin_top = 6.0
-content_margin_right = 12.0
-content_margin_bottom = 6.0
-bg_color = Color(0.08, 0.06, 0.12, 0.78)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.85, 0.68, 0.3, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-shadow_color = Color(0, 0, 0, 0.35)
-shadow_size = 4
-
-[sub_resource type="StyleBoxFlat" id="Style_bar_background"]
-bg_color = Color(0.16, 0.05, 0.08, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0, 0, 0, 0.6)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="Style_trail_fill"]
-bg_color = Color(1, 0.88, 0.7, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxEmpty" id="Style_none"]
-
-[sub_resource type="StyleBoxFlat" id="Style_health_fill"]
-bg_color = Color(0.88, 0.16, 0.24, 1)
-border_width_bottom = 3
-border_color = Color(0.6, 0.06, 0.12, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
 [node name="HealthHUD" type="CanvasLayer"]
 layer = 10
 script = ExtResource("1_script")
 
-[node name="Margin" type="MarginContainer" parent="."]
-offset_right = 320.0
-offset_bottom = 60.0
-theme_override_constants/margin_left = 16
-theme_override_constants/margin_top = 14
-
-[node name="Panel" type="PanelContainer" parent="Margin"]
+[node name="Hearts" type="HBoxContainer" parent="."]
 unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-theme_override_styles/panel = SubResource("Style_panel")
-
-[node name="Row" type="HBoxContainer" parent="Margin/Panel"]
-layout_mode = 2
-theme_override_constants/separation = 8
-
-[node name="Bars" type="Control" parent="Margin/Panel/Row"]
-custom_minimum_size = Vector2(180, 14)
-layout_mode = 2
-size_flags_vertical = 4
-
-[node name="TrailBar" type="ProgressBar" parent="Margin/Panel/Row/Bars"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/background = SubResource("Style_bar_background")
-theme_override_styles/fill = SubResource("Style_trail_fill")
-max_value = 10.0
-value = 10.0
-show_percentage = false
-
-[node name="HealthBar" type="ProgressBar" parent="Margin/Panel/Row/Bars"]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/background = SubResource("Style_none")
-theme_override_styles/fill = SubResource("Style_health_fill")
-max_value = 10.0
-value = 10.0
-show_percentage = false
-
-[node name="Value" type="Label" parent="Margin/Panel/Row"]
-unique_name_in_owner = true
-layout_mode = 2
-theme_override_colors/font_color = Color(1, 0.9, 0.85, 1)
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-theme_override_font_sizes/font_size = 14
-text = "10 / 10"
+offset_left = 14.0
+offset_top = 10.0
+offset_right = 314.0
+offset_bottom = 50.0
+mouse_filter = 2
+theme_override_constants/separation = 2
