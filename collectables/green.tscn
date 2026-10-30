@@ -1,0 +1,231 @@
+[gd_scene format=3 uid="uid://ovdxs6mf757c"]
+
+[ext_resource type="Script" uid="uid://bvtvi1pn67yti" path="res://collectables/gem.gd" id="1_2eju1"]
+[ext_resource type="Texture2D" uid="uid://rf43pqsrrb6b" path="res://collectables/assets/green.png" id="2_iuhxe"]
+[ext_resource type="AudioStream" uid="uid://cbq81m10jdsu5" path="res://collectables/assets/gempick.wav" id="2_s7ncm"]
+[ext_resource type="Texture2D" uid="uid://dlitt6jr6vn45" path="res://collectables/assets/sparkle.png" id="3_s7ncm"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_7x1ti"]
+radius = 26.076809
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_2eju1"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_iuhxe"]
+offsets = PackedFloat32Array(0, 0.45, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.35, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_s7ncm"]
+gradient = SubResource("Gradient_iuhxe")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_7x1ti"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_76vgl"]
+blend_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_6xy1g"]
+blend_mode = 1
+
+[sub_resource type="Animation" id="Animation_7wtp8"]
+length = 2.4
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 2
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1.2, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -2.5), Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:scale")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1.2, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.21875, 0.21875), Vector2(0.2275, 0.2275), Vector2(0.21875, 0.21875)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:rotation")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.6, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.05, -0.05, 0.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Glow:modulate")
+tracks/3/interp = 2
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1.2, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Color(0.25, 0.9, 0.4, 0.1), Color(0.25, 0.9, 0.4, 0.24), Color(0.25, 0.9, 0.4, 0.1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Glow:scale")
+tracks/4/interp = 2
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1.2, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0.55, 0.55), Vector2(0.64, 0.64), Vector2(0.55, 0.55)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Glow:position")
+tracks/5/interp = 2
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 1.2, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, -2.5), Vector2(0, 0)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("Sparkles/Sparkle1:scale")
+tracks/6/interp = 2
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.47, 0.95, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(0.28, 0.28), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath("Sparkles/Sparkle1:rotation")
+tracks/7/interp = 2
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.15, 0.47, 0.95, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.5, 1.0, 1.0]
+}
+tracks/8/type = "value"
+tracks/8/imported = false
+tracks/8/enabled = true
+tracks/8/path = NodePath("Sparkles/Sparkle2:scale")
+tracks/8/interp = 2
+tracks/8/loop_wrap = true
+tracks/8/keys = {
+"times": PackedFloat32Array(0, 1, 1.32, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(0.2, 0.2), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/9/type = "value"
+tracks/9/imported = false
+tracks/9/enabled = true
+tracks/9/path = NodePath("Sparkles/Sparkle2:rotation")
+tracks/9/interp = 2
+tracks/9/loop_wrap = true
+tracks/9/keys = {
+"times": PackedFloat32Array(0, 1, 1.32, 1.8, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.5, 1.0, 1.0]
+}
+tracks/10/type = "value"
+tracks/10/imported = false
+tracks/10/enabled = true
+tracks/10/path = NodePath("Sparkles/Sparkle3:scale")
+tracks/10/interp = 2
+tracks/10/loop_wrap = true
+tracks/10/keys = {
+"times": PackedFloat32Array(0, 1.75, 1.99, 2.35, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, 0), Vector2(0, 0), Vector2(0.24, 0.24), Vector2(0, 0), Vector2(0, 0)]
+}
+tracks/11/type = "value"
+tracks/11/imported = false
+tracks/11/enabled = true
+tracks/11/path = NodePath("Sparkles/Sparkle3:rotation")
+tracks/11/interp = 2
+tracks/11/loop_wrap = true
+tracks/11/keys = {
+"times": PackedFloat32Array(0, 1.75, 1.99, 2.35, 2.4),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0, 0.5, 1.0, 1.0]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_gvv4y"]
+_data = {
+&"idle": SubResource("Animation_7wtp8")
+}
+
+[node name="GreenGem" type="Area2D" unique_id=1118779881]
+script = ExtResource("1_2eju1")
+gem_sound = ExtResource("2_s7ncm")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=466738170]
+shape = SubResource("CircleShape2D_7x1ti")
+
+[node name="Glow" type="Sprite2D" parent="." unique_id=1439953885]
+modulate = Color(0.25, 0.9, 0.4, 0.15)
+show_behind_parent = true
+material = SubResource("CanvasItemMaterial_2eju1")
+texture = SubResource("GradientTexture2D_s7ncm")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1502794522]
+scale = Vector2(0.21875, 0.21875)
+texture = ExtResource("2_iuhxe")
+
+[node name="Sparkles" type="Node2D" parent="." unique_id=245305129]
+z_index = 1
+
+[node name="Sparkle1" type="Sprite2D" parent="Sparkles" unique_id=877799372]
+modulate = Color(0.88, 1, 0.82, 0.7)
+material = SubResource("CanvasItemMaterial_7x1ti")
+position = Vector2(-15, -17)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("3_s7ncm")
+
+[node name="Sparkle2" type="Sprite2D" parent="Sparkles" unique_id=1188617085]
+modulate = Color(0.88, 1, 0.82, 0.7)
+material = SubResource("CanvasItemMaterial_76vgl")
+position = Vector2(17, -7)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("3_s7ncm")
+
+[node name="Sparkle3" type="Sprite2D" parent="Sparkles" unique_id=302723940]
+modulate = Color(0.88, 1, 0.82, 0.7)
+material = SubResource("CanvasItemMaterial_6xy1g")
+position = Vector2(5, 17)
+scale = Vector2(1e-05, 1e-05)
+texture = ExtResource("3_s7ncm")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=880689079]
+libraries/ = SubResource("AnimationLibrary_gvv4y")
+autoplay = &"idle"

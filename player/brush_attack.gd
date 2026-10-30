@@ -30,6 +30,8 @@ const CHASE_SHARPNESS := 12.0
 @onready var hurtbox: Area2D = $HurtBox
 @onready var poly: CollisionPolygon2D = $HurtBox/CollisionPolygon2D
 @onready var brush: Node2D = $Brush
+@onready var collision_polygon_2d: CollisionPolygon2D = $HurtBox/CollisionPolygon2D
+@onready var sword_sound: AudioStreamPlayer2D = $HitSound
 
 enum State { IDLE, CHARGING, RELEASING }
 var state := State.IDLE
@@ -47,6 +49,8 @@ func _ready() -> void:
 	hurtbox.monitoring = false
 
 func _process(delta: float) -> void:
+	if (collision_polygon_2d.disabled == true):
+		return
 	var mouse_angle := to_local(get_global_mouse_position()).angle()
 
 	if Input.is_action_just_pressed("attack") and state == State.IDLE:
@@ -84,6 +88,7 @@ func _release() -> void:
 	# Hit area = the same sector that is drawn on screen.
 	poly.polygon = _sector_points(radupto, shock_start_angle, sweep)
 	_apply_damage()
+	sword_sound.play()
 
 	var tw := create_tween()
 	tw.parallel().tween_property(self, "wave_t", 1.0, shockwave_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
@@ -100,10 +105,10 @@ func _apply_damage() -> void:
 	await get_tree().physics_frame
 	await get_tree().physics_frame
 	for body in hurtbox.get_overlapping_bodies():
-		if body.has_method("take_damage") and body.is_in_group("enemy"):
+		if body.has_method("take_damage") and body.is_in_group("enemy") or body.is_in_group("destructible"):
 			body.take_damage(damage)
 	for area in hurtbox.get_overlapping_areas():
-		if area.has_method("take_damage") and area.is_in_group("enemy"):
+		if area.has_method("take_damage") and area.is_in_group("enemy") or area.is_in_group("destructible"):
 			area.take_damage(damage)
 	hurtbox.monitoring = false
 

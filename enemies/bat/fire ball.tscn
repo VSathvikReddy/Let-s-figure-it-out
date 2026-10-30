@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://cfkq15dkaol66"]
+
+[ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="1_aejeu"]
+[ext_resource type="Script" uid="uid://7i5ca84uaxem" path="res://enemies/bat/fire_ball.gd" id="2_ball"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ball"]
+radius = 10.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_splash"]
+radius = 90.0
+
+[node name="FireBall" type="Area2D"]
+script = ExtResource("2_ball")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_ball")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(1, 0.55, 0.15, 1)
+scale = Vector2(0.16, 0.16)
+texture = ExtResource("1_aejeu")
+
+[node name="SplashZone" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SplashZone"]
+shape = SubResource("CircleShape2D_splash")

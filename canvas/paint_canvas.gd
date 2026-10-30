@@ -1,5 +1,5 @@
 extends Node
-## AUTOLOAD (Project Settings -> Globals -> Autoload, name it "PaintMask").
+## AUTOLOAD (Project Settings -> Globals -> Autoload, name it "PaintCanvas").
 ## Do NOT give this script a class_name.
 ##
 ## The one global canvas everything paints on.
@@ -14,7 +14,7 @@ var size := Vector2i(1, 1)
 var data := PackedByteArray()
 var mask: Image
 var texture: ImageTexture   ## the same object for the whole game, canvases just sample it
-var reference: Sprite2D     ## says where the picture sits in the world (given to setup())
+var reference: Node2D       ## Sprite2D or AnimatedSprite2D; says where the picture sits in the world
 
 
 func _init() -> void:
@@ -24,18 +24,18 @@ func _init() -> void:
 
 
 ## Turn painting on.
-## p_reference = the Sprite2D that shows the full picture; it says where the painting is in the world.
+## p_reference = the Sprite2D / AnimatedSprite2D that shows the full picture; it says where the painting is in the world.
 ## p_steps = hits from perfect to most broken (e.g. 4 for 5 sprites).
 ## p_size = mask resolution; leave at zero to derive it from the picture size / cell_size.
-func setup(p_reference: Sprite2D, p_steps: int, p_size := Vector2i.ZERO, cell_size := 4.0) -> void:
-	if not is_instance_valid(p_reference) or p_reference.texture == null:
-		push_error("PaintMask.setup needs a Sprite2D with a texture as reference")
+func setup(p_reference: Node2D, p_steps: int, p_size := Vector2i.ZERO, cell_size := 4.0) -> void:
+	if not is_instance_valid(p_reference) or _ref_tex(p_reference) == null:
+		push_error("PaintCanvas.setup needs a Sprite2D or AnimatedSprite2D with a texture as reference")
 		return
 	reference = p_reference
 	steps = clampi(p_steps, 0, 255)
 	step = 0 if steps == 0 else int(floor(255.0 / steps))
 	if p_size == Vector2i.ZERO:
-		p_size = Vector2i((reference.texture.get_size() / cell_size).ceil())
+		p_size = Vector2i((_ref_tex(reference).get_size() / cell_size).ceil())
 	size = p_size
 	data = PackedByteArray()
 	data.resize(size.x * size.y)   # zeros = black
@@ -72,6 +72,29 @@ func _upload(new_size: bool) -> void:
 		texture.set_image(mask)   # size may have changed
 	else:
 		texture.update(mask)
+
+
+# --- reference helpers (work for Sprite2D and AnimatedSprite2D) ---
+
+## Current texture of the reference (for AnimatedSprite2D: the current frame).
+func _ref_tex(n: Node2D) -> Texture2D:
+	if n is AnimatedSprite2D:
+		if n.sprite_frames == null:
+			return null
+		return n.sprite_frames.get_frame_texture(n.animation, n.frame)
+	if n is Sprite2D:
+		return n.texture
+	return null
+
+
+## Local-space rect of the reference's current picture (replaces Sprite2D.get_rect()).
+func _ref_rect() -> Rect2:
+	var tex := _ref_tex(reference)
+	var s := tex.get_size()
+	var pos: Vector2 = reference.offset
+	if reference.centered:
+		pos -= s / 2.0
+	return Rect2(pos, s)
 
 
 func _stamp(node: CollisionShape2D, count: int) -> bool:
@@ -143,10 +166,10 @@ func _inside(node: CollisionShape2D, shape: Shape2D, world: Vector2) -> bool:
 
 
 func _world_to_mask(world: Vector2) -> Vector2:
-	var r := reference.get_rect()
+	var r := _ref_rect()
 	return (reference.to_local(world) - r.position) / r.size * Vector2(size)
 
 
 func _mask_to_world(m: Vector2) -> Vector2:
-	var r := reference.get_rect()
+	var r := _ref_rect()
 	return reference.to_global(r.position + m / Vector2(size) * r.size)

@@ -4,8 +4,12 @@
 [ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="2_g1dw6"]
 [ext_resource type="PackedScene" uid="uid://b2tif5lnrgau6" path="res://player/brush_attack.tscn" id="2_yw30f"]
 [ext_resource type="Texture2D" uid="uid://wls4mv8mn85k" path="res://player/brush.png" id="3_yw30f"]
-[ext_resource type="Texture2D" uid="uid://djasoe4wbtnu2" path="res://whiteparticle.png" id="5_qjkh3"]
+[ext_resource type="Texture2D" uid="uid://dul6ln4fvmh08" path="res://player/whiteparticle.png" id="5_qjkh3"]
 [ext_resource type="Script" uid="uid://c8vyucipyuc0s" path="res://player/camera_2d.gd" id="6_g6k8r"]
+[ext_resource type="PackedScene" uid="uid://c88ll5dn7i3g0" path="res://player/portal.tscn" id="7_boad6"]
+[ext_resource type="AudioStream" uid="uid://0twx2j2c0n2w" path="res://player/thrustinitiate.wav" id="8_hg6s5"]
+[ext_resource type="AudioStream" uid="uid://d1t21hu6u64yn" path="res://player/thrustcontinue.wav" id="9_8t03j"]
+[ext_resource type="AudioStream" uid="uid://d1q1m8hrd1xo1" path="res://player/portal.wav" id="10_8t03j"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_4uyoc"]
 size = Vector2(64, 64)
@@ -37,6 +41,7 @@ scale_curve = SubResource("CurveTexture_g6k8r")
 color_ramp = SubResource("GradientTexture1D_rgyib")
 
 [node name="Player" type="CharacterBody2D" unique_id=1428108754 groups=["player"]]
+process_mode = 3
 script = ExtResource("1_rkbax")
 
 [node name="BrushAttack" parent="." unique_id=1935253786 instance=ExtResource("2_yw30f")]
@@ -80,12 +85,30 @@ lifetime = 0.4
 process_material = SubResource("ParticleProcessMaterial_qjkh3")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1484589310]
+zoom = Vector2(0.5, 0.5)
 position_smoothing_enabled = true
 position_smoothing_speed = 10.0
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
-drag_left_margin = 0.7
-drag_top_margin = 0.5
-drag_right_margin = 0.7
-drag_bottom_margin = 0.5
+drag_left_margin = 0.5
+drag_top_margin = 0.3
+drag_right_margin = 0.5
+drag_bottom_margin = 0.3
 script = ExtResource("6_g6k8r")
+
+[node name="Portal" parent="." unique_id=1057142332 instance=ExtResource("7_boad6")]
+
+[node name="AudioThrustStart" type="AudioStreamPlayer2D" parent="." unique_id=697473741]
+stream = ExtResource("8_hg6s5")
+volume_db = -10.121
+
+[node name="AudioThrustLoop" type="AudioStreamPlayer2D" parent="." unique_id=25178483]
+stream = ExtResource("9_8t03j")
+volume_db = -30.0
+
+[node name="PortalSound" type="AudioStreamPlayer2D" parent="." unique_id=744472968]
+stream = ExtResource("10_8t03j")
+volume_db = 8.0
+
+[editable path="BrushAttack"]
+[editable path="Portal"]

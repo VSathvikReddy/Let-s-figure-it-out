@@ -1,0 +1,95 @@
+[gd_scene format=3 uid="uid://cctbr5eujvsht"]
+
+[ext_resource type="Script" uid="uid://ci3m36ew5euai" path="res://levels/level_manager.gd" id="1_50qy4"]
+
+[node name="LevelManager" type="CanvasLayer" unique_id=1051921469]
+process_mode = 3
+layer = 100
+script = ExtResource("1_50qy4")
+
+[node name="FadeOverlay" type="ColorRect" parent="." unique_id=463675148]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.99607843)
+
+[node name="DebugWinButton" type="Button" parent="." unique_id=49095362]
+offset_left = 894.0
+offset_top = 23.0
+offset_right = 1136.0
+offset_bottom = 54.0
+text = "Force Win"
+
+[node name="WinScreen" type="Control" parent="." unique_id=728180278]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="DimBackground" type="ColorRect" parent="WinScreen" unique_id=708150142]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.75000006)
+
+[node name="CardPanel" type="PanelContainer" parent="WinScreen" unique_id=1680375586]
+custom_minimum_size = Vector2(420, 260)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -31.0
+offset_right = 20.0
+offset_bottom = 31.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="WinScreen/CardPanel" unique_id=138783051]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBoxContainer" type="VBoxContainer" parent="WinScreen/CardPanel/MarginContainer" unique_id=125985877]
+layout_mode = 2
+theme_override_constants/separation = 18
+alignment = 1
+
+[node name="WinTitle" type="Label" parent="WinScreen/CardPanel/MarginContainer/VBoxContainer" unique_id=1686947187]
+layout_mode = 2
+text = "PAINTING RESTORED!"
+horizontal_alignment = 1
+
+[node name="GemSummary" type="Label" parent="WinScreen/CardPanel/MarginContainer/VBoxContainer" unique_id=161943014]
+layout_mode = 2
+text = "4 / 4 Hidden Gems Collected"
+horizontal_alignment = 1
+
+[node name="ButtonRow" type="HBoxContainer" parent="WinScreen/CardPanel/MarginContainer/VBoxContainer" unique_id=851507598]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="RestartButton" type="Button" parent="WinScreen/CardPanel/MarginContainer/VBoxContainer/ButtonRow" unique_id=502845894]
+layout_mode = 2
+text = "Restart"
+
+[node name="NextLevelButton" type="Button" parent="WinScreen/CardPanel/MarginContainer/VBoxContainer/ButtonRow" unique_id=270592501]
+layout_mode = 2
+text = "Next Painting"
+
+[node name="MenuButton" type="Button" parent="WinScreen/CardPanel/MarginContainer/VBoxContainer/ButtonRow" unique_id=996777813]
+layout_mode = 2
+text = "Change Level"

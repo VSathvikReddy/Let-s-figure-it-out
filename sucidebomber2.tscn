@@ -1,0 +1,79 @@
+[gd_scene format=3 uid="uid://tp1meqhjk7gv"]
+
+[ext_resource type="Texture2D" uid="uid://ck5sf1d5w53ih" path="res://spritesheetBlob-Photoroom.png" id="1_q17kw"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_svejp"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(0, 248, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_36gju"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(172, 248, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_tql22"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(344, 248, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_jbdfk"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(516, 248, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4gl14"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(688, 248, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5g7v7"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(860, 248, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_i1g04"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(0, 372, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_y4qkf"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(172, 372, 163, 113)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oncxo"]
+atlas = ExtResource("1_q17kw")
+region = Rect2(344, 372, 163, 113)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6diby"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_svejp")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_36gju")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_tql22")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_jbdfk")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4gl14")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5g7v7")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_i1g04")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_y4qkf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oncxo")
+}],
+"loop": 1,
+"name": &"Sucidebomber2",
+"speed": 8.0
+}]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" unique_id=364801118]
+sprite_frames = SubResource("SpriteFrames_6diby")
+animation = &"Sucidebomber2"
+frame_progress = 0.14418465
