@@ -13,9 +13,10 @@ extends Resource
 ## Enemy health multiplier (bomber 6 -> 4 at 0.7, -> 10 at 1.6).
 @export var enemy_health_easy := 0.7
 @export var enemy_health_hard := 1.6
-## Damage the player takes multiplier (a bomber blast does 3 -> 6 at 2.0).
+## Damage the player takes multiplier (rounded; at 1.5 a 1-heart hit takes 2
+## hearts and the bomber's 2-heart blast takes 3).
 @export var damage_taken_easy := 1.0
-@export var damage_taken_hard := 2.0
+@export var damage_taken_hard := 1.5
 ## Part of the enemies placed by hand in the level that are kept (the rest are
 ## removed at random, so easy levels start calmer).
 @export_range(0.0, 1.0) var placed_enemies_kept_easy := 0.5

@@ -1,0 +1,133 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://compined/level.gd" id="0_level"]
+[ext_resource type="PackedScene" path="res://compined/painting/monalisa_painting.tscn" id="1_painting"]
+[ext_resource type="PackedScene" path="res://compined/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://compined/ui/win_screen.tscn" id="3_win_screen"]
+[ext_resource type="PackedScene" path="res://compined/enemies/spawner/enemy_spawner.tscn" id="spawner"]
+[ext_resource type="Script" path="res://compined/enemies/spawner/enemy_spawn_entry.gd" id="spawn_entry"]
+[ext_resource type="PackedScene" path="res://compined/powerup/power_up_spawner.tscn" id="power_spawner"]
+[ext_resource type="PackedScene" path="res://compined/gems/blue_dest.tscn" id="gem_blue"]
+[ext_resource type="PackedScene" path="res://compined/gems/green_dest.tscn" id="gem_green"]
+[ext_resource type="PackedScene" path="res://compined/gems/star_dest.tscn" id="gem_star"]
+[ext_resource type="PackedScene" path="res://compined/gems/violet_dest.tscn" id="gem_violet"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="enemy_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bird/bird.tscn" id="enemy_bird"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bomber/bomber.tscn" id="enemy_bomber"]
+[ext_resource type="PackedScene" path="res://compined/enemies/cannon/cannon.tscn" id="enemy_cannon"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/hidden_bat.tscn" id="enemy_hidden_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="enemy_mini_bomber"]
+
+[sub_resource type="Resource" id="Spawn_0_mini_bomber"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("enemy_mini_bomber")
+chance = 3.0
+max_alive = 5
+appears_after = 0.0
+
+[sub_resource type="Resource" id="Spawn_1_bat"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("enemy_bat")
+chance = 2.0
+max_alive = 3
+appears_after = 0.0
+
+[sub_resource type="Resource" id="Spawn_2_bomber"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("enemy_bomber")
+chance = 1.5
+max_alive = 3
+appears_after = 10.0
+
+[sub_resource type="Resource" id="Spawn_3_bird"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("enemy_bird")
+chance = 1.2
+max_alive = 2
+appears_after = 15.0
+
+[sub_resource type="Resource" id="Spawn_4_cannon"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("enemy_cannon")
+chance = 0.4
+max_alive = 2
+appears_after = 25.0
+
+[node name="MonaLisa" type="Node2D" node_paths=PackedStringArray("painting")]
+script = ExtResource("0_level")
+painting = NodePath("Painting")
+
+[node name="Painting" parent="." instance=ExtResource("1_painting")]
+
+[node name="HiddenGems" type="Node2D" parent="."]
+
+[node name="BlueRock" parent="HiddenGems" instance=ExtResource("gem_blue")]
+
+[node name="GreenRock" parent="HiddenGems" instance=ExtResource("gem_green")]
+
+[node name="StarRock" parent="HiddenGems" instance=ExtResource("gem_star")]
+
+[node name="VioletRock" parent="HiddenGems" instance=ExtResource("gem_violet")]
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Bomber1" parent="Enemies" instance=ExtResource("enemy_bomber")]
+position = Vector2(-317, -1016)
+
+[node name="Bomber2" parent="Enemies" instance=ExtResource("enemy_bomber")]
+position = Vector2(271, -1244)
+
+[node name="Bomber3" parent="Enemies" instance=ExtResource("enemy_bomber")]
+position = Vector2(-795, 21)
+
+[node name="MiniBomber1" parent="Enemies" instance=ExtResource("enemy_mini_bomber")]
+position = Vector2(-774, -1191)
+
+[node name="MiniBomber2" parent="Enemies" instance=ExtResource("enemy_mini_bomber")]
+position = Vector2(-135, 951)
+
+[node name="MiniBomber3" parent="Enemies" instance=ExtResource("enemy_mini_bomber")]
+position = Vector2(-677, -805)
+
+[node name="MiniBomber4" parent="Enemies" instance=ExtResource("enemy_mini_bomber")]
+position = Vector2(229, 1302)
+
+[node name="Cannon1" parent="Enemies" instance=ExtResource("enemy_cannon")]
+position = Vector2(857, -1319)
+
+[node name="Cannon2" parent="Enemies" instance=ExtResource("enemy_cannon")]
+position = Vector2(645, -612)
+
+[node name="Bat1" parent="Enemies" instance=ExtResource("enemy_bat")]
+position = Vector2(250, -371)
+
+[node name="Bat2" parent="Enemies" instance=ExtResource("enemy_bat")]
+position = Vector2(-84, -582)
+
+[node name="HiddenBat1" parent="Enemies" instance=ExtResource("enemy_hidden_bat")]
+position = Vector2(529, 579)
+
+[node name="HiddenBat2" parent="Enemies" instance=ExtResource("enemy_hidden_bat")]
+position = Vector2(-460, 216)
+
+[node name="Bird1" parent="Enemies" instance=ExtResource("enemy_bird")]
+position = Vector2(-829, 489)
+
+[node name="Bird2" parent="Enemies" instance=ExtResource("enemy_bird")]
+position = Vector2(476, 212)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+
+[node name="WinScreen" parent="." instance=ExtResource("3_win_screen")]
+
+[node name="EnemySpawner" parent="." instance=ExtResource("spawner")]
+spawn_list = Array[ExtResource("spawn_entry")]([SubResource("Spawn_0_mini_bomber"), SubResource("Spawn_1_bat"), SubResource("Spawn_2_bomber"), SubResource("Spawn_3_bird"), SubResource("Spawn_4_cannon")])
+min_per_wave = 2
+max_per_wave = 3
+max_alive = 12
+first_wave_after = 4.0
+min_time_between_waves = 5.0
+max_time_between_waves = 8.0
+speed_up_per_minute = 0.15
+
+[node name="PowerUpSpawner" parent="." instance=ExtResource("power_spawner")]

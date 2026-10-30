@@ -1,11 +1,129 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://compined/enemies/bomber/bomber.gd" id="1_script"]
-[ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="2_picture"]
 [ext_resource type="AudioStream" path="res://compined/enemies/bomber/explosion.wav" id="3_explode"]
 [ext_resource type="AudioStream" path="res://compined/common/enemy_death.wav" id="4_death"]
 [ext_resource type="AudioStream" path="res://compined/enemies/bomber/ignite.wav" id="5_fuse"]
 [ext_resource type="PackedScene" path="res://compined/ui/enemy_health_bar.tscn" id="health_bar"]
+[ext_resource type="Texture2D" path="res://compined/enemies/bomber/art/bomber_idle.png" id="sheet_idle"]
+[ext_resource type="Texture2D" path="res://compined/enemies/bomber/art/bomber_death.png" id="sheet_death"]
+
+[sub_resource type="AtlasTexture" id="Idle_1"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(0, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_2"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(123, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_3"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(246, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_4"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(369, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_5"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(492, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_6"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(615, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_7"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(738, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_8"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(861, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_9"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(984, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_10"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(1107, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_11"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(1230, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_12"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(1353, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Idle_13"]
+atlas = ExtResource("sheet_idle")
+region = Rect2(1476, 0, 123, 182)
+
+[sub_resource type="AtlasTexture" id="Death_1"]
+atlas = ExtResource("sheet_death")
+region = Rect2(0, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_2"]
+atlas = ExtResource("sheet_death")
+region = Rect2(123, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_3"]
+atlas = ExtResource("sheet_death")
+region = Rect2(246, 0, 122, 183)
+
+[sub_resource type="AtlasTexture" id="Death_4"]
+atlas = ExtResource("sheet_death")
+region = Rect2(368, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_5"]
+atlas = ExtResource("sheet_death")
+region = Rect2(491, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_6"]
+atlas = ExtResource("sheet_death")
+region = Rect2(614, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_7"]
+atlas = ExtResource("sheet_death")
+region = Rect2(737, 0, 122, 183)
+
+[sub_resource type="AtlasTexture" id="Death_8"]
+atlas = ExtResource("sheet_death")
+region = Rect2(859, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_9"]
+atlas = ExtResource("sheet_death")
+region = Rect2(982, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_10"]
+atlas = ExtResource("sheet_death")
+region = Rect2(1105, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_11"]
+atlas = ExtResource("sheet_death")
+region = Rect2(1228, 0, 122, 183)
+
+[sub_resource type="AtlasTexture" id="Death_12"]
+atlas = ExtResource("sheet_death")
+region = Rect2(1350, 0, 123, 183)
+
+[sub_resource type="AtlasTexture" id="Death_13"]
+atlas = ExtResource("sheet_death")
+region = Rect2(1473, 0, 123, 183)
+
+[sub_resource type="SpriteFrames" id="Animations"]
+animations = [{
+"frames": [{"duration": 1.0, "texture": SubResource("Idle_1")}, {"duration": 1.0, "texture": SubResource("Idle_2")}, {"duration": 1.0, "texture": SubResource("Idle_3")}, {"duration": 1.0, "texture": SubResource("Idle_4")}, {"duration": 1.0, "texture": SubResource("Idle_5")}, {"duration": 1.0, "texture": SubResource("Idle_6")}, {"duration": 1.0, "texture": SubResource("Idle_7")}, {"duration": 1.0, "texture": SubResource("Idle_8")}, {"duration": 1.0, "texture": SubResource("Idle_9")}, {"duration": 1.0, "texture": SubResource("Idle_10")}, {"duration": 1.0, "texture": SubResource("Idle_11")}, {"duration": 1.0, "texture": SubResource("Idle_12")}, {"duration": 1.0, "texture": SubResource("Idle_13")}],
+"loop": true,
+"name": &"idle",
+"speed": 10.0
+}, {
+"frames": [{"duration": 1.0, "texture": SubResource("Death_1")}, {"duration": 1.0, "texture": SubResource("Death_2")}, {"duration": 1.0, "texture": SubResource("Death_3")}, {"duration": 1.0, "texture": SubResource("Death_4")}, {"duration": 1.0, "texture": SubResource("Death_5")}, {"duration": 1.0, "texture": SubResource("Death_6")}, {"duration": 1.0, "texture": SubResource("Death_7")}, {"duration": 1.0, "texture": SubResource("Death_8")}, {"duration": 1.0, "texture": SubResource("Death_9")}, {"duration": 1.0, "texture": SubResource("Death_10")}, {"duration": 1.0, "texture": SubResource("Death_11")}, {"duration": 1.0, "texture": SubResource("Death_12")}, {"duration": 1.0, "texture": SubResource("Death_13")}],
+"loop": false,
+"name": &"death",
+"speed": 16.0
+}]
 
 [sub_resource type="RectangleShape2D" id="Shape_body"]
 size = Vector2(64, 64)
@@ -24,9 +142,10 @@ script = ExtResource("1_script")
 explode_sound = ExtResource("3_explode")
 death_sound = ExtResource("4_death")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
+[node name="Sprite" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_picture")
+sprite_frames = SubResource("Animations")
+animation = &"idle"
 
 [node name="BodyShape" type="CollisionShape2D" parent="."]
 shape = SubResource("Shape_body")
