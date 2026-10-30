@@ -1,8 +1,9 @@
 [gd_scene format=3 uid="uid://bgggmdmw3ihsv"]
 
-[ext_resource type="Script" uid="uid://85aj48eo3b5i" path="res://enemies/bomber/bomber.gd" id="1_jb7bb"]
+[ext_resource type="Script" uid="uid://85aj48eo3b5i" path="res://enemies/bomber/heavy_bomber.gd" id="1_jb7bb"]
 [ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="2_yvlhf"]
 [ext_resource type="AudioStream" uid="uid://b1sndo62hulpu" path="res://enemies/bomber/explosion.wav" id="3_3lkb1"]
+[ext_resource type="AudioStream" uid="uid://bi80r6avjv2oy" path="res://enemies/bomber/ignite.wav" id="4_2u7br"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lisrb"]
 radius = 73.171036
@@ -47,3 +48,7 @@ wait_time = 2.0
 
 [node name="IgnitionTimer" type="Timer" parent="." unique_id=1835922825]
 one_shot = true
+
+[node name="Ignition" type="AudioStreamPlayer2D" parent="." unique_id=496118547]
+stream = ExtResource("4_2u7br")
+volume_db = -17.101

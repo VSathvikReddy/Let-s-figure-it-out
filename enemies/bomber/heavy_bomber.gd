@@ -19,6 +19,7 @@ var trail: CPUParticles2D
 @onready var explosion_zone: Area2D = $ExplosionZone
 @onready var wander_timer: Timer = $WanderTimer
 @onready var ignition_timer: Timer = $IgnitionTimer
+@onready var ignition_sound: AudioStreamPlayer2D = $Ignition
 
 signal state_changed(new_state: State)
 
@@ -94,6 +95,7 @@ func _on_detection_zone_exited(body: Node2D) -> void:
 func _on_trigger_zone_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		set_state(State.IGNITED)
+		ignition_sound.play()
 
 # --- Explosion ---
 func _explode() -> void:
