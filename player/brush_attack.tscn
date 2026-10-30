@@ -6,6 +6,7 @@
 [sub_resource type="Gradient" id="Gradient_ibium"]
 
 [node name="BrushAttack" type="Node2D" unique_id=1935253786]
+process_mode = 3
 script = ExtResource("1_ibium")
 brush_distance = 0.0
 color_gradient = SubResource("Gradient_ibium")

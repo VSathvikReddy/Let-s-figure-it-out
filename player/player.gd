@@ -1,9 +1,5 @@
 extends CharacterBody2D
 
-
-@export_group("Win Condition")
-@export var gems_required:int = 4
-
 ## --- Movement & Thruster Parameters ---
 @export_group("Thruster Forces")
 @export var horizontal_thrust: float = 600.0
@@ -20,12 +16,17 @@ extends CharacterBody2D
 @export var max_tilt_angle_deg: float = 12.0
 @export var tilt_speed: float = 8.0
 
+@export_group("Win condition")
+@export var gems_required := 4
 ## --- Node References ---
 @onready var sprite: Sprite2D = $Sprite2D
 @onready var left_jetpack: Sprite2D = $Sprite2D/leftthrust
 @onready var right_jetpack: Sprite2D = $Sprite2D/rightthrust
 @onready var left_particle: GPUParticles2D = $Sprite2D/leftparti
 @onready var right_particle: GPUParticles2D = $Sprite2D/rightparti
+@onready var portal: Node2D = $Portal
+@onready var sprite_2d: Sprite2D = $BrushAttack/Brush/Sprite2D
+@onready var wand: Sprite2D = $Portal/Wand
 
 var gems_collected:int=0:
 	set(value):
@@ -33,11 +34,35 @@ var gems_collected:int=0:
 		print(gems_collected)
 		if value >= gems_required:
 			print("Game Wons")
+			
+func collect_gem(gem:Gem)->void:
+	gems_collected += 1
+	gem.queue_free()
 
 func _ready() -> void:
 	_set_jetpacks_visible(false)
+	process_mode = ProcessMode.PROCESS_MODE_ALWAYS
+	wand.visible = false
+	
+func _settle() -> void:
+	var tween: Tween = create_tween()
+	tween.parallel().tween_property(self, "velocity", Vector2.ZERO, 0.5)
+	tween.parallel().tween_property(self, "rotation", 0, 0.5)
+	await tween.finished
+	
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("open_veil") and wand.visible == false:
+		sprite_2d.visible = false
+		wand.visible = true
+		portal.activate()
+	elif event.is_action_pressed("open_veil") and wand.visible == true:
+		await portal.deactivate()
+		sprite_2d.visible = true
+		wand.visible = false
 
 func _physics_process(delta: float) -> void:
+	if portal.active and fast_gravity == 0.00:
+		return
 	# 1. Read Inputs (Horizontal & Up Thrust Only)
 	var input_vector = Vector2.ZERO
 	input_vector.x = Input.get_axis("move_left", "move_right")
@@ -95,7 +120,3 @@ func take_damage(damage:int) ->void:
 	sprite.modulate = Color(5.0, 5.0, 5.0, 1.0) # HDR white for an extra bright flash, or Color.WHITE * 3
 	# Tween back to normal over 0.15 seconds
 	tw.tween_property(sprite, "modulate", Color.WHITE, 0.15)
-
-func collect_gem(gem:Gem)->void:
-	gems_collected+=1
-	gem.queue_free()
