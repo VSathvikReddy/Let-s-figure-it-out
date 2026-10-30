@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://sinan_new/sprites/gem.gd" id="1_gem"]
+
+[node name="Emerald" type="Node2D"]
+script = ExtResource("1_gem")
+points = 6
+inner = 0.92
+core_size = 0.5
+color = Color(0.2, 0.8, 0.45, 1)
+accent = Color(0.1, 0.55, 0.5, 1)
+float_speed = 1.1
+pulse = 0.03
+twinkle_every = 3.1

@@ -1,0 +1,10 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://sinan/world/props/static_platform.gd" id="1_s"]
+[ext_resource type="Texture2D" path="res://sinan/assets/props/platforms/wood_platform_braced.png" id="2_t"]
+
+[node name="WoodPlatformBraced" type="Node2D"]
+scale = Vector2(0.5, 0.5)
+script = ExtResource("1_s")
+texture = ExtResource("2_t")
+surface = 0.067

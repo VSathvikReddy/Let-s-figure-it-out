@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cje53kiek8ejt"
-path="res://.godot/imported/thruster.png-a0df7e2ce9a8d41a5b5b98e137daef24.ctex"
+uid="uid://qqooyd1pekdj"
+path="res://.godot/imported/ruin_platform_small.png-3893b9cf9259ed04a04ffb8bbf4a5f08.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sinan/assets/jetpack/thruster.png"
-dest_files=["res://.godot/imported/thruster.png-a0df7e2ce9a8d41a5b5b98e137daef24.ctex"]
+source_file="res://sinan/assets/props/platforms/ruin_platform_small.png"
+dest_files=["res://.godot/imported/ruin_platform_small.png-3893b9cf9259ed04a04ffb8bbf4a5f08.ctex"]
 
 [params]
 

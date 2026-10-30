@@ -38,3 +38,10 @@ Painting.paint($MyArea, 1.0, point)   # same, with the area moved to `point`
   has `scroll_scale = (0, 0)`; this script scales it to cover the whole screen, and zooms in
   just enough that the hill and village strips are always wider than the view. Result: the
   screen never shows anything outside the painting, in any window shape.
+
+## Sprites (`sprites/`)
+Four animated gems, drawn in code by one small script (`sprites/gem.gd`):
+`entropy_star.tscn`, `sapphire.tscn`, `emerald.tscn`, `topaz.tscn`.
+Each scene only sets the gem's shape (`points`, `inner`), colours and animation
+in the Inspector. They float, pulse and twinkle - also in the editor.
+Make a new gem: duplicate a scene and change those values.

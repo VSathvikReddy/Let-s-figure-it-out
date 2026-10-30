@@ -1,0 +1,32 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://sinan/assets/props/decor/lantern.png" id="1_t"]
+[ext_resource type="Script" path="res://sinan/world/props/prop.gd" id="2_s"]
+
+[sub_resource type="Gradient" id="Gradient_glow"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_glow"]
+gradient = SubResource("Gradient_glow")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Lantern" type="Sprite2D"]
+z_index = 1
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_t")
+centered = false
+offset = Vector2(-39, 0)
+script = ExtResource("2_s")
+top = 0.271
+top_width = 0.42
+
+[node name="Light" type="PointLight2D" parent="."]
+position = Vector2(0, 79)
+color = Color(1, 0.7, 0.35, 1)
+energy = 1.1
+texture = SubResource("GradientTexture2D_glow")
+texture_scale = 4.8

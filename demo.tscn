@@ -10,8 +10,9 @@
 [ext_resource type="Texture2D" uid="uid://c4ppxj01obqtd" path="res://canvas/assets/hill_60.png" id="5_qxpsc"]
 [ext_resource type="Texture2D" uid="uid://luavej3y17ay" path="res://canvas/assets/hill_40.png" id="6_7yxti"]
 [ext_resource type="Texture2D" uid="uid://bl3f0j87qi7n8" path="res://canvas/assets/hill_20.png" id="7_uodgu"]
+[ext_resource type="PackedScene" uid="uid://c50bwdl722kae" path="res://enemies/thrower/thrower.tscn" id="11_gdsc3"]
 
-[node name="Demo" type="Node2D" unique_id=1005141647]
+[node name="Demo2" type="Node2D" unique_id=1005141647]
 script = ExtResource("1_7058v")
 
 [node name="Canvas" type="Node2D" parent="." unique_id=347827446]
@@ -55,3 +56,6 @@ offset_left = -618.0
 offset_top = -387.0
 offset_right = 1380.0
 offset_bottom = 861.0
+
+[node name="Thrower" parent="." unique_id=1647642456 instance=ExtResource("11_gdsc3")]
+position = Vector2(450, 146)

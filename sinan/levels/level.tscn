@@ -11,18 +11,50 @@
 [ext_resource type="Texture2D" uid="uid://dmit3iea6bvks" path="res://sinan/assets/painting/painting_frame.png" id="6_65feh"]
 [ext_resource type="Script" uid="uid://va53n8gk28wd" path="res://sinan/painting/distortion_layer.gd" id="7_dist"]
 [ext_resource type="PackedScene" uid="uid://jns875627arj" path="res://sinan/actors/enemies/forger/forger.tscn" id="18_ix7d5"]
+[ext_resource type="Texture2D" uid="uid://cwj0xx243jyxd" path="res://sinan/assets/props/decor/books_stack.png" id="22_mhsbb"]
+[ext_resource type="Texture2D" uid="uid://c5sy52ey755ye" path="res://sinan/assets/props/decor/lantern.png" id="23_y1lt5"]
+[ext_resource type="Texture2D" uid="uid://1le5c0h6wlop" path="res://sinan/assets/props/decor/bookshelf_small.png" id="44_4c0eb"]
+[ext_resource type="Texture2D" uid="uid://b2alblp574np6" path="res://sinan/assets/props/decor/bookshelf_tall.png" id="45_b0288"]
+[ext_resource type="Texture2D" uid="uid://dxo8gurwinive" path="res://sinan/assets/props/decor/books_bottles.png" id="46_rhhx1"]
+[ext_resource type="Texture2D" uid="uid://2npv4lmvs83y" path="res://sinan/assets/props/decor/books_cloth.png" id="47_y1lt5"]
+[ext_resource type="Texture2D" uid="uid://daxnssusgnlhi" path="res://sinan/assets/props/decor/books_leaning.png" id="48_bvadj"]
+[ext_resource type="Texture2D" uid="uid://bjlkqb32ccem0" path="res://sinan/assets/props/decor/books_low.png" id="49_fqnnl"]
+[ext_resource type="Texture2D" uid="uid://5o2byygbbwe8" path="res://sinan/assets/props/decor/candle.png" id="50_vnefi"]
+[ext_resource type="Texture2D" uid="uid://cyjq2aa2bvg76" path="res://sinan/assets/props/decor/ladder.png" id="52_bvadj"]
+[ext_resource type="Texture2D" uid="uid://53e807wgwguc" path="res://sinan/assets/props/pillars/wood_pillar_mid.png" id="53_fqnnl"]
+[ext_resource type="Texture2D" uid="uid://mkxtxrlea2wt" path="res://sinan/assets/props/platforms/rope_bridge_long.png" id="54_vnefi"]
+[ext_resource type="PackedScene" uid="uid://dp4h2rdnyjmjt" path="res://sinan/world/platforms/hanging_board.tscn" id="board_scene"]
 [ext_resource type="Texture2D" uid="uid://cihh77qv8e5s6" path="res://sinan/assets/painting/hill/hill_level20-Photoroom.png" id="hill_20"]
 [ext_resource type="Texture2D" uid="uid://c5t46spl0lkuj" path="res://sinan/assets/painting/hill/hill_level50-Photoroom.png" id="hill_40"]
 [ext_resource type="Texture2D" uid="uid://coadcjphl2x3b" path="res://sinan/assets/painting/hill/hill_level500-Photoroom.png" id="hill_60"]
 [ext_resource type="Texture2D" uid="uid://bf5ary2y7wl76" path="res://sinan/assets/painting/hill/hill_level5000-Photoroom.png" id="hill_80"]
+[ext_resource type="Script" uid="uid://bp6e4ki6vm0wu" path="res://sinan/world/navigation/nav_graph.gd" id="nav_script"]
 [ext_resource type="PackedScene" path="res://sinan/world/portals/portal_director.tscn" id="portal_director_scene"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/art_crate.tscn" id="prop_art_crate"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/banner.tscn" id="prop_banner"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/bookshelf_wide.tscn" id="prop_bookshelf_wide"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/books_stack.tscn" id="prop_books_stack"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/broken_vase.tscn" id="prop_broken_vase"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/bust.tscn" id="prop_bust"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/candle.tscn" id="prop_candle"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/candle_books.tscn" id="prop_candle_books"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/chandelier.tscn" id="prop_chandelier"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/chest.tscn" id="prop_chest"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/covered_table.tscn" id="prop_covered_table"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/crate.tscn" id="prop_crate"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/easel.tscn" id="prop_easel"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/paint_bucket.tscn" id="prop_paint_bucket"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/platforms/rope_bridge_long.tscn" id="prop_rope_bridge_long"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/pillars/stone_pillar_dark.tscn" id="prop_stone_pillar_dark"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/torn_curtain.tscn" id="prop_torn_curtain"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/decor/vase.tscn" id="prop_vase"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/pillars/wood_pillar_braced.tscn" id="prop_wood_pillar_braced"]
+[ext_resource type="PackedScene" path="res://sinan/world/props/platforms/wood_platform_medium.tscn" id="prop_wood_platform_medium"]
 [ext_resource type="Texture2D" uid="uid://dbs1xx4x4pfvo" path="res://sinan/assets/painting/village/village_level20-Photoroom.png" id="village_20"]
 [ext_resource type="Texture2D" uid="uid://bw70crr8duxn2" path="res://sinan/assets/painting/village/village_level50-Photoroom.png" id="village_40"]
 [ext_resource type="Texture2D" uid="uid://dtvfiy63xd652" path="res://sinan/assets/painting/village/village_level500-Photoroom.png" id="village_60"]
 [ext_resource type="Texture2D" uid="uid://b5jev17jm0nm0" path="res://sinan/assets/painting/village/village_level5000-Photoroom.png" id="village_80"]
 
-[ext_resource type="PackedScene" path="res://sinan/world/platforms/hanging_board.tscn" id="board_scene"]
-[ext_resource type="Script" path="res://sinan/world/navigation/nav_graph.gd" id="nav_script"]
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_mupt7"]
 size = Vector2(4164.5, 149.99994)
 
@@ -136,108 +168,24 @@ z_index = 1
 position = Vector2(-471.00003, 404)
 scale = Vector2(0.3, 0.3)
 
-[node name="Platforms" type="Node2D" parent="."]
+[node name="Platforms" type="Node2D" parent="." unique_id=1275799591]
 
-[node name="Board1" parent="Platforms" instance=ExtResource("board_scene")]
+[node name="Board1" parent="Platforms" unique_id=1195982560 instance=ExtResource("board_scene")]
 position = Vector2(-1550, 337)
 
-[node name="LeftAnchor" parent="Platforms/Board1"]
-position = Vector2(-78, -757.0)
-
-[node name="RightAnchor" parent="Platforms/Board1"]
-position = Vector2(78, -757.0)
-
-[node name="Board2" parent="Platforms" instance=ExtResource("board_scene")]
+[node name="Board2" parent="Platforms" unique_id=1840312568 instance=ExtResource("board_scene")]
 position = Vector2(-1250, 245)
 
-[node name="LeftAnchor" parent="Platforms/Board2"]
-position = Vector2(-83, -665.0)
-
-[node name="RightAnchor" parent="Platforms/Board2"]
-position = Vector2(83, -665.0)
-
-[node name="Board3" parent="Platforms" instance=ExtResource("board_scene")]
-position = Vector2(-950, 153)
-
-[node name="LeftAnchor" parent="Platforms/Board3"]
-position = Vector2(-88, -573.0)
-
-[node name="RightAnchor" parent="Platforms/Board3"]
-position = Vector2(88, -573.0)
-
-[node name="Board4" parent="Platforms" instance=ExtResource("board_scene")]
-position = Vector2(-650, 61)
-
-[node name="LeftAnchor" parent="Platforms/Board4"]
-position = Vector2(-78, -481.0)
-
-[node name="RightAnchor" parent="Platforms/Board4"]
-position = Vector2(78, -481.0)
-
-[node name="Board5" parent="Platforms" instance=ExtResource("board_scene")]
-position = Vector2(150, 245)
-
-[node name="LeftAnchor" parent="Platforms/Board5"]
-position = Vector2(-83, -665.0)
-
-[node name="RightAnchor" parent="Platforms/Board5"]
-position = Vector2(83, -665.0)
-
-[node name="Board6" parent="Platforms" instance=ExtResource("board_scene")]
-position = Vector2(450, 337)
-
-[node name="LeftAnchor" parent="Platforms/Board6"]
-position = Vector2(-88, -757.0)
-
-[node name="RightAnchor" parent="Platforms/Board6"]
-position = Vector2(88, -757.0)
-
-[node name="Board7" parent="Platforms" instance=ExtResource("board_scene")]
-position = Vector2(750, 245)
-
-[node name="LeftAnchor" parent="Platforms/Board7"]
-position = Vector2(-78, -665.0)
-
-[node name="RightAnchor" parent="Platforms/Board7"]
-position = Vector2(78, -665.0)
-
-[node name="Board8" parent="Platforms" instance=ExtResource("board_scene")]
-position = Vector2(1050, 153)
-
-[node name="LeftAnchor" parent="Platforms/Board8"]
-position = Vector2(-83, -573.0)
-
-[node name="RightAnchor" parent="Platforms/Board8"]
-position = Vector2(83, -573.0)
-
-[node name="Board9" parent="Platforms" instance=ExtResource("board_scene")]
+[node name="Board9" parent="Platforms" unique_id=688055410 instance=ExtResource("board_scene")]
 position = Vector2(1350, 153)
 
-[node name="LeftAnchor" parent="Platforms/Board9"]
-position = Vector2(-88, -573.0)
-
-[node name="RightAnchor" parent="Platforms/Board9"]
-position = Vector2(88, -573.0)
-
-[node name="Board10" parent="Platforms" instance=ExtResource("board_scene")]
+[node name="Board10" parent="Platforms" unique_id=415090235 instance=ExtResource("board_scene")]
 position = Vector2(1650, 337)
 
-[node name="LeftAnchor" parent="Platforms/Board10"]
-position = Vector2(-78, -757.0)
-
-[node name="RightAnchor" parent="Platforms/Board10"]
-position = Vector2(78, -757.0)
-
-[node name="Board11" parent="Platforms" instance=ExtResource("board_scene")]
+[node name="Board11" parent="Platforms" unique_id=1344134171 instance=ExtResource("board_scene")]
 position = Vector2(1950, 245)
 
-[node name="LeftAnchor" parent="Platforms/Board11"]
-position = Vector2(-83, -665.0)
-
-[node name="RightAnchor" parent="Platforms/Board11"]
-position = Vector2(83, -665.0)
-
-[node name="NavGraph" type="Node2D" parent="."]
+[node name="NavGraph" type="Node2D" parent="." unique_id=1929825898]
 script = ExtResource("nav_script")
 
 [node name="frame" type="Node2D" parent="." unique_id=920655558]
@@ -246,15 +194,25 @@ position = Vector2(423, -57)
 rotation = -3.1415927
 
 [node name="NinePatchRect" type="NinePatchRect" parent="frame" unique_id=542244599]
-offset_left = -1864.0
-offset_top = -544.0002
-offset_right = 2266.0
-offset_bottom = 426.15033
+z_index = 1
+offset_left = -1873.0
+offset_top = -547.0002
+offset_right = 2257.0
+offset_bottom = 423.15033
 texture = ExtResource("6_65feh")
 patch_margin_left = 200
 patch_margin_top = 200
 patch_margin_right = 200
 patch_margin_bottom = 200
+
+[node name="BooksStack" type="Sprite2D" parent="frame" unique_id=1625879835]
+position = Vector2(862.00006, -442.99994)
+texture = ExtResource("22_mhsbb")
+
+[node name="Lantern" type="Sprite2D" parent="frame" unique_id=801682728]
+position = Vector2(1216.9999, 8.000107)
+rotation = -3.1555552
+texture = ExtResource("23_y1lt5")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=174962224]
 color = Color(0.8002996, 0.81344783, 0.9148506, 1)
@@ -268,3 +226,128 @@ position = Vector2(215.00005, -561)
 shape = SubResource("RectangleShape2D_mupt7")
 
 [node name="PortalDirector" parent="." unique_id=259653756 instance=ExtResource("portal_director_scene")]
+
+[node name="Props" type="Node2D" parent="." unique_id=1276550013]
+
+[node name="StonePillarDark" parent="Props" unique_id=1442756017 instance=ExtResource("prop_stone_pillar_dark")]
+z_index = 1
+position = Vector2(2110, 429)
+
+[node name="WoodPillarBraced" parent="Props" unique_id=371840350 instance=ExtResource("prop_wood_pillar_braced")]
+z_index = 1
+position = Vector2(-250, 429)
+
+[node name="RopeBridgeLong" parent="Props" unique_id=555334007 instance=ExtResource("prop_rope_bridge_long")]
+position = Vector2(-1222, 284)
+
+[node name="RopeBridgeLong2" parent="Props" unique_id=362538215 instance=ExtResource("prop_rope_bridge_long")]
+position = Vector2(-1064, 284)
+
+[node name="WoodPlatformMedium" parent="Props" unique_id=1744837214 instance=ExtResource("prop_wood_platform_medium")]
+position = Vector2(1200, 50)
+
+[node name="BookshelfWide" parent="Props" unique_id=434398652 instance=ExtResource("prop_bookshelf_wide")]
+position = Vector2(-1518.0338, 436)
+scale = Vector2(0.9322035, 0.7595908)
+
+[node name="BookshelfWide2" parent="Props" unique_id=1994614316 instance=ExtResource("prop_bookshelf_wide")]
+position = Vector2(-1371.9999, 438.00003)
+scale = Vector2(0.9435036, 0.75703335)
+
+[node name="Easel" parent="Props" unique_id=2138587275 instance=ExtResource("prop_easel")]
+position = Vector2(-1331, 436)
+
+[node name="Crate" parent="Props" unique_id=1524610949 instance=ExtResource("prop_crate")]
+position = Vector2(-1016, 435)
+
+[node name="Crate2" parent="Props" unique_id=1346953454 instance=ExtResource("prop_crate")]
+position = Vector2(-1016, 372)
+
+[node name="Crate3" parent="Props" unique_id=1294724691 instance=ExtResource("prop_crate")]
+position = Vector2(-945, 435)
+
+[node name="BooksStack" parent="Props" unique_id=2044641869 instance=ExtResource("prop_books_stack")]
+position = Vector2(-905, 435)
+
+[node name="BooksStack2" parent="Props" unique_id=557585441 instance=ExtResource("prop_books_stack")]
+position = Vector2(-941, 370)
+
+[node name="CandleBooks" parent="Props" unique_id=84356580 instance=ExtResource("prop_candle_books")]
+position = Vector2(-742, 435)
+
+[node name="Bust" parent="Props" unique_id=1574200680 instance=ExtResource("prop_bust")]
+position = Vector2(-680, 432)
+
+[node name="Vase" parent="Props" unique_id=216219385 instance=ExtResource("prop_vase")]
+position = Vector2(330, 429)
+
+[node name="PaintBucket" parent="Props" unique_id=1534973715 instance=ExtResource("prop_paint_bucket")]
+position = Vector2(560, 429)
+
+[node name="ArtCrate" parent="Props" unique_id=1808761184 instance=ExtResource("prop_art_crate")]
+position = Vector2(830, 429)
+
+[node name="BrokenVase" parent="Props" unique_id=88057495 instance=ExtResource("prop_broken_vase")]
+position = Vector2(1500, 429)
+
+[node name="Chest" parent="Props" unique_id=284277195 instance=ExtResource("prop_chest")]
+position = Vector2(1640, 429)
+
+[node name="CoveredTable" parent="Props" unique_id=1381683882 instance=ExtResource("prop_covered_table")]
+position = Vector2(1900, 429)
+
+[node name="Candle" parent="Props" unique_id=1879202163 instance=ExtResource("prop_candle")]
+position = Vector2(2040, 429)
+
+[node name="Banner" parent="Props" unique_id=68016949 instance=ExtResource("prop_banner")]
+position = Vector2(-1050, -483)
+
+[node name="Chandelier" parent="Props" unique_id=1424179006 instance=ExtResource("prop_chandelier")]
+position = Vector2(650, -483)
+
+[node name="TornCurtain" parent="Props" unique_id=1413255438 instance=ExtResource("prop_torn_curtain")]
+position = Vector2(1700, -483)
+
+[node name="BookshelfSmall" type="Sprite2D" parent="Props" unique_id=706850599]
+position = Vector2(-1178, 368.5)
+scale = Vector2(1, 0.99444443)
+texture = ExtResource("44_4c0eb")
+
+[node name="BookshelfTall" type="Sprite2D" parent="Props" unique_id=98176743]
+position = Vector2(-799, 223)
+texture = ExtResource("45_b0288")
+
+[node name="BooksBottles" type="Sprite2D" parent="." unique_id=363552731]
+position = Vector2(-544, 342)
+texture = ExtResource("46_rhhx1")
+
+[node name="BooksCloth" type="Sprite2D" parent="." unique_id=1219063392]
+position = Vector2(-654, 393)
+texture = ExtResource("47_y1lt5")
+
+[node name="BooksLeaning" type="Sprite2D" parent="." unique_id=1898101421]
+position = Vector2(-518, 381)
+texture = ExtResource("48_bvadj")
+
+[node name="BooksLow" type="Sprite2D" parent="." unique_id=943545483]
+position = Vector2(-647, 329)
+texture = ExtResource("49_fqnnl")
+
+[node name="Candle" type="Sprite2D" parent="." unique_id=890950464]
+position = Vector2(-1179, 257)
+texture = ExtResource("50_vnefi")
+
+[node name="Ladder" type="Sprite2D" parent="." unique_id=1358041930]
+position = Vector2(-88.25, 255.75)
+scale = Vector2(1.0428572, 1.3780488)
+texture = ExtResource("52_bvadj")
+
+[node name="WoodPillarMid" type="Sprite2D" parent="." unique_id=156026379]
+position = Vector2(-285, 212)
+scale = Vector2(1.0714285, 1.6498258)
+texture = ExtResource("53_fqnnl")
+
+[node name="RopeBridgeLong" type="Sprite2D" parent="." unique_id=1681595861]
+position = Vector2(-524.75, 44)
+scale = Vector2(1.3800579, 1)
+texture = ExtResource("54_vnefi")

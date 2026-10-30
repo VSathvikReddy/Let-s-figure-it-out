@@ -1,18 +1,21 @@
 extends Node2D
 ## Jetpack (skill tree: Special branch) - the team's jetpack (player/player.gd),
-## same controls, same numbers, same look:
+## same controls and numbers:
 ##   hold W / Up to thrust up, A / D push sideways; not thrusting = heavy
 ##   gravity; drag slows every direction; speeds are capped; the body tilts
-##   up to 12 degrees with A / D; two thrusters on the body and a fire trail.
+##   up to 12 degrees with A / D; fire comes out of both boots.
+## Its FUEL IS COINS: every second of thrust burns `coins_per_second` coins.
+## No coins, no flying.
 ## While you are in the air after thrusting, the player moves with these
 ## physics (fly()); on the ground it is the normal player again.
-## On top of the team's version: a fuel tank (refills on the ground) and the
-## skill-tree upgrades - jet_thrust (up thrust), jet_control (sideways thrust
-## and speed), jet_stability (climb speed), jet_fuel, jet_refuel, jet_hover
-## (less fuel when only going up), jet_boost (Shift while flying).
+## Upgrades: jet_thrust (up thrust), jet_control (sideways thrust and speed),
+## jet_stability (climb speed), jet_fuel (burns fewer coins), jet_refuel
+## (chance a burned coin is not used), jet_hover (fewer coins when only going
+## up), jet_boost (Shift while flying).
 
-const THRUSTER_TEX := preload("res://sinan/assets/jetpack/thruster.png")
 const PARTICLE_TEX := preload("res://sinan/assets/jetpack/flame_particle.png")
+## Bottom of the boot in a leg's own space (the leg art ends ~44 units down).
+const BOOT_SOLE := Vector2(-4, 44)
 
 @export_group("Thruster Forces")
 @export var horizontal_thrust: float = 600.0
@@ -29,24 +32,19 @@ const PARTICLE_TEX := preload("res://sinan/assets/jetpack/flame_particle.png")
 @export var max_tilt_angle_deg: float = 12.0
 @export var tilt_speed: float = 8.0
 
-@export_group("Fuel")
-## Seconds of thrust on a full tank (0 = endless, like the team's version).
-@export var fuel_seconds := 3.0
-## Tanks refilled per second on the ground.
-@export var refuel_rate := 0.8
+@export_group("Fuel = Coins")
+## Coins burned per second of thrust (0 = free flying, like the team's version).
+@export var coins_per_second := 3.0
 
 @export_group("Afterburner")
 @export var boost_speed := 450.0
 
 var flying := false      # the jetpack physics are moving the player (thrusting, or falling after it)
 var thrusting := false
-var fuel := 1.0
+var _burn := 0.0          # part of a coin burned so far
 var _boosts := 0
 var _player: CharacterBody2D
-var _left_jet: Sprite2D
-var _right_jet: Sprite2D
-var _left_fire: GPUParticles2D
-var _right_fire: GPUParticles2D
+var _fires: Array[GPUParticles2D] = []
 
 
 func _ready() -> void:
@@ -60,7 +58,7 @@ func unlocked() -> bool:
 
 
 func refill() -> void:
-	fuel = 1.0
+	_burn = 0.0
 	_boosts = int(Progress.stat(&"jet_boost"))
 	flying = false
 	thrusting = false
@@ -75,21 +73,32 @@ func update(delta: float, on_floor: bool, dir_x: float) -> bool:
 		_show(false)
 		return false
 	if on_floor:
-		fuel = minf(1.0, fuel + refuel_rate * (1.0 + Progress.stat(&"jet_refuel")) * delta)
 		_boosts = int(Progress.stat(&"jet_boost"))
-	thrusting = Input.is_action_pressed("jet") and (fuel > 0.0 or fuel_seconds <= 0.0)
-	if thrusting and fuel_seconds > 0.0:
-		var drain := 1.0 / (fuel_seconds * (1.0 + Progress.stat(&"jet_fuel")))
-		if dir_x == 0.0:
-			drain *= maxf(0.2, 1.0 - Progress.stat(&"jet_hover"))
-		fuel = maxf(0.0, fuel - drain * delta)
+	thrusting = Input.is_action_pressed("jet") and (Progress.coins() > 0 or coins_per_second <= 0.0)
+	if thrusting:
+		_burn_coins(delta, dir_x)
 	if thrusting:
 		flying = true
 	elif on_floor:
 		flying = false
 	_show(thrusting)
-	queue_redraw()
 	return flying
+
+
+## Thrusting burns coins: fewer with Fuel Efficiency and when only hovering up,
+## and Thrifty Thrusters may give a burned coin back.
+func _burn_coins(delta: float, dir_x: float) -> void:
+	var rate := coins_per_second / (1.0 + Progress.stat(&"jet_fuel"))
+	if dir_x == 0.0:
+		rate *= maxf(0.2, 1.0 - Progress.stat(&"jet_hover"))
+	_burn += rate * delta
+	var spent := 0
+	while _burn >= 1.0:
+		_burn -= 1.0
+		if randf() >= minf(Progress.stat(&"jet_refuel"), 0.8):
+			spent += 1
+	if spent > 0:
+		Progress.burn_coins(spent, _player)
 
 
 ## The team's jetpack physics: the player's velocity after one step.
@@ -128,40 +137,20 @@ func try_boost(dir_x: float) -> bool:
 
 
 func _show(on: bool) -> void:
-	if _left_jet == null:
-		return
-	_left_jet.visible = on
-	_right_jet.visible = on
-	_left_fire.emitting = on
-	_right_fire.emitting = on
+	for f in _fires:
+		f.emitting = on
 
 
-## The team's two thrusters (player.tscn: leftthrust / rightthrust) and their
-## fire trails (leftparti / rightparti), on the player's body so they tilt and
-## flip with it. Their body is 64 px; this rig is 128 units, so positions and
-## sizes are doubled from their sprite space.
+## The team's fire trail (player.tscn: leftparti / rightparti), coming out of
+## the sole of each boot. It hangs on the leg, so it swings with the legs and
+## tilts and flips with the body.
 func _build_visuals() -> void:
-	var body: Node2D = _player.get_node_or_null("Visual/Body")
-	if body == null:
-		return
-	_left_jet = _thruster(body, Vector2(-14, 26), 2.864759, Vector2(0.316, 0.244))
-	_right_jet = _thruster(body, Vector2(14, 26), 2.87962, Vector2(0.306, 0.244))
 	var mat := _fire_material()
-	_left_fire = _fire(body, Vector2(-15, 64), mat)
-	_right_fire = _fire(body, Vector2(15, 62), mat)
+	for leg in ["Visual/Body/Rig/BackLeg", "Visual/Body/Rig/FrontLeg"]:
+		var node: Node2D = _player.get_node_or_null(leg)
+		if node:
+			_fires.append(_fire(node, BOOT_SOLE, mat))
 	_show(false)
-
-
-func _thruster(body: Node2D, at: Vector2, rot: float, scl: Vector2) -> Sprite2D:
-	var s := Sprite2D.new()
-	s.texture = THRUSTER_TEX
-	s.show_behind_parent = true
-	s.z_index = -1
-	s.position = at
-	s.rotation = rot
-	s.scale = scl
-	body.add_child(s)
-	return s
 
 
 func _fire(body: Node2D, at: Vector2, mat: ParticleProcessMaterial) -> GPUParticles2D:
@@ -204,12 +193,3 @@ func _fire_material() -> ParticleProcessMaterial:
 	m.scale_curve = scale_tex
 	m.color_ramp = ramp
 	return m
-
-
-## Fuel gauge above the head (only while it is not full).
-func _draw() -> void:
-	if not unlocked() or fuel_seconds <= 0.0 or fuel >= 0.999:
-		return
-	var r := Rect2(-28, -96, 56, 6)
-	draw_rect(r.grow(1.5), Color(0, 0, 0, 0.6))
-	draw_rect(Rect2(r.position, Vector2(r.size.x * fuel, r.size.y)), Color(1.0, 0.75, 0.3) if fuel > 0.25 else Color(1.0, 0.35, 0.25))

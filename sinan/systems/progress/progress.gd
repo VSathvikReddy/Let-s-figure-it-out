@@ -60,6 +60,15 @@ static func coin_multiplier() -> float:
 	return 1.0 + stat(&"coin_value") + milestone_bonus()
 
 
+## Burn coins (the jetpack's fuel): up to `amount`, never below 0. Saved with
+## the next save_if_dirty(), not on every coin.
+static func burn_coins(amount: int, tree_node: Node = null) -> void:
+	_ensure()
+	_coins = maxi(0, _coins - amount)
+	_dirty = true
+	_notify(tree_node)
+
+
 ## Pay coins (saves and notifies). False if there are not enough.
 static func spend(amount: int, tree_node: Node = null) -> bool:
 	_ensure()

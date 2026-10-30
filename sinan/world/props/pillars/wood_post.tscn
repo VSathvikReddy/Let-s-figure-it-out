@@ -1,0 +1,11 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://sinan/world/props/pillar.gd" id="1_s"]
+[ext_resource type="Texture2D" path="res://sinan/assets/props/pillars/wood_post.png" id="2_t"]
+
+[node name="WoodPost" type="Node2D"]
+scale = Vector2(0.55, 0.55)
+script = ExtResource("1_s")
+texture = ExtResource("2_t")
+top = 0.056
+top_width = 0.74

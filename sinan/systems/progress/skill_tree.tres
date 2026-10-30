@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="SkillTreeData" format=3 uid="uid://bem12vigaix5d"]
+[gd_resource type="Resource" script_class="SkillTreeData" format=3 uid="uid://bcgtcihhafdf7"]
 
 [ext_resource type="Script" uid="uid://bm5234c1xwpmq" path="res://sinan/systems/progress/skill_tree_data.gd" id="1_tree"]
 [ext_resource type="Script" uid="uid://ddl4nxu322ar5" path="res://sinan/systems/progress/upgrade_def.gd" id="2_up"]
-[ext_resource type="PackedScene" path="res://sinan/weapons/wand.tscn" id="3_wand"]
+[ext_resource type="PackedScene" uid="uid://swhf2pj852ot" path="res://sinan/weapons/wand.tscn" id="3_wand"]
 [ext_resource type="PackedScene" uid="uid://b02v125faoh8s" path="res://sinan/weapons/pistol.tscn" id="4_pistol"]
 [ext_resource type="PackedScene" uid="uid://hlgmx2oih8bi" path="res://sinan/weapons/orb_staff.tscn" id="5_orb"]
 [ext_resource type="PackedScene" uid="uid://dfk2exm0s0fs" path="res://sinan/weapons/rocket_launcher.tscn" id="6_rocket"]
@@ -392,7 +392,7 @@ id = &"jetpack"
 branch = &"Special"
 title = "Jetpack"
 icon = &"jetpack"
-description = "Hold W / Up to fly; A / D steer. Fuel refills on the ground."
+description = "Hold W / Up to fly; A / D steer. Its fuel is your coins: it burns 3 coins per second of thrust."
 max_level = 1
 currency = 1
 base_cost = 33
@@ -405,9 +405,9 @@ requires_level = 3
 script = ExtResource("2_up")
 id = &"fuel_tank"
 branch = &"Special"
-title = "Fuel Tank"
+title = "Fuel Efficiency"
 icon = &"fuel"
-description = "+25% jetpack fuel per level."
+description = "Flying burns 25% fewer coins per level."
 max_level = 6
 currency = 1
 base_cost = 8
@@ -420,14 +420,14 @@ requires = &"jetpack"
 script = ExtResource("2_up")
 id = &"quick_refuel"
 branch = &"Special"
-title = "Quick Refuel"
+title = "Thrifty Thrusters"
 icon = &"gauge"
-description = "Fuel refills 30% faster per level."
+description = "+15% chance per level that a burned coin is not used up."
 currency = 1
 base_cost = 8
 cost_growth = 1.5
 stat = &"jet_refuel"
-per_level = 0.3
+per_level = 0.15
 requires = &"fuel_tank"
 
 [sub_resource type="Resource" id="U_hover"]
@@ -436,7 +436,7 @@ id = &"hover"
 branch = &"Special"
 title = "Hover"
 icon = &"fuel"
-description = "Hovering (no direction held) uses 20% less fuel per level."
+description = "Flying straight up (no A / D) burns 20% fewer coins per level."
 max_level = 4
 currency = 1
 base_cost = 15
@@ -465,7 +465,7 @@ script = ExtResource("2_up")
 id = &"afterburner"
 branch = &"Special"
 title = "Afterburner"
-description = "Press Shift while flying for a jet boost (+1 boost per refuel per level)."
+description = "Press Shift while flying for a jet boost (+1 boost per landing per level)."
 max_level = 3
 currency = 1
 base_cost = 33

@@ -1,0 +1,14 @@
+[gd_scene format=3]
+
+[ext_resource type="Texture2D" path="res://sinan/assets/props/decor/easel.png" id="1_t"]
+[ext_resource type="Script" path="res://sinan/world/props/prop.gd" id="2_s"]
+
+[node name="Easel" type="Sprite2D"]
+z_index = 1
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_t")
+centered = false
+offset = Vector2(-98, -205)
+script = ExtResource("2_s")
+top = 0.156
+top_width = 0.43

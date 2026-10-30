@@ -61,10 +61,10 @@ extends Resource
 @export var forger_away_curve: Curve
 ## Portals he opens per visit, and how many may be open at once.
 @export var portals_per_visit_start := 1
-@export var portals_per_visit_end := 4
+@export var portals_per_visit_end := 2
 @export var portals_per_visit_curve: Curve
 @export var max_portals_start := 1
-@export var max_portals_end := 5
+@export var max_portals_end := 2
 @export var max_portals_curve: Curve
 
 @export_group("Portals")
