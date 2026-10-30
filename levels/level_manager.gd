@@ -33,6 +33,10 @@ var levels: Array[Dictionary] = [
 
 const LEVEL_SELECT_PATH: String = "res://levels/LevelSelect.tscn"
 const GEMS_TO_WIN: int = 4
+const CUSTOM_LEVEL_SCENE_PATH: String = "res://levels/custom/CustomLevel.tscn"
+
+# Folder (inside user://) of the generated custom level. The custom level's index is levels.size().
+var custom_folder: String = ""
 
 var current_level_index: int = 0
 var current_gems: int = 0
@@ -115,12 +119,16 @@ func _on_player_won() -> void:
 # --- LEVEL LOADING & FADE TRANSITIONS ---
 
 func load_level(level_index: int) -> void:
-	if level_index < 0 or level_index >= levels.size():
+	var target_path: String
+	if level_index == levels.size() and custom_folder != "":
+		target_path = CUSTOM_LEVEL_SCENE_PATH
+	elif level_index < 0 or level_index >= levels.size():
 		push_warning("[LevelManager] Invalid level index: " + str(level_index))
 		return
+	else:
+		target_path = levels[level_index]["scene_path"]
 		
 	current_level_index = level_index
-	var target_path: String = levels[current_level_index]["scene_path"]
 	_transition_to_scene(target_path, true)
 
 

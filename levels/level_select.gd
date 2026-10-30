@@ -10,6 +10,7 @@ extends Control
 
 var selected_index: int = 0
 var card_nodes: Array[PanelContainer] = []
+var custom_card: CustomLevelCard   # the extra 'create your own' card at the end
 
 # Swipe tracking variables
 var is_dragging: bool = false
@@ -23,6 +24,7 @@ func _ready() -> void:
 	selected_index = LevelManager.current_level_index
 	
 	_create_painting_cards()
+	_create_custom_card()
 
 
 # Dynamically builds a placeholder Painting Card for each entry in LevelManager.levels
@@ -89,6 +91,15 @@ func _create_painting_cards() -> void:
 		card_nodes.append(card)
 
 
+# Adds the 5th card: pick a PNG, choose frames/levels, generate. Its index == levels.size().
+func _create_custom_card() -> void:
+	var index: int = LevelManager.levels.size()
+	custom_card = CustomLevelCard.new(card_size)
+	custom_card.play_requested.connect(func() -> void: _on_card_chosen(index))
+	cards_pivot.add_child(custom_card)
+	card_nodes.append(custom_card)
+
+
 func _process(delta: float) -> void:
 	var screen_center: Vector2 = get_viewport_rect().size / 2.0
 	
@@ -114,7 +125,7 @@ func _process(delta: float) -> void:
 
 # --- SWIPE & KEYBOARD INPUT HANDLING ---
 
-func _input(event: InputEvent) -> void:
+func _unhandled_input(event: InputEvent) -> void:
 	# 1. Mouse / Touch Drag Start & End
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
@@ -156,6 +167,13 @@ func _on_card_chosen(card_index: int) -> void:
 	# If the player clicks a side card, slide it to the center first
 	if card_index != selected_index:
 		_change_selection(card_index)
+	elif card_index == LevelManager.levels.size():
+		# Custom card: play the generated level
+		LevelManager.custom_folder = CustomLevelCard.OUT_FOLDER
+		LevelManager.load_level(card_index)
+	elif custom_card != null and custom_card.is_busy():
+		# Don't leave the menu while the generator thread is running
+		custom_card.show_busy_hint()
 	else:
 		# If it's already centered, fade out and load that painting level!
 		LevelManager.load_level(card_index)
