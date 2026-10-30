@@ -7,12 +7,14 @@ enum State { WANDER, CHASE, IGNITED }
 @export var explosion_damage: int = 3
 @export var environment_damage:int = -3
 @export var fuse_time: float = 1.5 # Time in seconds before exploding
+@export var explode_sound: AudioStream
 @export var death_sound: AudioStream
 
 var state: State = State.WANDER
 var target_player: Node2D = null
 var wander_direction: Vector2 = Vector2.ZERO
 var trail: CPUParticles2D
+var health = 3
 
 @onready var detection_zone: Area2D = $DetectionZone
 @onready var trigger_zone: Area2D = $TriggerZone
@@ -106,9 +108,9 @@ func _explode() -> void:
 	if PaintCanvas.can_paint():
 		PaintCanvas.paint(explosion_zone, environment_damage)
 	_spawn_explosion()
-	if death_sound:
+	if explode_sound:
 		var sfx_player = AudioStreamPlayer2D.new() #New Node
-		sfx_player.stream = death_sound #Assign Sound
+		sfx_player.stream = explode_sound #Assign Sound
 		sfx_player.global_position = global_position #set pos
 		get_tree().current_scene.add_child(sfx_player) #make it the sibling
 		sfx_player.play() #play
@@ -168,3 +170,16 @@ func _fade(c: Color) -> Gradient:
 	g.set_color(0, c)
 	g.set_color(1, Color(c.r, c.g, c.b, 0.0))
 	return g
+
+func take_damage(damage:int) ->void:
+	if health > 1:
+		health -= damage
+	else:
+		if death_sound:
+			var sfx_player = AudioStreamPlayer2D.new() #New Node
+			sfx_player.stream = death_sound #Assign Sound
+			sfx_player.global_position = global_position #set pos
+			get_tree().current_scene.add_child(sfx_player) #make it the sibling
+			sfx_player.play() #play
+			sfx_player.finished.connect(sfx_player.queue_free) #let it play and then kill it
+		queue_free()

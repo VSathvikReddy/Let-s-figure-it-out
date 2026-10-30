@@ -31,6 +31,7 @@ const CHASE_SHARPNESS := 12.0
 @onready var poly: CollisionPolygon2D = $HurtBox/CollisionPolygon2D
 @onready var brush: Node2D = $Brush
 @onready var collision_polygon_2d: CollisionPolygon2D = $HurtBox/CollisionPolygon2D
+@onready var sword_sound: AudioStreamPlayer2D = $HitSound
 
 enum State { IDLE, CHARGING, RELEASING }
 var state := State.IDLE
@@ -87,6 +88,7 @@ func _release() -> void:
 	# Hit area = the same sector that is drawn on screen.
 	poly.polygon = _sector_points(radupto, shock_start_angle, sweep)
 	_apply_damage()
+	sword_sound.play()
 
 	var tw := create_tween()
 	tw.parallel().tween_property(self, "wave_t", 1.0, shockwave_time).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)

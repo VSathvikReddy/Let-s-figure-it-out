@@ -2,7 +2,7 @@ extends StaticBody2D
 
 @export_group("Turret Settings")
 @export var bullet_scene: PackedScene = preload("res://enemies/cannon/bullet.tscn")
-
+@export var death_sound: AudioStream
 
 @onready var barrel_pivot: Node2D = $BarrelPivot
 @onready var barrel_sprite: AnimatedSprite2D = $BarrelPivot/BarrelSprite
@@ -76,4 +76,11 @@ func _play_recoil_effect() -> void:
 
 func take_damage(damage:int) ->void:
 	barrel_sprite.modulate = Color(5.0, 5.0, 5.0, 1.0) # Flash bright white
+	if death_sound:
+		var sfx_player = AudioStreamPlayer2D.new() #New Node
+		sfx_player.stream = death_sound #Assign Sound
+		sfx_player.global_position = global_position #set pos
+		get_tree().current_scene.add_child(sfx_player) #make it the sibling
+		sfx_player.play() #play
+		sfx_player.finished.connect(sfx_player.queue_free) #let it play and then kill it
 	queue_free()

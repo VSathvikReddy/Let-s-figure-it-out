@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://85aj48eo3b5i" path="res://enemies/bomber/heavy_bomber.gd" id="1_jb7bb"]
 [ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="2_yvlhf"]
 [ext_resource type="AudioStream" uid="uid://b1sndo62hulpu" path="res://enemies/bomber/explosion.wav" id="3_3lkb1"]
+[ext_resource type="AudioStream" uid="uid://clxcrdal25ayn" path="res://enemies/cannon/death.wav" id="3_xsuw6"]
 [ext_resource type="AudioStream" uid="uid://bi80r6avjv2oy" path="res://enemies/bomber/ignite.wav" id="4_2u7br"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_lisrb"]
@@ -19,7 +20,8 @@ radius = 142.00352
 
 [node name="HeavyBomber" type="CharacterBody2D" unique_id=383231011 groups=["enemy"]]
 script = ExtResource("1_jb7bb")
-death_sound = ExtResource("3_3lkb1")
+explode_sound = ExtResource("3_3lkb1")
+death_sound = ExtResource("3_xsuw6")
 
 [node name="TriggerZone" type="Area2D" parent="." unique_id=1997828865]
 
