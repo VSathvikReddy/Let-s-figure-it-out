@@ -14,6 +14,7 @@ extends Control
 @onready var bg_image_b: TextureRect = $BgImageB
 @onready var slide_timer: Timer = $SlideTimer
 
+@onready var menu_card: PanelContainer = $MenuCard
 @onready var start_button: Button = $MenuCard/MarginContainer/VBoxContainer/StartButton
 @onready var settings_button: Button = $MenuCard/MarginContainer/VBoxContainer/SettingsButton
 @onready var credits_button: Button = $MenuCard/MarginContainer/VBoxContainer/CreditsButton
@@ -89,6 +90,7 @@ func _on_credits_pressed() -> void:
 
 
 func _on_settings_pressed() -> void:
+	menu_card.visible = false
 	settings_popup.visible = true
 	settings_popup.modulate.a = 0.0
 	var tween: Tween = create_tween()
@@ -96,6 +98,7 @@ func _on_settings_pressed() -> void:
 
 
 func _on_close_settings_pressed() -> void:
+	menu_card.visible = true
 	var tween: Tween = create_tween()
 	tween.tween_property(settings_popup, "modulate:a", 0.0, 0.2)
 	await tween.finished
