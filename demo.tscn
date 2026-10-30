@@ -12,6 +12,7 @@
 [ext_resource type="Texture2D" uid="uid://bl3f0j87qi7n8" path="res://canvas/assets/hill_20.png" id="10_ei6xs"]
 [ext_resource type="PackedScene" uid="uid://bnp6j87rr6nc6" path="res://player/player.tscn" id="11_1lmwf"]
 [ext_resource type="PackedScene" uid="uid://bgggmdmw3ihsv" path="res://enemies/bomber/heavy_bomber.tscn" id="12_svejp"]
+[ext_resource type="PackedScene" uid="uid://cytjvhjptoas" path="res://enemies/cannon/cannon.tscn" id="13_36gju"]
 
 [node name="Demo" type="Node2D" unique_id=1005141647]
 
@@ -66,3 +67,6 @@ offset_bottom = 861.0
 
 [node name="HeavyBomber" parent="." unique_id=383231011 instance=ExtResource("12_svejp")]
 position = Vector2(313, 151)
+
+[node name="Cannon" parent="." unique_id=1728814908 instance=ExtResource("13_36gju")]
+position = Vector2(1043, 60)

@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dakbeov108gdw" path="res://enemies/cannon/cannon.gd" id="1_55v8w"]
 [ext_resource type="Texture2D" uid="uid://dj80ivon0pfht" path="res://enemies/cannon/Steampunk Turret Firing Animation Sprite Sheet.png" id="2_55v8w"]
+[ext_resource type="AudioStream" uid="uid://ctmwi8fs7jmn6" path="res://enemies/cannon/turretshoot.wav" id="3_t547e"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_sd2ew"]
 size = Vector2(50, 50)
@@ -76,3 +77,7 @@ animation = &"Cannon_fire"
 shape = SubResource("CircleShape2D_mqcwo")
 
 [node name="FireTimer" type="Timer" parent="." unique_id=1662002771]
+
+[node name="TurretShoot" type="AudioStreamPlayer2D" parent="." unique_id=516030115]
+stream = ExtResource("3_t547e")
+volume_db = 5.0

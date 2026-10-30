@@ -9,6 +9,7 @@ extends StaticBody2D
 @onready var muzzle: Marker2D = $BarrelPivot/Muzzle
 @onready var detection_area: Area2D = $DetectionArea
 @onready var fire_timer: Timer = $FireTimer
+@onready var shoot_sound: AudioStreamPlayer2D = $TurretShoot
 
 var target_player: Node2D = null
 
@@ -52,7 +53,7 @@ func _fire_bullet() -> void:
 	get_tree().current_scene.add_child.call_deferred(bullet)
 	# Start at the muzzle, aim at where the player is right now
 	bullet.setup(muzzle.global_position, target_player.global_position)
-
+	shoot_sound.play()
 	_play_recoil_effect()
 
 
