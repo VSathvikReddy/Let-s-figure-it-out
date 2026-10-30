@@ -28,6 +28,7 @@ extends CharacterBody2D
 @onready var sprite_2d: Sprite2D = $BrushAttack/Brush/Sprite2D
 @onready var wand: Sprite2D = $Portal/Wand
 @onready var audio_thrust_start: AudioStreamPlayer2D = $AudioThrustStart
+@onready var portal_sound: AudioStreamPlayer2D = $PortalSound
 @onready var audio_thrust_loop: AudioStreamPlayer2D = $AudioThrustLoop
 
 var gems_collected:int=0:
@@ -57,7 +58,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		sprite_2d.visible = false
 		wand.visible = true
 		portal.activate()
+		portal_sound.play()
 	elif event.is_action_pressed("open_veil") and wand.visible == true:
+		portal_sound.play()
 		await portal.deactivate()
 		sprite_2d.visible = true
 		wand.visible = false
