@@ -3,12 +3,21 @@ extends Control
 ## plus a last card to create your own painting (custom_level_card.gd).
 ##   - A / D, the arrow keys, or swiping with the mouse: move between cards
 ##   - "Enter Painting" on the centre card: play that level
+##   - Locked paintings are dark with a padlock; finishing the painting before
+##     them opens them. Right after a painting was unlocked, the gallery slides
+##     to it and plays the unlock animation.
+##   - Debug buttons (bottom right): "Unlock all (debug)" opens every painting,
+##     "Lock paintings again" resets the progress.
 ##
 ## Copied from the team's levels/level_select.gd. Changes: the levels come from
 ## compined/levels/levels.gd, and each card shows the real painting.
 
 const Levels := preload("res://compined/levels/levels.gd")
 const CustomCard := preload("res://compined/levels/custom/custom_level_card.gd")
+const LockIcon := preload("res://compined/levels/lock_icon.gd")
+
+## Darkness of a locked painting (1 = normal).
+const LOCKED_BRIGHTNESS := 0.25
 
 # Card layout (easy to tweak in the Inspector)
 @export var card_size := Vector2(320, 400)
@@ -21,6 +30,8 @@ const CustomCard := preload("res://compined/levels/custom/custom_level_card.gd")
 var selected_index := 0
 var cards: Array[PanelContainer] = []
 var custom_card: PanelContainer          # the "create your own" card at the end
+## Parts of each painting card that change when it is locked or unlocked.
+var card_parts: Array[Dictionary] = []
 
 # swiping
 var is_dragging := false
@@ -33,6 +44,9 @@ func _ready() -> void:
 	selected_index = clampi(Levels.current_index, 0, Levels.LIST.size())
 	_create_painting_cards()
 	_create_custom_card()
+	_create_debug_buttons()
+	if Levels.just_unlocked >= 0:
+		_show_new_unlock(Levels.just_unlocked)
 
 
 func _exit_tree() -> void:
@@ -96,8 +110,76 @@ func _create_painting_cards() -> void:
 		enter.pressed.connect(_on_card_chosen.bind(i))
 		rows.add_child(enter)
 
+		var lock := LockIcon.new()
+		frame.add_child(lock)
+
 		cards_pivot.add_child(card)
 		cards.append(card)
+		card_parts.append({"picture": picture, "subtitle": subtitle, "enter": enter, "lock": lock})
+		# a painting that is about to be shown opening starts out locked too
+		_set_locked(i, not Levels.is_unlocked(i) or i == Levels.just_unlocked)
+
+
+## Locked: dark picture, padlock, a hint instead of the description, no Enter.
+func _set_locked(index: int, locked: bool) -> void:
+	var parts := card_parts[index]
+	parts["picture"].modulate = Color(LOCKED_BRIGHTNESS, LOCKED_BRIGHTNESS, LOCKED_BRIGHTNESS) if locked else Color.WHITE
+	parts["lock"].visible = locked
+	parts["enter"].disabled = locked
+	parts["enter"].text = "Locked" if locked else "Enter Painting"
+	if locked and index > 0:
+		parts["subtitle"].text = "Finish %s to unlock." % Levels.LIST[index - 1]["title"]
+	else:
+		parts["subtitle"].text = Levels.LIST[index]["subtitle"]
+
+
+## Right after a win: start on the painting that was finished, slide to the
+## new one, open its lock and light it up.
+func _show_new_unlock(index: int) -> void:
+	Levels.just_unlocked = -1
+	selected_index = maxi(index - 1, 0)
+	await get_tree().create_timer(0.7).timeout
+	_select(index)
+	await get_tree().create_timer(0.5).timeout
+	var parts := card_parts[index]
+	await parts["lock"].play_unlock()
+	_set_locked(index, false)
+	parts["lock"].visible = false
+	# the painting brightens from dark and the card gives a little bounce
+	parts["picture"].modulate = Color(LOCKED_BRIGHTNESS, LOCKED_BRIGHTNESS, LOCKED_BRIGHTNESS)
+	var light_up := create_tween()
+	light_up.tween_property(parts["picture"], "modulate", Color(1.4, 1.3, 1.1), 0.35)
+	light_up.tween_property(parts["picture"], "modulate", Color.WHITE, 0.4)
+	var card := cards[index]
+	card.scale = Vector2.ONE * 1.12
+
+
+## Two small buttons in the bottom right corner, for testing:
+##   Unlock all (debug)    - every painting open
+##   Lock paintings again  - only the first painting open
+func _create_debug_buttons() -> void:
+	var row := HBoxContainer.new()
+	row.add_theme_constant_override("separation", 8)
+	row.modulate = Color(1, 1, 1, 0.6)
+	row.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT, Control.PRESET_MODE_MINSIZE, 16)
+	row.grow_horizontal = Control.GROW_DIRECTION_BEGIN
+	row.grow_vertical = Control.GROW_DIRECTION_BEGIN
+	add_child(row)
+
+	var unlock := Button.new()
+	unlock.text = "Unlock all (debug)"
+	unlock.pressed.connect(func() -> void:
+		Levels.unlock_all()
+		get_tree().reload_current_scene())
+	row.add_child(unlock)
+
+	var lock := Button.new()
+	lock.text = "Lock paintings again"
+	lock.pressed.connect(func() -> void:
+		Levels.lock_all_again()
+		Levels.current_index = 0
+		get_tree().reload_current_scene())
+	row.add_child(lock)
 
 
 ## The last card: pick a PNG, choose frames / levels, Generate, then play it.
@@ -128,7 +210,7 @@ func _process(delta: float) -> void:
 
 # --- swiping and keys --------------------------------------------------------
 
-func _unhandled_input(event: InputEvent) -> void:
+func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			is_dragging = true
@@ -160,6 +242,8 @@ func _select(index: int) -> void:
 func _on_card_chosen(index: int) -> void:
 	if index != selected_index:
 		_select(index)                 # a side card: bring it to the centre first
+	elif not Levels.is_unlocked(index):
+		return                         # locked: the button is disabled anyway
 	elif custom_card.is_busy():
 		custom_card.show_busy_hint()   # don't leave while pictures are being made
 	else:

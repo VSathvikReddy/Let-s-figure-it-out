@@ -11,11 +11,12 @@ const Levels := preload("res://compined/levels/levels.gd")
 
 var won := false
 
-@onready var gem_counter: Label = $GemCounter
+@onready var gem_counter: HBoxContainer = $GemCounter   # gem_slots.gd: one gem shadow per gem
 @onready var force_win_button: Button = $ForceWinButton
 @onready var win_card: Control = $WinCard
 @onready var title: Label = $WinCard/Card/Margin/Rows/Title
 @onready var summary: Label = $WinCard/Card/Margin/Rows/Summary
+@onready var unlocked_label: Label = $WinCard/Card/Margin/Rows/Unlocked
 @onready var play_again_button: Button = $WinCard/Card/Margin/Rows/PlayAgainButton
 @onready var next_button: Button = $WinCard/Card/Margin/Rows/NextButton
 @onready var paintings_button: Button = $WinCard/Card/Margin/Rows/PaintingsButton
@@ -52,14 +53,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		Levels.go_to_level_select(get_tree())
 
 
-func _on_gem_collected(total: int) -> void:
+func _on_gem_collected(total: int, picture: Texture2D = null) -> void:
+	gem_counter.light_up(picture)
 	_show_gems(total)
 	if total >= gems_to_win:
 		_win()
 
 
 func _show_gems(count: int) -> void:
-	gem_counter.text = "Gems  %d / %d" % [count, gems_to_win]
+	if count == 0:
+		gem_counter.setup(gems_to_win)
 
 
 func _win() -> void:
@@ -74,6 +77,13 @@ func _win() -> void:
 
 	title.text = "Painting Restored!"
 	summary.text = "You found all %d gems!" % gems_to_win
+	# finishing this painting opens the next one
+	var opened := Levels.finish_level(Levels.current_index)
+	unlocked_label.visible = opened
+	if opened:
+		unlocked_label.text = "New painting unlocked:
+%s" % Levels.LIST[Levels.just_unlocked]["title"]
+		_celebrate_unlock()
 	next_button.visible = true
 	next_button.disabled = not Levels.has_next_level()
 	next_button.text = "Next Painting" if Levels.has_next_level() else "All Paintings Clear!"
@@ -91,8 +101,21 @@ func _lose(heading: String, reason: String) -> void:
 		player.process_mode = Node.PROCESS_MODE_DISABLED
 	title.text = heading
 	summary.text = reason
+	unlocked_label.visible = false
 	next_button.visible = false
 	_show_card()
+
+
+## The "unlocked" line pops in a moment after the card and keeps glowing.
+func _celebrate_unlock() -> void:
+	unlocked_label.pivot_offset = unlocked_label.size / 2.0
+	unlocked_label.scale = Vector2.ZERO
+	var pop := create_tween()
+	pop.tween_interval(0.5)
+	pop.tween_property(unlocked_label, "scale", Vector2.ONE, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	var glow := create_tween().set_loops()
+	glow.tween_property(unlocked_label, "modulate", Color(1.4, 1.25, 0.8), 0.6)
+	glow.tween_property(unlocked_label, "modulate", Color.WHITE, 0.6)
 
 
 func _show_card() -> void:

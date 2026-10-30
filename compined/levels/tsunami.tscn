@@ -12,6 +12,41 @@
 [ext_resource type="PackedScene" path="res://compined/enemies/bird/bird.tscn" id="enemy_bird"]
 [ext_resource type="PackedScene" path="res://compined/enemies/bat/hidden_bat.tscn" id="enemy_hidden_bat"]
 [ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="enemy_mini_bomber"]
+[ext_resource type="PackedScene" path="res://compined/enemies/spawner/enemy_spawner.tscn" id="spawner"]
+[ext_resource type="Script" path="res://compined/enemies/spawner/enemy_spawn_entry.gd" id="spawn_entry"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="spawn_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bird/bird.tscn" id="spawn_bird"]
+[ext_resource type="PackedScene" path="res://compined/enemies/bat/hidden_bat.tscn" id="spawn_hidden_bat"]
+[ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="spawn_mini_bomber"]
+[ext_resource type="PackedScene" path="res://compined/powerup/power_up_spawner.tscn" id="power_spawner"]
+
+[sub_resource type="Resource" id="Spawn_0_bat"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_bat")
+chance = 3.0
+max_alive = 4
+appears_after = 0.0
+
+[sub_resource type="Resource" id="Spawn_1_bird"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_bird")
+chance = 1.5
+max_alive = 2
+appears_after = 15.0
+
+[sub_resource type="Resource" id="Spawn_2_mini_bomber"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_mini_bomber")
+chance = 2.0
+max_alive = 3
+appears_after = 5.0
+
+[sub_resource type="Resource" id="Spawn_3_hidden_bat"]
+script = ExtResource("spawn_entry")
+enemy = ExtResource("spawn_hidden_bat")
+chance = 0.5
+max_alive = 2
+appears_after = 25.0
 
 [node name="Tsunami" type="Node2D" node_paths=PackedStringArray("painting")]
 script = ExtResource("0_level")
@@ -62,3 +97,15 @@ position = Vector2(-600, 300)
 [node name="Player" parent="." instance=ExtResource("2_player")]
 
 [node name="WinScreen" parent="." instance=ExtResource("3_win_screen")]
+
+[node name="EnemySpawner" parent="." instance=ExtResource("spawner")]
+spawn_list = Array[ExtResource("spawn_entry")]([SubResource("Spawn_0_bat"), SubResource("Spawn_1_bird"), SubResource("Spawn_2_mini_bomber"), SubResource("Spawn_3_hidden_bat")])
+min_per_wave = 1
+max_per_wave = 2
+max_alive = 7
+first_wave_after = 5.0
+min_time_between_waves = 6.0
+max_time_between_waves = 10.0
+speed_up_per_minute = 0.12
+
+[node name="PowerUpSpawner" parent="." instance=ExtResource("power_spawner")]

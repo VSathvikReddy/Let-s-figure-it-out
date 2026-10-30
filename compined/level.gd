@@ -12,6 +12,10 @@ extends Node2D
 ## away from the edges, from each other and from where the player starts.
 ## Where you place them in the editor does not matter (turn it off below to
 ## use your own spots).
+##
+## And it sets the DIFFICULTY of this painting (levels/difficulty.tres): on
+## easy paintings some of the hand-placed enemies are removed, enemies have
+## less health, spawners are calmer and hits hurt less.
 
 ## The painting the bounds are taken from.
 @export var painting: Node2D
@@ -30,6 +34,7 @@ extends Node2D
 @export var gem_distance_from_player := 350.0
 
 const BOUNDS_NAME := "CameraBounds"
+const Levels := preload("res://compined/levels/levels.gd")
 
 var bounds: ReferenceRect
 
@@ -37,8 +42,11 @@ var bounds: ReferenceRect
 func _ready() -> void:
 	_update_bounds()
 	set_process(Engine.is_editor_hint())   # _process only follows edits in the editor
-	if random_gem_spots and not Engine.is_editor_hint():
+	if Engine.is_editor_hint():
+		return
+	if random_gem_spots:
 		_scatter_gems()
+	_apply_difficulty()
 
 
 func _process(_delta: float) -> void:
@@ -107,3 +115,31 @@ func _far_enough(spot: Vector2, others: Array[Vector2], distance: float) -> bool
 		if spot.distance_to(other) < distance:
 			return false
 	return true
+
+
+## Makes this painting as hard as its place in the list (see difficulty.tres).
+func _apply_difficulty() -> void:
+	var amount := Levels.difficulty_amount(Levels.current_index)
+	var difficulty := Levels.DIFFICULTY
+
+	# 1. keep only part of the hand-placed enemies (picked at random)
+	var enemies := get_node_or_null("Enemies")
+	if enemies:
+		var placed := enemies.get_children()
+		placed.shuffle()
+		var keep := ceili(placed.size() * difficulty.placed_enemies_kept(amount))
+		for i in placed.size():
+			if i < keep:
+				Levels.scale_enemy_health(placed[i], amount)
+			else:
+				placed[i].queue_free()
+
+	# 2. spawners: how many, how often (they also scale the enemies they make)
+	for child in get_children():
+		if child.has_method("apply_difficulty"):
+			child.apply_difficulty(amount)
+
+	# 3. how much hits hurt the player
+	var player := get_node_or_null("Player")
+	if player and player.get("damage_taken_multiplier") != null:
+		player.damage_taken_multiplier = difficulty.damage_taken(amount)
