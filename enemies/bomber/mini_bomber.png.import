@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ck5sf1d5w53ih"
-path="res://.godot/imported/spritesheetBlob-Photoroom.png-b4a041c5f39b571916b119ba0d5dc729.ctex"
+uid="uid://dea6ha1y216ji"
+path="res://.godot/imported/mini_bomber.png-ba1641933c801f67c616b845b1ad793a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://spritesheetBlob-Photoroom.png"
-dest_files=["res://.godot/imported/spritesheetBlob-Photoroom.png-b4a041c5f39b571916b119ba0d5dc729.ctex"]
+source_file="res://enemies/bomber/mini_bomber.png"
+dest_files=["res://.godot/imported/mini_bomber.png-ba1641933c801f67c616b845b1ad793a.ctex"]
 
 [params]
 

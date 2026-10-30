@@ -1,13 +1,27 @@
 [gd_scene format=3 uid="uid://cq7udfoncc2uy"]
 
 [ext_resource type="Script" uid="uid://bm3ak1hyx3qbf" path="res://collectables/destructible.gd" id="1_ege0b"]
+[ext_resource type="PackedScene" uid="uid://c50bwdl722kae" path="res://enemies/bat/bat.tscn" id="2_0fg6j"]
+[ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="3_ldgfi"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4uyoc"]
 radius = 42.047592
 
 [node name="HiddenBat" type="Area2D" unique_id=1220461189 groups=["destructible"]]
 script = ExtResource("1_ege0b")
+health = 2
+spawn_scene = ExtResource("2_0fg6j")
 metadata/_custom_type_script = "uid://bm3ak1hyx3qbf"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1354324817]
 shape = SubResource("CircleShape2D_4uyoc")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=847438459]
+position = Vector2(-1.000001, -2.000001)
+scale = Vector2(0.38281253, 0.38281253)
+texture = ExtResource("3_ldgfi")
+
+[node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1652947527]
+position = Vector2(-1.000001, -2.000001)
+scale = Vector2(0.38281253, 0.38281253)
+texture = ExtResource("3_ldgfi")
