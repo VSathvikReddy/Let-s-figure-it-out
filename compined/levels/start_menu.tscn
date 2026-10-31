@@ -101,12 +101,14 @@ alignment = 1
 layout_mode = 2
 theme_override_font_sizes/font_size = 46
 theme_override_styles/normal = SubResource("StyleBoxFlat_jijt2")
-text = "PAINT-SCAPE"
+text = "PAINT-SCAPES"
 horizontal_alignment = 1
 
 [node name="Subtitle" type="Label" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=721691002]
 modulate = Color(0.75, 0.75, 0.85, 1)
 layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "- restore the art, reclaim reality"
 horizontal_alignment = 1
 
 [node name="StartButton" type="Button" parent="MenuCard/MarginContainer/VBoxContainer" unique_id=587399848]
