@@ -6,6 +6,7 @@ extends Control
 ##   - Locked paintings are dark with a padlock; finishing the painting before
 ##     them opens them. Right after a painting was unlocked, the gallery slides
 ##     to it and plays the unlock animation.
+##   - "Main Menu" (top left) or Esc: back to the main menu.
 ##   - Debug buttons (bottom right): "Unlock all (debug)" opens every painting,
 ##     "Lock paintings again" resets the progress.
 ##
@@ -15,6 +16,7 @@ extends Control
 const Levels := preload("res://compined/levels/levels.gd")
 const CustomCard := preload("res://compined/levels/custom/custom_level_card.gd")
 const LockIcon := preload("res://compined/levels/lock_icon.gd")
+const GameState := preload("res://compined/intro/scripts/GameState.gd")
 
 ## Darkness of a locked painting (1 = normal).
 const LOCKED_BRIGHTNESS := 0.25
@@ -45,6 +47,7 @@ func _ready() -> void:
 	_create_painting_cards()
 	_create_custom_card()
 	_create_debug_buttons()
+	_create_main_menu_button()
 	if Levels.just_unlocked >= 0:
 		_show_new_unlock(Levels.just_unlocked)
 
@@ -154,6 +157,15 @@ func _show_new_unlock(index: int) -> void:
 	card.scale = Vector2.ONE * 1.12
 
 
+## Top left: back to the main menu.
+func _create_main_menu_button() -> void:
+	var button := Button.new()
+	button.text = "◀  Main Menu"
+	button.position = Vector2(16, 16)
+	button.pressed.connect(func() -> void: GameState.go_to_main_menu())
+	add_child(button)
+
+
 ## Two small buttons in the bottom right corner, for testing:
 ##   Unlock all (debug)    - every painting open
 ##   Lock paintings again  - only the first painting open
@@ -225,6 +237,8 @@ func _input(event: InputEvent) -> void:
 		_select(selected_index + 1)
 	elif event.is_action_pressed("move_left") or event.is_action_pressed("ui_left"):
 		_select(selected_index - 1)
+	elif event.is_action_pressed("ui_cancel"):
+		GameState.go_to_main_menu()
 
 
 func _finish_swipe() -> void:

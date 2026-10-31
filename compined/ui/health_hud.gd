@@ -4,8 +4,9 @@ extends CanvasLayer
 ## point). A heart that loses all of its points cracks and shatters and leaves
 ## a shadow; with more than 1 point per heart, losing part of it cracks it.
 ## The row shakes when she is hit, and the last heart beats when health is low.
-## Inside the veil a countdown ring (veil_heal_timer.gd) shows when the next
-## heart comes back.
+## Inside the veil a countdown ring (veil_heal_timer.gd) shows how long the
+## visit has left; at the end she gets a heart. Health above her max (from the
+## veil) shows as an extra heart, which is gone again once it is lost.
 
 ## Health points in one heart (5 health / 1 = 5 hearts).
 @export var health_per_heart := 1
@@ -55,8 +56,7 @@ func _make_hearts(max_health: int) -> void:
 
 
 func _on_health_changed(current: float, maximum: float) -> void:
-	if ceili(maximum / health_per_heart) != _hearts.size():
-		_make_hearts(int(maximum))
+	_add_bonus_hearts(int(current))
 	var hurt := current < _shown_health
 	_shown_health = int(current)
 	_show(int(current), int(maximum), true)
@@ -70,6 +70,28 @@ func _show(current: int, maximum: int, animate: bool) -> void:
 		var left := clampi(current - i * health_per_heart, 0, health_per_heart)
 		_hearts[i].show_health(left, health_per_heart, animate)
 	_low = maximum > 0 and float(current) / maximum <= low_health_ratio and current > 0
+	_remove_lost_bonus_hearts(maximum)
+
+
+## Health above her max needs extra hearts at the end of the row. They start
+## empty, so they pop in like a heart coming back.
+func _add_bonus_hearts(current: int) -> void:
+	while _hearts.size() * health_per_heart < current:
+		var heart := HeartIcon.new()
+		heart.custom_minimum_size = Vector2(heart_size, heart_size)
+		heart.state = HeartIcon.State.BROKEN
+		heart.modulate = HeartIcon.SHADOW
+		row.add_child(heart)
+		_hearts.append(heart)
+
+
+## Bonus hearts that were lost shatter, then leave the row (no empty slot is
+## kept for them, because they are above her max).
+func _remove_lost_bonus_hearts(maximum: int) -> void:
+	var normal := ceili(float(maximum) / health_per_heart)
+	while _hearts.size() > normal and _hearts[-1].state == HeartIcon.State.BROKEN:
+		var heart = _hearts.pop_back()
+		get_tree().create_timer(1.1).timeout.connect(heart.queue_free)
 
 
 func _process(delta: float) -> void:
@@ -86,11 +108,14 @@ func _process(delta: float) -> void:
 
 ## The veil countdown: shown only while she is healing in the veil.
 func _update_heal_timer() -> void:
-	var healing: bool = _player != null and _player.is_healing_in_veil()
-	heal_timer.visible = healing
-	if healing:
-		heal_timer.progress = _player.veil_heal_time / _player.veil_heal_interval
-		heal_timer.seconds_left = _player.veil_heal_interval - _player.veil_heal_time
+	var in_veil: bool = _player != null and _player.is_in_veil()
+	heal_timer.visible = in_veil
+	if in_veil:
+		# just after the last heart, so a 6th (bonus) heart never covers it
+		heal_timer.position.x = row.position.x + _hearts.size() * (heart_size + 2.0) + 10.0
+		heal_timer.progress = _player.veil_time / _player.veil_duration
+		heal_timer.seconds_left = _player.veil_duration - _player.veil_time
+		heal_timer.gives_heart = _player.health < _player.max_health + _player.veil_bonus_hearts
 
 
 func _last_living_heart() -> Control:

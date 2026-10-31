@@ -2,7 +2,8 @@
 
 [ext_resource type="Script" path="res://compined/gems/destructible.gd" id="1_ege0b"]
 [ext_resource type="PackedScene" path="res://compined/enemies/bat/bat.tscn" id="2_0fg6j"]
-[ext_resource type="Texture2D" path="res://compined/common/icon.svg" id="3_ldgfi"]
+[ext_resource type="Texture2D" path="res://compined/enemies/bat/art/hidden_bat_stage1.png" id="3_stage1"]
+[ext_resource type="Texture2D" path="res://compined/enemies/bat/art/hidden_bat_stage2.png" id="4_stage2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4uyoc"]
 radius = 42.047592
@@ -16,11 +17,9 @@ spawn_scene = ExtResource("2_0fg6j")
 shape = SubResource("CircleShape2D_4uyoc")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=847438459]
-position = Vector2(-1.000001, -2.000001)
-scale = Vector2(0.38281253, 0.38281253)
-texture = ExtResource("3_ldgfi")
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("3_stage1")
 
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1652947527]
-position = Vector2(-1.000001, -2.000001)
-scale = Vector2(0.38281253, 0.38281253)
-texture = ExtResource("3_ldgfi")
+scale = Vector2(0.6, 0.6)
+texture = ExtResource("4_stage2")

@@ -16,6 +16,7 @@
 [ext_resource type="Script" uid="uid://desdqe7thf42u" path="res://compined/enemies/spawner/enemy_spawn_entry.gd" id="spawn_entry"]
 [ext_resource type="PackedScene" path="res://compined/enemies/mini_bomber/mini_bomber.tscn" id="spawn_mini_bomber"]
 [ext_resource type="PackedScene" path="res://compined/powerup/power_up_spawner.tscn" id="power_spawner"]
+[ext_resource type="PackedScene" path="res://compined/powerup/power_up.tscn" id="veil_token"]
 
 [sub_resource type="Resource" id="Spawn_0_mini_bomber"]
 script = ExtResource("spawn_entry")
@@ -109,3 +110,7 @@ max_time_between_waves = 11.0
 speed_up_per_minute = 0.1
 
 [node name="PowerUpSpawner" parent="." instance=ExtResource("power_spawner")]
+
+[node name="VeilToken" parent="." instance=ExtResource("veil_token")]
+position = Vector2(650, -150)
+type = 4
