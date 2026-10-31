@@ -1,5 +1,7 @@
 extends Control
 
+const GameState := preload("res://compined/intro/scripts/GameState.gd")
+
 # Drag and drop your 4 background images into this array in the Inspector!
 # (If left empty, it uses icon.svg as a safe placeholder until you assign them)
 @export var background_images: Array[Texture2D] = [
@@ -81,8 +83,9 @@ func _on_slide_timer_timeout() -> void:
 
 # --- MENU BUTTON HANDLERS ---
 
+## Start Game: the story intro the first time, the painting gallery after that.
 func _on_start_pressed() -> void:
-	LevelManager.go_to_level_select()
+	GameState.continue_game()
 
 
 func _on_credits_pressed() -> void:

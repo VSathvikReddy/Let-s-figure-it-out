@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://dpfgoftoob6i5" path="res://collectables/blue.tscn" id="2_mwa4f"]
 [ext_resource type="Texture2D" uid="uid://xbnfpyu2x7wh" path="res://collectables/assets/blue10.png" id="3_fw7ty"]
 [ext_resource type="AudioStream" uid="uid://oxmrle0mxljw" path="res://collectables/assets/gemspawn.wav" id="3_k7veg"]
-[ext_resource type="Texture2D" uid="uid://5yliea4ud005" path="res://collectables/assets/blue20.png" id="4_jjghd"]
+[ext_resource type="Texture2D" uid="uid://728808p32kmk" path="res://collectables/assets/blue5.png" id="4_k7veg"]
 [ext_resource type="Texture2D" uid="uid://mhaypj6vai5d" path="res://collectables/assets/blue.png" id="5_2fq7e"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4uyoc"]
@@ -30,16 +30,16 @@ texture = SubResource("ImageTexture_63wws")
 [node name="Sprite2D2" type="Sprite2D" parent="." unique_id=1849301683]
 position = Vector2(-2.9802322e-08, -2.9802322e-08)
 scale = Vector2(0.05761719, 0.05704101)
-texture = ExtResource("3_fw7ty")
+texture = ExtResource("4_k7veg")
 
 [node name="Sprite2D3" type="Sprite2D" parent="." unique_id=1235718787]
 position = Vector2(0, -2.3841858e-07)
 scale = Vector2(0.05957031, 0.058974605)
-texture = ExtResource("3_fw7ty")
+texture = ExtResource("4_k7veg")
 
 [node name="Sprite2D4" type="Sprite2D" parent="." unique_id=1624940455]
 scale = Vector2(0.05566406, 0.05510742)
-texture = ExtResource("4_jjghd")
+texture = ExtResource("3_fw7ty")
 
 [node name="Sprite2D5" type="Sprite2D" parent="." unique_id=1130913703]
 position = Vector2(-2.9802322e-08, 2.9802322e-08)

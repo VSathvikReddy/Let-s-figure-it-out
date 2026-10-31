@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://cf8n2ajipx5tl"]
+
+[ext_resource type="Script" path="res://enemies/thrower/fire_ball.gd" id="1_gregu"]
+[ext_resource type="Texture2D" uid="uid://tsrxcetb0hbp" path="res://icon.svg" id="2_qsv8u"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ball"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_splash"]
+radius = 90.0
+
+[node name="FireBall" type="Area2D" unique_id=1393987098]
+script = ExtResource("1_gregu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=698339154]
+shape = SubResource("CircleShape2D_ball")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=233694725]
+modulate = Color(1, 0.55, 0.15, 1)
+scale = Vector2(0.16, 0.16)
+texture = ExtResource("2_qsv8u")
+
+[node name="SplashZone" type="Area2D" parent="." unique_id=1472164749]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="SplashZone" unique_id=1857640811]
+shape = SubResource("CircleShape2D_splash")

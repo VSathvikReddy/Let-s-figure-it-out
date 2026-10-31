@@ -132,10 +132,10 @@ static func _prepare_program() -> String:
 	if program_name == "":
 		push_warning("Generator: cannot run programs on %s" % OS.get_name())
 		return ""
-	var source := "res://bin/".path_join(program_name)
+	var source := _find_program(program_name)
 	var target := "user://bin/".path_join(program_name)
-	if not FileAccess.file_exists(source):
-		push_warning("Generator: no primitive program for this computer: %s" % program_name)
+	if source == "":
+		push_warning("Generator: no primitive program for this computer: %s (looked in res://bin and in a bin folder next to the game)" % program_name)
 		return ""
 
 	var source_file := FileAccess.open(source, FileAccess.READ)
@@ -158,6 +158,21 @@ static func _prepare_program() -> String:
 	if OS.get_name() != "Windows":
 		OS.execute("chmod", ["+x", full_path])
 	return full_path
+
+
+## Where the primitive program is:
+##   1. res://bin/          - inside the game files (in an exported game only if
+##                            the export preset includes "bin/*")
+##   2. <game folder>/bin/  - a bin folder next to the exported game's .exe
+##   3. <game folder>/      - right next to the .exe
+## Returns "" if it is in none of them.
+static func _find_program(program_name: String) -> String:
+	var game_folder := OS.get_executable_path().get_base_dir()
+	for place in ["res://bin", game_folder.path_join("bin"), game_folder]:
+		var path: String = place.path_join(program_name)
+		if FileAccess.file_exists(path):
+			return path
+	return ""
 
 
 static func _gcd(a: int, b: int) -> int:
